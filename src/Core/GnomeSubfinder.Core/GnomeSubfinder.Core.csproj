@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Core</RootNamespace>
+    <AssemblyName>Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BackendCollection.cs" />
+    <Compile Include="BackendManager.cs" />
+    <Compile Include="SubtitleDownloader.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj">
+      <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
+      <Name>GnomeSubfinder.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Backends\Backends.OpenSubtitles.org\GnomeSubfinder.OpenSubtitles.org.csproj">
+      <Project>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</Project>
+      <Name>GnomeSubfinder.OpenSubtitles.org</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

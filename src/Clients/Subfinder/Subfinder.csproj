@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{A7A2A5D9-C3D5-4FE6-9609-0D7153820C01}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Subfinder</RootNamespace>
+    <AssemblyName>Subfinder</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glib-sharp-3.0</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="subfinder.glade" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Subfinder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj">
+      <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
+      <Name>GnomeSubfinder.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\GnomeSubfinder.Core\GnomeSubfinder.Core.csproj">
+      <Project>{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1}</Project>
+      <Name>GnomeSubfinder.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Backends\Backends.OpenSubtitles.org\GnomeSubfinder.OpenSubtitles.org.csproj">
+      <Project>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</Project>
+      <Name>GnomeSubfinder.OpenSubtitles.org</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
