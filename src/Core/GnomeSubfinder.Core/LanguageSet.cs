@@ -7,21 +7,18 @@ namespace GnomeSubfinder.Core.Core
 	{
 		readonly Dictionary<string, string> langs;
 
-		private static LanguageSet instance;
+		static LanguageSet instance;
 
-		public static LanguageSet Instance
-		{
-			get 
-			{
-				if (instance == null)
-				{
-					instance = new LanguageSet();
+		public static LanguageSet Instance {
+			get {
+				if (instance == null) {
+					instance = new LanguageSet ();
 				}
 				return instance;
 			}
 		}
 
-		private LanguageSet ()
+		LanguageSet ()
 		{
 			langs = new Dictionary<string, string> {
 				{ "Argentina", "spa" },
@@ -58,8 +55,7 @@ namespace GnomeSubfinder.Core.Core
 			};
 		}
 
-		public string this[string key]
-		{
+		public string this [string key] {
 			get { return langs [key]; }
 		}
 
@@ -69,8 +65,7 @@ namespace GnomeSubfinder.Core.Core
 			return Pixbuf.LoadFromResource ("Core.Resources.flags." + country + ".png").ScaleSimple (width, height, InterpType.Nearest);
 		}
 
-		public Dictionary<string, string> Languages 
-		{
+		public Dictionary<string, string> Languages {
 			get { return langs; }
 		}
 	}

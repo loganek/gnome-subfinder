@@ -20,7 +20,7 @@
 		public VideoFileInfo Video 
 		{ get; private set; }
 
-		public SubtitleFileInfo(string downloadFile, double rating, string language, int downloadsCount, IBackend backend, VideoFileInfo video)
+		public SubtitleFileInfo (string downloadFile, double rating, string language, int downloadsCount, IBackend backend, VideoFileInfo video)
 		{
 			DownloadFile = downloadFile;
 			Rating = rating;

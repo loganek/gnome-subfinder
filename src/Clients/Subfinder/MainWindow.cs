@@ -51,7 +51,7 @@ namespace Subfinder
 			rendererToggle.Toggled += (o, args) => {
 				TreeIter iter;
 				if (subtitlesStore.GetIterFromString (out iter, args.Path)) {
-					bool val = (bool) subtitlesStore.GetValue (iter, 0);
+					bool val = (bool)subtitlesStore.GetValue (iter, 0);
 					subtitlesStore.SetValue (iter, 0, !val);
 				}
 			};
@@ -59,7 +59,7 @@ namespace Subfinder
 			var sorter = new TreeModelSort (subtitlesStore);
 
 			var configureColumn = 
-				new Action<string, CellRenderer, int, object[]>((columnName, cellRenderer, columnNo, p) => {
+				new Action<string, CellRenderer, int, object[]> ((columnName, cellRenderer, columnNo, p) => {
 					var cc = subsTree.AppendColumn (columnName, cellRenderer, p);
 					cc.Clickable = true;
 					cc.Clicked += (sender, e) => {
@@ -70,7 +70,7 @@ namespace Subfinder
 					};
 				});
 
-			configureColumn (Catalog.GetString ("Download?"), rendererToggle, 0, new object[]{"active", 0});
+			configureColumn (Catalog.GetString ("Download?"), rendererToggle, 0, new object[]{ "active", 0 });
 			configureColumn (Catalog.GetString ("Rating"), new CellRendererText (), 1, new object[]{ "text", 1 });
 			configureColumn (Catalog.GetString ("Downloads count"), new CellRendererText (), 2, new object[]{ "text", 2 });
 			configureColumn (Catalog.GetString ("Language"), new CellRendererText (), 3, new object[]{ "text", 3 });
@@ -83,15 +83,14 @@ namespace Subfinder
 		void OpenBtnClick (object sender, EventArgs e)
 		{
 			var videoChooser = new FileChooserDialog (Catalog.GetString ("Choose the file to open"),
-				window, FileChooserAction.Open,
-				new Object[] {
+				                   window, FileChooserAction.Open,
+				                   new Object[] {
 					Catalog.GetString ("Cancel"), ResponseType.Cancel,
 					Catalog.GetString ("Open"), ResponseType.Accept
 				});
 			videoChooser.Filter = videoFilter;
 
-			if (videoChooser.Run () == (int)ResponseType.Accept) 
-			{
+			if (videoChooser.Run () == (int)ResponseType.Accept) {
 				videoFileName.Text = videoChooser.Filename;
 			}
 
@@ -109,13 +108,11 @@ namespace Subfinder
 			var x = searcher.SearchSubtitles (f, "eng");
 
 			var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
-			foreach (var sub in enumerable) 
-			{
+			foreach (var sub in enumerable) {
 				subtitlesStore.AppendValues (false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
 			}
 
-			if (!enumerable.Any()) 
-			{
+			if (!enumerable.Any ()) {
 				ShowMessage (Catalog.GetString ("Subtitles not found"));
 			}
 		}
@@ -123,10 +120,8 @@ namespace Subfinder
 		void DownloadSelectedBtnClick (object sender, EventArgs e)
 		{
 			var downloader = new SubtitleDownloader ();
-			foreach (object[] row in subtitlesStore)
-			{
-				if ((bool)row [0])
-				{
+			foreach (object[] row in subtitlesStore) {
+				if ((bool)row [0]) {
 					var s = row [5] as SubtitleFileInfo;
 					if (s != null)
 						downloader.Add (s);
@@ -141,12 +136,12 @@ namespace Subfinder
 			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => ShowMessage (Catalog.GetString ("Download completed!")));
 		}
 
-		void ShowAboutActicate(object sender, EventArgs e)
+		void ShowAboutActicate (object sender, EventArgs e)
 		{
 			aboutDialog.Show ();
 		}
 
-		void PreferencesActiveBtn (object sender, EventArgs e)
+		static void PreferencesActiveBtn (object sender, EventArgs e)
 		{
 			var preferences = new PreferencesDialog ();
 			preferences.Run ();

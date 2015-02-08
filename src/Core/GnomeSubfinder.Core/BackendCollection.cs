@@ -6,10 +6,10 @@ namespace GnomeSubfinder.Core.Core
 {
 	public class BackendCollection : IEnumerator<IBackend>, IEnumerable<IBackend>
 	{
-		private readonly List<IBackend> backends = new List<IBackend> ();
+		readonly List<IBackend> backends = new List<IBackend> ();
 		int position = -1;
 
-		public void Add<T> (params object[] parameters) where T : IBackend, new ()
+		public void Add<T> (params object[] parameters) where T : IBackend, new()
 		{
 			var backend = new T ();
 			backend.Init (parameters);
@@ -19,8 +19,8 @@ namespace GnomeSubfinder.Core.Core
 		public T GetByType<T> () where T : class, IBackend
 		{
 			var c = (from backend in backends
-				where backend is T
-				select backend);
+			         where backend is T
+			         select backend);
 
 			return c.Any () ? c.First () as T : null;
 		}
@@ -28,8 +28,8 @@ namespace GnomeSubfinder.Core.Core
 		public IBackend GetByDatabase (string dbName)
 		{
 			var c = (from backend in backends
-				where backend.GetName () == dbName
-				select backend);
+			         where backend.GetName () == dbName
+			         select backend);
 
 			return c.FirstOrDefault ();
 		}
@@ -53,21 +53,18 @@ namespace GnomeSubfinder.Core.Core
 			position = -1;
 		}
 
-		object System.Collections.IEnumerator.Current
-		{
-			get
-			{
+		object System.Collections.IEnumerator.Current {
+			get {
 				return backends [position];
 			}
 		}
 
-		public IBackend Current
-		{
-			get 
-			{
+		public IBackend Current {
+			get {
 				return backends [position];
 			}
 		}
+
 		#endregion
 
 		#region IDisposable implementation

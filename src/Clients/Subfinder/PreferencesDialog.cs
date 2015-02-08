@@ -5,8 +5,6 @@ using GnomeSubfinder.Core.Core;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Mono.Unix.Native;
 
 namespace Subfinder
 {
@@ -37,13 +35,10 @@ namespace Subfinder
 
 		public void Run ()
 		{
-			if (preferencesDialog.Run () == 1)
-			{
+			if (preferencesDialog.Run () == 1) {
 				var l = new List<string> ();
-				foreach (object[] row in langsStore)
-				{
-					if ((bool)row [0])
-					{
+				foreach (object[] row in langsStore) {
+					if ((bool)row [0]) {
 						l.Add (row [3] as string);
 					}
 				}
@@ -69,37 +64,36 @@ namespace Subfinder
 				}
 			};
 				
-			languagesTree.AppendColumn (Catalog.GetString ("Select"), rendererToggle, "active", 0 );
+			languagesTree.AppendColumn (Catalog.GetString ("Select"), rendererToggle, "active", 0);
 			languagesTree.AppendColumn (Catalog.GetString ("Country"), new CellRendererText (), "text", 1);
-			languagesTree.AppendColumn (Catalog.GetString ("Flag"), new CellRendererPixbuf (), "pixbuf", 2 );
+			languagesTree.AppendColumn (Catalog.GetString ("Flag"), new CellRendererPixbuf (), "pixbuf", 2);
 
 			languagesTree.Model = langsStore;
 
 			var langArray = Preferences.Instance.Languages.Split (',');
 
-			foreach (var lang in LanguageSet.Instance.Languages)
-			{
+			foreach (var lang in LanguageSet.Instance.Languages) {
 				langsStore.AppendValues (langArray.Contains (lang.Value), lang.Key, LanguageSet.Instance.GetFlag (lang.Key, 40, 20), lang.Value);
 			}
 		}
-			
+
 		void ConfigureBackendsCombo ()
 		{
-			var store = new ListStore(typeof(Pixbuf), typeof (string));
+			var store = new ListStore (typeof(Pixbuf), typeof(string));
 			backendsCombo.Model = store;
 
 			CellRenderer cell = new CellRendererPixbuf ();
-			backendsCombo.PackStart(cell, false);
-			backendsCombo.AddAttribute(cell, "pixbuf",  0);
+			backendsCombo.PackStart (cell, false);
+			backendsCombo.AddAttribute (cell, "pixbuf", 0);
 			cell = new CellRendererText ();
-			backendsCombo.PackStart(cell, false);
-			backendsCombo.AddAttribute(cell, "text", 1);
+			backendsCombo.PackStart (cell, false);
+			backendsCombo.AddAttribute (cell, "text", 1);
 
 			var mgr = new BackendManager ();
-			foreach(var s in mgr.Backends)
+			foreach (var s in mgr.Backends)
 				store.AppendValues (s.GetPixbuf (10, 10), s.GetName ());          
 
-			if (store.IterNChildren() > 0)
+			if (store.IterNChildren () > 0)
 				backendsCombo.Active = 0;
 		}
 	}

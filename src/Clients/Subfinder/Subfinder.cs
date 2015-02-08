@@ -7,10 +7,8 @@ namespace Subfinder
 {
 	public class Subfinder
 	{
-		public static string LocaleDir
-		{
-			get 
-			{
+		public static string LocaleDir {
+			get {
 				string installed_application_prefix = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly ().Location);
 				if (Directory.Exists (Path.Combine (installed_application_prefix, "share", "Subfinder")))
 					return installed_application_prefix;
@@ -20,8 +18,8 @@ namespace Subfinder
 				return Path.Combine (installed_application_prefix, "share", "locale");
 			}
 		}
-			
-		static void Main(String[] args)
+
+		static void Main (String[] args)
 		{
 			Application.Init ();
 			Catalog.Init ("Subfinder", LocaleDir);
@@ -38,8 +36,7 @@ namespace Subfinder
 			var builder = new Builder ();
 
 			using (Stream stream = assembly.GetManifestResourceStream (resourceName))
-			using (var reader = new StreamReader (stream)) 
-			{
+			using (var reader = new StreamReader (stream)) {
 				builder.AddFromString (reader.ReadToEnd ());
 			}
 

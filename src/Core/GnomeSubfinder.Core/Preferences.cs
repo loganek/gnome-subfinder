@@ -24,7 +24,7 @@ namespace GnomeSubfinder.Core.Core
 			}
 		}
 
-		private Preferences ()
+		Preferences ()
 		{
 		}
 
@@ -42,7 +42,7 @@ namespace GnomeSubfinder.Core.Core
 			get { return GetGConfNode (LANGUAGES_KEY, string.Empty); }
 			set { SetGConfNode (LANGUAGES_KEY, value); }
 		}
-			
+
 
 		T GetGConfNode<T> (string nodePath, T defaultValue, Func<T, bool> verifyMethod = null)
 		{
