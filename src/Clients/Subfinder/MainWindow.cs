@@ -26,7 +26,7 @@ namespace Subfinder
 
 		ListStore subtitlesStore;
 		Builder builder;
-		string userLangs = string.Empty;
+		BackendManager controller = new BackendManager ();
 
 		public MainWindow (String[] args)
 		{
@@ -99,21 +99,25 @@ namespace Subfinder
 
 		void SearchBtnClick (object sender, EventArgs e)
 		{
-			if (!File.Exists (videoFileName.Text))
-				throw new Exception (Catalog.GetString ("File ") + videoFileName.Text + Catalog.GetString ("doesn't exists"));
+			subtitlesStore.Clear ();
+			try {
+				if (!File.Exists (videoFileName.Text))
+					throw new IOException (Catalog.GetString ("File ") + videoFileName.Text + Catalog.GetString (" doesn't exists"));
+					
+				var f = new VideoFileInfo ();
+				f.FileName = videoFileName.Text;
+				var x = controller.SearchSubtitles (f, Preferences.Instance.Languages);
 
-			var searcher = new BackendManager ();
-			var f = new VideoFileInfo ();
-			f.FileName = videoFileName.Text;
-			var x = searcher.SearchSubtitles (f, "eng");
+				var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
+				foreach (var sub in enumerable) {
+					subtitlesStore.AppendValues (false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
+				}
 
-			var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
-			foreach (var sub in enumerable) {
-				subtitlesStore.AppendValues (false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
-			}
-
-			if (!enumerable.Any ()) {
-				ShowMessage (Catalog.GetString ("Subtitles not found"));
+				if (!enumerable.Any ()) {
+					ShowMessage (Catalog.GetString ("Subtitles not found"));
+				}
+			} catch (IOException ex) {
+				ShowMessage ("Error: " + ex.Message);
 			}
 		}
 
@@ -141,9 +145,9 @@ namespace Subfinder
 			aboutDialog.Show ();
 		}
 
-		static void PreferencesActiveBtn (object sender, EventArgs e)
+		void PreferencesActiveBtn (object sender, EventArgs e)
 		{
-			var preferences = new PreferencesDialog ();
+			var preferences = new PreferencesDialog (controller);
 			preferences.Run ();
 		}
 

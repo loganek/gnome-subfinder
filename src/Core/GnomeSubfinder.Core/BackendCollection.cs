@@ -79,6 +79,7 @@ namespace GnomeSubfinder.Core.Core
 
 		public IEnumerator<IBackend> GetEnumerator ()
 		{
+			Reset ();
 			return this;
 		}
 

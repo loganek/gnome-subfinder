@@ -22,9 +22,11 @@ namespace Subfinder
 		readonly Entry tempDirEntry;
 
 		ListStore langsStore;
+		readonly BackendManager controller;
 
-		public PreferencesDialog ()
+		public PreferencesDialog (BackendManager controller)
 		{
+			this.controller = controller;
 			var builder = Subfinder.FromResource ("Subfinder.subfinder-properties.glade");
 			builder.Autoconnect (this);
 			sevenZipPath.Text = Preferences.Instance.SZipPath;
@@ -89,8 +91,7 @@ namespace Subfinder
 			backendsCombo.PackStart (cell, false);
 			backendsCombo.AddAttribute (cell, "text", 1);
 
-			var mgr = new BackendManager ();
-			foreach (var s in mgr.Backends)
+			foreach (var s in controller.Backends)
 				store.AppendValues (s.GetPixbuf (10, 10), s.GetName ());          
 
 			if (store.IterNChildren () > 0)

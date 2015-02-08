@@ -1,5 +1,6 @@
 ﻿using GnomeSubfinder.Backends.OpenSubtitles;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace GnomeSubfinder.Core.Core
 {
@@ -9,7 +10,7 @@ namespace GnomeSubfinder.Core.Core
 
 		public BackendManager ()
 		{
-			backends.Add <OpenSubtitlesBackend> ("loganek", "test", "eng");
+			backends.Add <OpenSubtitlesBackend> ("loganek", "test", CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
 		}
 
 		public IEnumerable<Interfaces.SubtitleFileInfo> SearchSubtitles (Interfaces.VideoFileInfo video, string language)
