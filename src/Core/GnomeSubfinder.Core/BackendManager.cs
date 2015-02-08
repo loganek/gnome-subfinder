@@ -20,6 +20,11 @@ namespace GnomeSubfinder.Core.Core
 					yield return s;
 			}
 		}
+
+		public BackendCollection Backends
+		{
+			get { return backends; }
+		}
  	}
 }
 

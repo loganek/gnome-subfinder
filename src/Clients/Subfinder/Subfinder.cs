@@ -31,6 +31,20 @@ namespace Subfinder
 
 			Application.Run ();
 		}
+
+		internal static Builder FromResource (string resourceName)
+		{
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly ();
+			var builder = new Builder ();
+
+			using (Stream stream = assembly.GetManifestResourceStream (resourceName))
+			using (var reader = new StreamReader (stream)) 
+			{
+				builder.AddFromString (reader.ReadToEnd ());
+			}
+
+			return builder;
+		}
 	}
 }
 

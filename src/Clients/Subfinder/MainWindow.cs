@@ -25,11 +25,12 @@ namespace Subfinder
 		readonly ProgressBar downloadStatus;
 
 		ListStore subtitlesStore;
+		Builder builder;
+		string userLangs = string.Empty;
 
 		public MainWindow (String[] args)
 		{
-			var builder = new Builder ();
-			builder.AddFromFile("/home/loganek/Documents/gnome-subfinder//src/Clients/Subfinder/subfinder.glade");
+			builder = Subfinder.FromResource ("Subfinder.subfinder.glade");
 			builder.Autoconnect (this);
 
 			ConfigureTreeView ();
@@ -143,6 +144,13 @@ namespace Subfinder
 		void ShowAboutActicate(object sender, EventArgs e)
 		{
 			aboutDialog.Show ();
+		}
+
+		void PreferencesActiveBtn (object sender, EventArgs e)
+		{
+			var preferences = new PreferencesDialog (userLangs);
+			preferences.Run ();
+			userLangs = preferences.Langs;
 		}
 
 		static void ShowMessage (string text)

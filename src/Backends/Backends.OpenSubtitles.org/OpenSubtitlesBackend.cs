@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using CookComputing.XmlRpc;
 using GnomeSubfinder.Core.Interfaces;
+using Gdk;
 
 namespace GnomeSubfinder.Backends.OpenSubtitles
 {
@@ -126,6 +127,10 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			return LogIn (parameters [0].ToString (), parameters [1].ToString (), parameters [2].ToString ());
 		}
 
+		public Pixbuf GetPixbuf (int width, int height)
+		{
+			return Pixbuf.LoadFromResource ("OpenSubtitles.org.logo.gif").ScaleSimple (width, height, InterpType.Bilinear);
+		}
 		#endregion
 
 		private static string ComputeMovieHash(string filename)
