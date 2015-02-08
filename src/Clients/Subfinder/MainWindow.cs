@@ -148,9 +148,8 @@ namespace Subfinder
 
 		void PreferencesActiveBtn (object sender, EventArgs e)
 		{
-			var preferences = new PreferencesDialog (userLangs);
+			var preferences = new PreferencesDialog ();
 			preferences.Run ();
-			userLangs = preferences.Langs;
 		}
 
 		static void ShowMessage (string text)

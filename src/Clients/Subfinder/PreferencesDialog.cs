@@ -25,28 +25,19 @@ namespace Subfinder
 
 		ListStore langsStore;
 
-		public string Langs {
-			get;
-			private set;
-		}
-
-		public PreferencesDialog (string langs)
+		public PreferencesDialog ()
 		{
 			var builder = Subfinder.FromResource ("Subfinder.subfinder-properties.glade");
 			builder.Autoconnect (this);
-			Langs = langs;
-			sevenZipPath.Text = Get7zPath ();
-			tempDirEntry.Text = GetTempDir ();
+			sevenZipPath.Text = Preferences.Instance.SZipPath;
+			tempDirEntry.Text = Preferences.Instance.TemporaryDirectory;
 			ConfigureTreeView ();
 			ConfigureBackendsCombo ();
 		}
 
-		public bool Run ()
+		public void Run ()
 		{
-			int ret = preferencesDialog.Run ();
-			preferencesDialog.Destroy ();
-
-			if (ret == 1)
+			if (preferencesDialog.Run () == 1)
 			{
 				var l = new List<string> ();
 				foreach (object[] row in langsStore)
@@ -56,10 +47,13 @@ namespace Subfinder
 						l.Add (row [3] as string);
 					}
 				}
-				Langs = string.Join (",", l);
-				return true;
+	
+				Preferences.Instance.Languages = string.Join (",", l);
+				Preferences.Instance.SZipPath = sevenZipPath.Text;
+				Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
 			}
-			return false;
+
+			preferencesDialog.Destroy ();
 		}
 
 		void ConfigureTreeView ()
@@ -81,46 +75,14 @@ namespace Subfinder
 
 			languagesTree.Model = langsStore;
 
-			var langArray = Langs.Split (',');
+			var langArray = Preferences.Instance.Languages.Split (',');
 
 			foreach (var lang in LanguageSet.Instance.Languages)
 			{
 				langsStore.AppendValues (langArray.Contains (lang.Value), lang.Key, LanguageSet.Instance.GetFlag (lang.Key, 40, 20), lang.Value);
 			}
 		}
-
-		private string Get7zPath()
-		{
-			var p = new Process { StartInfo = new ProcessStartInfo ("whereis", "7z") {
-					UseShellExecute = false,
-					RedirectStandardOutput = true
-				} };
-			p.Start();
-
-			string output = p.StandardOutput.ReadToEnd();
-			p.WaitForExit();
-
-			var paths = output.Split (' ');
-			string szPath = "7z";
-
-			if (paths.Length < 2)
-				return szPath;
-
-			for (int i = 1; i < paths.Length; i++)
-			{
-				Stat buf;
-				Syscall.stat (paths [i], out buf);
-				if ((int)(buf.st_mode & (FilePermissions.S_IXGRP | FilePermissions.S_IXUSR | FilePermissions.S_IXOTH)) > 0)
-					return paths [i];
-			}
-			return szPath;    
-		}
-
-		private string GetTempDir()
-		{
-			return System.IO.Path.GetTempPath ();
-		}
-
+			
 		void ConfigureBackendsCombo ()
 		{
 			var store = new ListStore(typeof(Pixbuf), typeof (string));
