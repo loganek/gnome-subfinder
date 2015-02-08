@@ -6,6 +6,7 @@ using GnomeSubfinder.Core.Core;
 using GnomeSubfinder.Core.Interfaces;
 using Gtk;
 using Mono.Unix;
+using System.Net;
 
 namespace Subfinder
 {
@@ -23,6 +24,14 @@ namespace Subfinder
 		readonly AboutDialog aboutDialog;
 		[Builder.Object]
 		readonly ProgressBar downloadStatus;
+		[Builder.Object]
+		readonly Viewport treeParent;
+		[Builder.Object]
+		readonly Button searchButton;
+		[Builder.Object]
+		readonly Button downloadSelectedButton;
+
+		Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
 		ListStore subtitlesStore;
 		Builder builder;
@@ -97,13 +106,12 @@ namespace Subfinder
 			videoChooser.Destroy ();
 		}
 
-		void SearchBtnClick (object sender, EventArgs e)
+		void FindSubtitles ()
 		{
-			subtitlesStore.Clear ();
 			try {
 				if (!File.Exists (videoFileName.Text))
 					throw new IOException (Catalog.GetString ("File ") + videoFileName.Text + Catalog.GetString (" doesn't exists"));
-					
+
 				var f = new VideoFileInfo ();
 				f.FileName = videoFileName.Text;
 				var x = controller.SearchSubtitles (f, Preferences.Instance.Languages);
@@ -114,15 +122,34 @@ namespace Subfinder
 				}
 
 				if (!enumerable.Any ()) {
-					ShowMessage (Catalog.GetString ("Subtitles not found"));
+					Application.Invoke((e, s) => ShowMessage (Catalog.GetString ("Subtitles not found")));
 				}
 			} catch (IOException ex) {
-				ShowMessage ("Error: " + ex.Message);
+				Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
+			} catch (WebException ex) {
+				Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
+			} finally {
+				Application.Invoke ((sndr, evnt) => {
+					treeParent.Remove (waitWidget);
+					treeParent.Add (subsTree);
+					searchButton.Sensitive = true;
+				});
 			}
+		}
+
+		void SearchBtnClick (object sender, EventArgs e)
+		{
+			subtitlesStore.Clear ();
+
+			searchButton.Sensitive = false;
+			treeParent.Remove (subsTree);
+			treeParent.Add (waitWidget);
+			new System.Threading.Thread (new System.Threading.ThreadStart (FindSubtitles)).Start ();
 		}
 
 		void DownloadSelectedBtnClick (object sender, EventArgs e)
 		{
+			downloadSelectedButton.Sensitive = false;
 			var downloader = new SubtitleDownloader ();
 			foreach (object[] row in subtitlesStore) {
 				if ((bool)row [0]) {
@@ -131,13 +158,19 @@ namespace Subfinder
 						downloader.Add (s);
 				}
 			}
-			downloader.Download ();
+				
 			downloader.DownloadStatusChanged += (sdr, evt) => {
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
 				downloadStatus.Fraction = downloader.Status;
 			};
 
-			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => ShowMessage (Catalog.GetString ("Download completed!")));
+			new System.Threading.Thread (new System.Threading.ThreadStart (() => 
+				downloader.Download(Preferences.Instance.TemporaryDirectory, Preferences.Instance.SZipPath))).Start ();
+
+			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
+				downloadSelectedButton.Sensitive = true;
+				ShowMessage (Catalog.GetString ("Download completed!"));
+			});
 		}
 
 		void ShowAboutActicate (object sender, EventArgs e)
