@@ -39,12 +39,14 @@
     <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>glib-sharp-3.0</Package>
     </Reference>
+    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="subfinder.glade" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Subfinder.cs" />
+    <Compile Include="MainWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj">
