@@ -1,23 +1,28 @@
-﻿using GnomeSubfinder.Core.Interfaces;
-using System.Net;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.IO;
+using System.Net;
 using System.Threading;
+using GnomeSubfinder.Core.Interfaces;
 
 namespace GnomeSubfinder.Core.Core
 {
 	public class SubtitleDownloader
 	{
+		int processed = 0;
 		readonly List<SubtitleFileInfo> subtitleFiles = new List<SubtitleFileInfo> ();
 
 		public event EventHandler DownloadStatusChanged;
 		public event EventHandler DownloadCompleted;
 
-		int processed = 0;
 		public int Processed
-		{ get { return processed; } }
-		public int Total { get { return subtitleFiles.Count; } }
+		{ 
+			get { return processed; }
+		}
+		public int Total
+		{
+			get { return subtitleFiles.Count; } 
+		}
 		public double Status
 		{ 
 			get { return (double)Processed / subtitleFiles.Count; }
