@@ -139,7 +139,7 @@ namespace Subfinder
 
 					var f = new VideoFileInfo ();
 					f.FileName = filename;
-					var x = controller.SearchSubtitles (f, Preferences.Instance.Languages);
+					var x = controller.SearchSubtitles (f, Preferences.Instance.GetSelectedLanguages ());
 
 					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
 					Application.Invoke ((e, s)=>{
@@ -254,10 +254,10 @@ namespace Subfinder
 					if (!File.Exists (filename))
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
-					var x = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, Preferences.Instance.Languages);
+					var langs = Preferences.Instance.GetSelectedLanguages ();
+					var x = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs);
 					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
-					var langs = Preferences.Instance.Languages.Split (new []{ ',' });
-					var backends = Preferences.Instance.Languages.Split (new []{ ',' });
+					var backends = langs; // todo!
 					subs.Add (SubtitleFileInfo.MatchBest (enumerable, langs, backends));
 					if (subs.Count == 0) {
 						ShowMessage ("Select subtitles first");

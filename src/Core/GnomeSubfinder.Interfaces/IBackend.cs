@@ -6,7 +6,7 @@
 
 		double[] GetSubtitlesRatio (VideoFileInfo file, int language);
 
-		SubtitleFileInfo[] SearchSubtitles (VideoFileInfo video, string languages);
+		SubtitleFileInfo[] SearchSubtitles (VideoFileInfo video, string[] languages);
 
 		bool Init (params object[] parameters);
 

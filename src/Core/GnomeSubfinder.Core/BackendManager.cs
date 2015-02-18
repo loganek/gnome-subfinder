@@ -13,10 +13,10 @@ namespace GnomeSubfinder.Core.Core
 			backends.Add <OpenSubtitlesBackend> ("loganek", "test", CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
 		}
 
-		public IEnumerable<Interfaces.SubtitleFileInfo> SearchSubtitles (Interfaces.VideoFileInfo video, string language)
+		public IEnumerable<Interfaces.SubtitleFileInfo> SearchSubtitles (Interfaces.VideoFileInfo video, string[] languages)
 		{
 			foreach (var b in backends) {
-				foreach (var s in b.SearchSubtitles (video, language))
+				foreach (var s in b.SearchSubtitles (video, languages))
 					yield return s;
 			}
 		}

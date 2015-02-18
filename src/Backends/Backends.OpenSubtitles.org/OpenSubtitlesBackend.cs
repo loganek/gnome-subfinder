@@ -81,12 +81,12 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			return "OpenSubtitles.org";
 		}
 
-		public SubtitleFileInfo[] SearchSubtitles (VideoFileInfo video, string languages)
+		public SubtitleFileInfo[] SearchSubtitles (VideoFileInfo video, string[] languages)
 		{
 			var subs = new List<SubtitleFileInfo> ();
 			string hash = ComputeMovieHash (video.FileName);
 
-			var subinfo = new [] {new SubSearchInfo(languages, hash, video.Size, null) };
+			var subinfo = new [] {new SubSearchInfo(String.Join(",", languages), hash, video.Size, null) };
 
 			var foundSubs = osProxy.SearchSubtitles (userToken, subinfo);
 

@@ -40,9 +40,10 @@ namespace Subfinder
 			if (preferencesDialog.Run () == 1) {
 				var l = new List<string> ();
 				foreach (object[] row in langsStore) {
-					if ((bool)row [0]) {
-						l.Add (row [3] as string);
-					}
+					string s = row [3] as string;
+					if ((bool)row [0])
+						s += "_";
+					l.Add (s);
 				}
 	
 				Preferences.Instance.Languages = string.Join (",", l);
@@ -72,10 +73,15 @@ namespace Subfinder
 
 			languagesTree.Model = langsStore;
 
-			var langArray = Preferences.Instance.Languages.Split (',');
-
-			foreach (var lang in LanguageSet.Instance.Languages) {
-				langsStore.AppendValues (langArray.Contains (lang.Value), lang.Key, LanguageSet.Instance.GetFlag (lang.Key, 40, 20), lang.Value);
+			var selectedLangs = Preferences.Instance.GetSelectedLanguages ();
+			var allLangs = Preferences.Instance.GetAllLanguages ();
+			foreach (var lang in allLangs) {
+				bool selected = false;
+				if (selectedLangs.Contains (lang)) {
+					selected = true;
+				}
+				string langName = LanguageSet.Instance.Languages.FirstOrDefault (x => x.Value == lang).Key;
+				langsStore.AppendValues (selected, langName, LanguageSet.Instance.GetFlag (langName, 40, 20), lang);
 			}
 		}
 
@@ -96,6 +102,42 @@ namespace Subfinder
 
 			if (store.IterNChildren () > 0)
 				backendsCombo.Active = 0;
+		}
+
+		void MoveItem(int position, bool absolute)
+		{
+			TreeIter iter, tmpIter;
+			languagesTree.Selection.GetSelected (out tmpIter);
+			int pos = absolute ? position : position + Convert.ToInt32 (langsStore.GetPath (tmpIter).ToString ());
+
+			if (pos == -1 || pos >= langsStore.IterNChildren ())
+				return;
+
+			langsStore.GetIterFromString(out iter, pos.ToString ());
+			if (position <= 0)
+				langsStore.MoveBefore(tmpIter, iter);
+			else
+				langsStore.MoveAfter(tmpIter, iter);
+		}
+
+		void TopBtnClick(object sender, EventArgs e)
+		{
+			MoveItem (0, true);
+		}
+
+		void BottomBtnClick(object sender, EventArgs e)
+		{
+			MoveItem (langsStore.IterNChildren () - 1, true);
+		}
+
+		void UpBtnClick(object sender, EventArgs e)
+		{
+			MoveItem (-1, false);
+		}
+
+		void DownBtnClick(object sender, EventArgs e)
+		{
+			MoveItem (1, false);
 		}
 	}
 }

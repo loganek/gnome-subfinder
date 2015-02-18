@@ -3,6 +3,7 @@ using GConf;
 using System.Diagnostics;
 using System.IO;
 using Mono.Unix.Native;
+using System.Collections.Generic;
 
 namespace GnomeSubfinder.Core.Core
 {
@@ -45,10 +46,24 @@ namespace GnomeSubfinder.Core.Core
 		}
 
 		public string Languages {
-			get { return GetGConfNode (LANGUAGES_KEY, string.Empty); }
+			private get { return GetGConfNode (LANGUAGES_KEY, string.Empty); }
 			set { SetGConfNode (LANGUAGES_KEY, value); }
 		}
 
+		public string[] GetSelectedLanguages ()
+		{
+			var l = new List<string> ();
+			foreach (var lang in Languages.Split(new []{','})) {
+				if (lang.EndsWith ("_"))
+					l.Add (lang.Remove(3));
+			}
+			return l.ToArray ();
+		}
+
+		public string[] GetAllLanguages ()
+		{
+			return Languages.Replace ("_", "").Split (new []{ ',' });
+		}
 
 		T GetGConfNode<T> (string nodePath, T defaultValue, Func<T, bool> verifyMethod = null)
 		{
