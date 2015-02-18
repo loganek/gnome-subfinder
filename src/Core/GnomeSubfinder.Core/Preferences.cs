@@ -13,6 +13,7 @@ namespace GnomeSubfinder.Core.Core
 		const string SZIP_PATH_KEY = GCONF_APP_PATH + "/7zip-path";
 		const string TEMP_DIR_PATH_KEY = GCONF_APP_PATH + "/temp-dir-path";
 		const string LANGUAGES_KEY = GCONF_APP_PATH + "/languages";
+		const string ACTIVE_TAB_KEY = GCONF_APP_PATH + "/active_tab";
 
 		static Preferences instance;
 
@@ -26,6 +27,11 @@ namespace GnomeSubfinder.Core.Core
 
 		Preferences ()
 		{
+		}
+
+		public int ActiveTab {
+			get { return GetGConfNode (ACTIVE_TAB_KEY, 0); }
+			set { SetGConfNode (ACTIVE_TAB_KEY, value); }
 		}
 
 		public string TemporaryDirectory {

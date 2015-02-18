@@ -32,6 +32,8 @@ namespace Subfinder
 		readonly Button downloadSelectedButton;
 		[Builder.Object]
 		readonly Statusbar appStatusbar;
+		[Builder.Object]
+		readonly Notebook mainNotebook;
 
 		Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
@@ -47,11 +49,16 @@ namespace Subfinder
 
 			ConfigureTreeView ();
 
-			window.Destroyed += (sender, e) => Application.Quit ();
+			window.Destroyed += (sender, e) => {
+				Preferences.Instance.ActiveTab = mainNotebook.CurrentPage;
+				Application.Quit ();
+			};
 
 			videosStore = new ListStore (typeof(string));
 			filesTreeView.AppendColumn ("Path", new CellRendererText (), "text", 0);
 			filesTreeView.Model = videosStore;
+
+			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
 		}
 
 		public void Run ()
@@ -95,8 +102,7 @@ namespace Subfinder
 			subsTree.Model = sorter;
 		}
 
-
-		void OpenBtnClick (object sender, EventArgs e)
+		string[] LoadVideoFiles ()
 		{
 			var videoChooser = new FileChooserDialog (Catalog.GetString ("Choose the file to open"), window, FileChooserAction.Open, new Object[] {
 				Catalog.GetString ("Cancel"),
@@ -108,12 +114,19 @@ namespace Subfinder
 				Filter = videoFilter
 			};
 
+			var files = new List<string> ();
 			if (videoChooser.Run () == (int)ResponseType.Accept) {
 				foreach (var f in videoChooser.Files)
-					videosStore.AppendValues (f.Path);
+					files.Add (f.Path);
 			}
-
 			videoChooser.Destroy ();
+			return files.ToArray ();
+		}
+
+		void OpenBtnClick (object sender, EventArgs e)
+		{
+			foreach (var f in LoadVideoFiles ())
+				videosStore.AppendValues (f);
 		}
 
 		void FindSubtitles ()
@@ -221,6 +234,11 @@ namespace Subfinder
 					videosStore.Remove (ref iter);
 				}
 			}
+		}
+
+		void OneClickDownloadBtn (object sender, EventArgs e)
+		{
+
 		}
 
 		static void ShowMessage (string text)

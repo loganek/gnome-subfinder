@@ -60,8 +60,7 @@
   <object class="GtkImage" id="image5">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-goto-top</property>
-    <property name="icon_size">1</property>
+    <property name="stock">gtk-save</property>
   </object>
   <object class="GtkApplicationWindow" id="window">
     <property name="can_focus">False</property>
@@ -156,86 +155,177 @@
           </packing>
         </child>
         <child>
-          <object class="GtkPaned" id="paned1">
+          <object class="GtkNotebook" id="mainNotebook">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkButton" id="button1">
+                <property name="label" translatable="yes">Select file(s) and download!</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">image5</property>
+                <property name="always_show_image">True</property>
+                <signal name="clicked" handler="OneClickDownloadBtn" swapped="no"/>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">One click mode</property>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkBox" id="box2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow2">
+                  <object class="GtkPaned" id="paned1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="shadow_type">in</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkTreeView" id="filesTreeView">
+                      <object class="GtkBox" id="box3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkScrolledWindow" id="scrolledwindow2">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="shadow_type">in</property>
+                            <child>
+                              <object class="GtkTreeView" id="filesTreeView">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection" id="treeview-selection">
+                                    <property name="mode">multiple</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="box4">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkButton" id="openFileButton">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="image">image1</property>
+                                <property name="always_show_image">True</property>
+                                <signal name="clicked" handler="OpenBtnClick" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="removeVideoButton">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="image">image4</property>
+                                <property name="yalign">0.49000000953674316</property>
+                                <signal name="clicked" handler="RemoveVideoBtnClick" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="searchButton">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="image">image2</property>
+                                <signal name="clicked" handler="SearchBtnClick" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="resize">False</property>
+                        <property name="shrink">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow" id="scrolledwindow1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="treeview-selection3">
-                            <property name="mode">multiple</property>
+                        <property name="vexpand">True</property>
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="shadow_type">in</property>
+                        <property name="min_content_height">200</property>
+                        <child>
+                          <object class="GtkViewport" id="treeParent">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkTreeView" id="subsTree">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection" id="treeview-selection3"/>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="resize">True</property>
+                        <property name="shrink">True</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
+                    <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="box3">
+                  <object class="GtkButton" id="downloadSelectedButton">
+                    <property name="label" translatable="yes">Download selected subtitles</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkButton" id="openFileButton">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="image">image1</property>
-                        <property name="always_show_image">True</property>
-                        <signal name="clicked" handler="OpenBtnClick" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="removeVideoButton">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="image">image4</property>
-                        <property name="yalign">0.49000000953674316</property>
-                        <signal name="clicked" handler="RemoveVideoBtnClick" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="searchButton">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="image">image2</property>
-                        <signal name="clicked" handler="SearchBtnClick" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">image3</property>
+                    <property name="relief">half</property>
+                    <property name="xalign">0.49000000953674316</property>
+                    <property name="yalign">0.49000000953674316</property>
+                    <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="DownloadSelectedBtnClick" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -245,63 +335,31 @@
                 </child>
               </object>
               <packing>
-                <property name="resize">False</property>
-                <property name="shrink">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Advanced mode</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+                <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="vexpand">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="shadow_type">in</property>
-                <property name="min_content_height">200</property>
-                <child>
-                  <object class="GtkViewport" id="treeParent">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkTreeView" id="subsTree">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="treeview-selection"/>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="resize">True</property>
-                <property name="shrink">True</property>
-              </packing>
+              <placeholder/>
+            </child>
+            <child type="tab">
+              <placeholder/>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="downloadSelectedButton">
-            <property name="label" translatable="yes">Download selected subtitles</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">image3</property>
-            <property name="relief">half</property>
-            <property name="xalign">0.49000000953674316</property>
-            <property name="yalign">0.49000000953674316</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="DownloadSelectedBtnClick" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -315,21 +373,6 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="modeButton">
-            <property name="label" translatable="yes">Simple mode</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">image5</property>
-            <property name="always_show_image">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
           </packing>
         </child>
         <child>
