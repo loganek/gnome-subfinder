@@ -30,6 +30,8 @@ namespace Subfinder
 		readonly Button searchButton;
 		[Builder.Object]
 		readonly Button downloadSelectedButton;
+		[Builder.Object]
+		readonly Statusbar appStatusbar;
 
 		Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
@@ -140,18 +142,22 @@ namespace Subfinder
 					Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
 				} catch (WebException ex) {
 					Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
-				} finally {
-					Application.Invoke ((sndr, evnt) => {
-						treeParent.Remove (waitWidget);
-						treeParent.Add (subsTree);
-						searchButton.Sensitive = true;
-					});
 				}
 			}
+			Application.Invoke ((sndr, evnt) => {
+				treeParent.Remove (waitWidget);
+				treeParent.Add (subsTree);
+				searchButton.Sensitive = true;
+			});
 		}
 
 		void SearchBtnClick (object sender, EventArgs e)
 		{
+			if (videosStore.IterNChildren () == 0) {
+				ShowInfo ("Add files first");
+				return;
+			}
+
 			subtitlesStore.Clear ();
 
 			searchButton.Sensitive = false;
@@ -163,7 +169,6 @@ namespace Subfinder
 
 		void DownloadSelectedBtnClick (object sender, EventArgs e)
 		{
-			downloadSelectedButton.Sensitive = false;
 			var downloader = new SubtitleDownloader ();
 			subtitlesStore.Foreach((model, path, iter) => {
 				if ((bool)model.GetValue(iter, 0)) {
@@ -173,6 +178,13 @@ namespace Subfinder
 				}
 				return false;
 			});
+
+			if (downloader.Total == 0) {
+				ShowInfo ("Select subtitles first");
+				return;
+			}
+				
+			downloadSelectedButton.Sensitive = false;
 				
 			downloader.DownloadStatusChanged += (sdr, evt) => {
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
@@ -204,6 +216,11 @@ namespace Subfinder
 			var md = new MessageDialog (null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, text);
 			md.Run ();
 			md.Destroy ();
+		}
+
+		void ShowInfo (string message)
+		{
+			appStatusbar.Push (0, message);
 		}
 	}
 }
