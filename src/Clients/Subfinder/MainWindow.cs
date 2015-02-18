@@ -47,6 +47,11 @@ namespace Subfinder
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
 		}
 
+		void QuitAppClick (object sender, EventArgs e)
+		{
+			Destroy ();
+		}
+
 		void ConfigureTreeView ()
 		{
 			subtitlesStore = new TreeStore (typeof(bool), typeof(double), typeof(int), typeof(string), typeof(string), typeof(SubtitleFileInfo));
@@ -122,25 +127,22 @@ namespace Subfinder
 
 		void FindSubtitles ()
 		{
+			int count = 0;
 			foreach (object[] videoFile in videosStore) {
 				string filename = videoFile [0] as string;
 				try {
 					if (!File.Exists (filename))
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
-					var x = controller.SearchSubtitles (new VideoFileInfo {FileName = filename}, Preferences.Instance.GetSelectedLanguages ());
+					var subs = controller.SearchSubtitles (new VideoFileInfo {FileName = filename}, Preferences.Instance.GetSelectedLanguages ());
 
-					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
 					Application.Invoke ((e, s) => {
-						TreeIter iter = subtitlesStore.AppendValues(TreeIter.Zero, null, null, null, System.IO.Path.GetFileName(filename), null);
-						foreach (var sub in enumerable) {
+						TreeIter iter = subtitlesStore.AppendValues(null, null, null, null, System.IO.Path.GetFileName(filename), null);
+						foreach (var sub in subs) {
 							subtitlesStore.AppendValues (iter, false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
 						}
+						count += subs.Length;
 					});
-
-					if (!enumerable.Any ()) {
-						Application.Invoke ((e, s) => ShowMessage (Catalog.GetString ("Subtitles not found")));
-					}
 				} catch (IOException ex) {
 					Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
 				} catch (WebException ex) {
@@ -151,6 +153,7 @@ namespace Subfinder
 				treeParent.Remove (waitWidget);
 				treeParent.Add (subsTree);
 				searchButton.Sensitive = true;
+				ShowInfo (String.Format ("Search completed. Found: {0} file(s).", count));
 			});
 		}
 
@@ -166,7 +169,7 @@ namespace Subfinder
 			searchButton.Sensitive = false;
 			treeParent.Remove (subsTree);
 			treeParent.Add (waitWidget);
-
+			ShowInfo ("Searching subtitles.");
 			new System.Threading.Thread (new System.Threading.ThreadStart (FindSubtitles)).Start ();
 		}
 
@@ -177,6 +180,7 @@ namespace Subfinder
 			foreach (var s in subs)
 				downloader.Add (s);
 
+			ShowInfo ("Downloading subtitles...");
 			downloadSelectedButton.Sensitive = false;
 
 			downloader.DownloadStatusChanged += (sdr, evt) => {
@@ -189,6 +193,7 @@ namespace Subfinder
 
 			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
 				downloadSelectedButton.Sensitive = true;
+				ShowInfo ("Download completed");
 				ShowMessage (Catalog.GetString ("Download completed!"));
 			});
 		}
@@ -252,14 +257,8 @@ namespace Subfinder
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
 					var langs = Preferences.Instance.GetSelectedLanguages ();
-					var x = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs);
-					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
 					var backends = langs; // todo!
-					subs.Add (SubtitleFileInfo.MatchBest (enumerable, langs, backends));
-					if (subs.Count == 0) {
-						ShowMessage ("Select subtitles first");
-						return;
-					}
+					subs.Add (SubtitleFileInfo.MatchBest (controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs), langs, backends));
 				}
 				DownloadSubtitles (subs.ToArray ());
 			} catch (IOException ex) {
