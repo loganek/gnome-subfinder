@@ -125,8 +125,18 @@ namespace Subfinder
 
 		void OpenBtnClick (object sender, EventArgs e)
 		{
-			foreach (var f in LoadVideoFiles ())
-				videosStore.AppendValues (f);
+			foreach (var f in LoadVideoFiles ()) {
+				bool canAdd = true;
+				foreach (object[] filename in videosStore) {
+					if (filename [0] as string == f) {
+						canAdd = false;
+						break;
+					}
+				}
+				if (canAdd) {
+					videosStore.AppendValues (f);
+				}
+			}
 		}
 
 		void FindSubtitles ()
