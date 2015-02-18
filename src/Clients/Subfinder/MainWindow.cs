@@ -128,16 +128,15 @@ namespace Subfinder
 					if (!File.Exists (filename))
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
-					var f = new VideoFileInfo ();
-					f.FileName = filename;
-					var x = controller.SearchSubtitles (f, Preferences.Instance.GetSelectedLanguages ());
+					var x = controller.SearchSubtitles (new VideoFileInfo {FileName = filename}, Preferences.Instance.GetSelectedLanguages ());
 
 					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
-					Application.Invoke ((e, s)=>{
-						TreeIter iter = new TreeIter();// = subtitlesStore.AppendValues(TreeIter.Zero, null, null, null, Path.GetFileName(filename), null);
-					foreach (var sub in enumerable) {
-						subtitlesStore.AppendValues (iter, false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
-						}});
+					Application.Invoke ((e, s) => {
+						TreeIter iter = subtitlesStore.AppendValues(TreeIter.Zero, null, null, null, System.IO.Path.GetFileName(filename), null);
+						foreach (var sub in enumerable) {
+							subtitlesStore.AppendValues (iter, false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
+						}
+					});
 
 					if (!enumerable.Any ()) {
 						Application.Invoke ((e, s) => ShowMessage (Catalog.GetString ("Subtitles not found")));
@@ -241,12 +240,14 @@ namespace Subfinder
 				}
 			}
 		}
-
+		 	
 		void OneClickDownloadBtn (object sender, EventArgs evt)
 		{
 			var subs = new List<SubtitleFileInfo> ();
-			foreach (var filename in LoadVideoFiles ()) {
-				try {
+			var files = LoadVideoFiles ();
+			try {
+				foreach (var filename in files) {
+					ShowInfo ("Searching subtitles for file " + filename);
 					if (!File.Exists (filename))
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
@@ -259,14 +260,14 @@ namespace Subfinder
 						ShowMessage ("Select subtitles first");
 						return;
 					}
-					DownloadSubtitles (subs.ToArray ());
-				} catch (IOException ex) {
-					Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
-				} catch (WebException ex) {
-					Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
-				} catch (ArgumentException ex) {
-					Application.Invoke ((e, s) => ShowMessage ("Subtitles not found: " + ex.Message));
 				}
+				DownloadSubtitles (subs.ToArray ());
+			} catch (IOException ex) {
+				Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
+			} catch (WebException ex) {
+				Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
+			} catch (ArgumentException ex) {
+				Application.Invoke ((e, s) => ShowMessage ("Subtitles not found: " + ex.Message));
 			}
 		}
 
