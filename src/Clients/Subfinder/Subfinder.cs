@@ -23,24 +23,11 @@ namespace Subfinder
 		{
 			Application.Init ();
 			Catalog.Init ("Subfinder", LocaleDir);
-
-			var client = new MainWindow (args);
-			client.Run ();
+			var builder = new Builder (null, "Subfinder.subfinder.glade", null);
+			var win = new MainWindow (builder, builder.GetObject ("window").Handle);
+			win.Show ();
 
 			Application.Run ();
-		}
-
-		internal static Builder FromResource (string resourceName)
-		{
-			var assembly = System.Reflection.Assembly.GetExecutingAssembly ();
-			var builder = new Builder ();
-
-			using (Stream stream = assembly.GetManifestResourceStream (resourceName))
-			using (var reader = new StreamReader (stream)) {
-				builder.AddFromString (reader.ReadToEnd ());
-			}
-
-			return builder;
 		}
 	}
 }

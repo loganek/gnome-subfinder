@@ -8,10 +8,8 @@ using System.Collections.Generic;
 
 namespace Subfinder
 {
-	public class PreferencesDialog
+	public class PreferencesDialog : Dialog
 	{
-		[Builder.Object]
-		readonly Dialog preferencesDialog;
 		[Builder.Object]
 		readonly TreeView languagesTree;
 		[Builder.Object]
@@ -24,34 +22,31 @@ namespace Subfinder
 		ListStore langsStore;
 		readonly BackendManager controller;
 
-		public PreferencesDialog (BackendManager controller)
+		public PreferencesDialog (BackendManager controller, Builder builder, IntPtr handle) : base(handle)
 		{
 			this.controller = controller;
-			var builder = Subfinder.FromResource ("Subfinder.subfinder-properties.glade");
 			builder.Autoconnect (this);
 			sevenZipPath.Text = Preferences.Instance.SZipPath;
 			tempDirEntry.Text = Preferences.Instance.TemporaryDirectory;
 			ConfigureTreeView ();
 			ConfigureBackendsCombo ();
-		}
 
-		public void Run ()
-		{
-			if (preferencesDialog.Run () == 1) {
-				var l = new List<string> ();
-				foreach (object[] row in langsStore) {
-					string s = row [3] as string;
-					if ((bool)row [0])
-						s += "_";
-					l.Add (s);
+			Response += (sender, e) => {
+				if ((int)e.ResponseId == 1) { 
+					var l = new List<string> ();
+					foreach (object[] row in langsStore) {
+						string s = row [3] as string;
+						if ((bool)row [0])
+							s += "_";
+						l.Add (s);
+					}
+
+					Preferences.Instance.Languages = string.Join (",", l);
+					Preferences.Instance.SZipPath = sevenZipPath.Text;
+					Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
 				}
-	
-				Preferences.Instance.Languages = string.Join (",", l);
-				Preferences.Instance.SZipPath = sevenZipPath.Text;
-				Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
-			}
-
-			preferencesDialog.Destroy ();
+				Destroy ();
+			};
 		}
 
 		void ConfigureTreeView ()

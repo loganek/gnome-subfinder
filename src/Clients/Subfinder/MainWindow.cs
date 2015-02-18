@@ -8,62 +8,43 @@ using Gtk;
 using Mono.Unix;
 using System.Net;
 
+using UI = Gtk.Builder.ObjectAttribute;
+
 namespace Subfinder
 {
-	public class MainWindow
+	public class MainWindow : Window
 	{
-		[Builder.Object]
-		readonly Window window;
-		[Builder.Object]
-		readonly FileFilter videoFilter;
-		[Builder.Object]
-		readonly TreeView filesTreeView;
-		[Builder.Object]
-		readonly TreeView subsTree;
-		[Builder.Object]
-		readonly AboutDialog aboutDialog;
-		[Builder.Object]
-		readonly ProgressBar downloadStatus;
-		[Builder.Object]
-		readonly Viewport treeParent;
-		[Builder.Object]
-		readonly Button searchButton;
-		[Builder.Object]
-		readonly Button downloadSelectedButton;
-		[Builder.Object]
-		readonly Statusbar appStatusbar;
-		[Builder.Object]
-		readonly Notebook mainNotebook;
+		[UI] readonly FileFilter videoFilter;
+		[UI] readonly TreeView filesTreeView;
+		[UI] readonly TreeView subsTree;
+		[UI] readonly ProgressBar downloadStatus;
+		[UI] readonly Viewport treeParent;
+		[UI] readonly Button searchButton;
+		[UI] readonly Button downloadSelectedButton;
+		[UI] readonly Statusbar appStatusbar;
+		[UI] readonly Notebook mainNotebook;
 
 		Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
 		TreeStore subtitlesStore;
 		ListStore videosStore;
-		Builder builder;
 		BackendManager controller = new BackendManager ();
 
-		public MainWindow (String[] args)
+		public MainWindow (Builder builder, IntPtr handle) : base (handle)
 		{
-			builder = Subfinder.FromResource ("Subfinder.subfinder.glade");
 			builder.Autoconnect (this);
-
-			ConfigureTreeView ();
-
-			window.Destroyed += (sender, e) => {
+			Destroyed += (sender, e) => {
 				Preferences.Instance.ActiveTab = mainNotebook.CurrentPage;
 				Application.Quit ();
 			};
+
+			ConfigureTreeView ();
 
 			videosStore = new ListStore (typeof(string));
 			filesTreeView.AppendColumn ("Path", new CellRendererText (), "text", 0);
 			filesTreeView.Model = videosStore;
 
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
-		}
-
-		public void Run ()
-		{
-			window.Show ();
 		}
 
 		void ConfigureTreeView ()
@@ -104,7 +85,7 @@ namespace Subfinder
 
 		string[] LoadVideoFiles ()
 		{
-			var videoChooser = new FileChooserDialog (Catalog.GetString ("Choose the file to open"), window, FileChooserAction.Open, new Object[] {
+			var videoChooser = new FileChooserDialog (Catalog.GetString ("Choose the file to open"), this, FileChooserAction.Open, new Object[] {
 				Catalog.GetString ("Cancel"),
 				ResponseType.Cancel,
 				Catalog.GetString ("Open"),
@@ -153,7 +134,7 @@ namespace Subfinder
 
 					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
 					Application.Invoke ((e, s)=>{
-						TreeIter iter = subtitlesStore.AppendValues(null, null, null, null, Path.GetFileName(filename), null);
+						TreeIter iter = new TreeIter();// = subtitlesStore.AppendValues(TreeIter.Zero, null, null, null, Path.GetFileName(filename), null);
 					foreach (var sub in enumerable) {
 						subtitlesStore.AppendValues (iter, false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
 						}});
@@ -235,13 +216,18 @@ namespace Subfinder
 
 		void ShowAboutActicate (object sender, EventArgs e)
 		{
-			aboutDialog.Show ();
+			var builder = new Builder (null, "Subfinder.subfinder.glade", null);
+			var dialog = new AboutDialog (builder.GetObject ("aboutDialog").Handle);
+			dialog.Run ();
+			dialog.Destroy ();
 		}
 
 		void PreferencesActiveBtn (object sender, EventArgs e)
 		{
-			var preferences = new PreferencesDialog (controller);
+			var builder = new Builder (null, "Subfinder.subfinder-properties.glade", null);
+			var preferences = new PreferencesDialog (controller, builder, builder.GetObject ("preferencesDialog").Handle);
 			preferences.Run ();
+			preferences.Destroy ();
 		}
 
 		void RemoveVideoBtnClick (object sender, EventArgs e) 
