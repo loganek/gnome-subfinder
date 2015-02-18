@@ -17,7 +17,7 @@ namespace Subfinder
 		[Builder.Object]
 		readonly FileFilter videoFilter;
 		[Builder.Object]
-		readonly Entry videoFileName;
+		readonly TreeView filesTreeView;
 		[Builder.Object]
 		readonly TreeView subsTree;
 		[Builder.Object]
@@ -33,7 +33,8 @@ namespace Subfinder
 
 		Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
-		ListStore subtitlesStore;
+		TreeStore subtitlesStore;
+		ListStore videosStore;
 		Builder builder;
 		BackendManager controller = new BackendManager ();
 
@@ -45,6 +46,10 @@ namespace Subfinder
 			ConfigureTreeView ();
 
 			window.Destroyed += (sender, e) => Application.Quit ();
+
+			videosStore = new ListStore (typeof(string));
+			filesTreeView.AppendColumn ("Path", new CellRendererText (), "text", 0);
+			filesTreeView.Model = videosStore;
 		}
 
 		public void Run ()
@@ -54,7 +59,7 @@ namespace Subfinder
 
 		void ConfigureTreeView ()
 		{
-			subtitlesStore = new ListStore (typeof(bool), typeof(double), typeof(int), typeof(string), typeof(string), typeof(SubtitleFileInfo));
+			subtitlesStore = new TreeStore (typeof(bool), typeof(double), typeof(int), typeof(string), typeof(string), typeof(SubtitleFileInfo));
 
 			var rendererToggle = new CellRendererToggle ();
 			rendererToggle.Toggled += (o, args) => {
@@ -91,16 +96,19 @@ namespace Subfinder
 
 		void OpenBtnClick (object sender, EventArgs e)
 		{
-			var videoChooser = new FileChooserDialog (Catalog.GetString ("Choose the file to open"),
-				                   window, FileChooserAction.Open,
-				                   new Object[] {
-					Catalog.GetString ("Cancel"), ResponseType.Cancel,
-					Catalog.GetString ("Open"), ResponseType.Accept
-				});
-			videoChooser.Filter = videoFilter;
+			var videoChooser = new FileChooserDialog (Catalog.GetString ("Choose the file to open"), window, FileChooserAction.Open, new Object[] {
+				Catalog.GetString ("Cancel"),
+				ResponseType.Cancel,
+				Catalog.GetString ("Open"),
+				ResponseType.Accept
+			}) {
+				SelectMultiple = true,
+				Filter = videoFilter
+			};
 
 			if (videoChooser.Run () == (int)ResponseType.Accept) {
-				videoFileName.Text = videoChooser.Filename;
+				foreach (var f in videoChooser.Files)
+					videosStore.AppendValues (f.Path);
 			}
 
 			videoChooser.Destroy ();
@@ -108,32 +116,37 @@ namespace Subfinder
 
 		void FindSubtitles ()
 		{
-			try {
-				if (!File.Exists (videoFileName.Text))
-					throw new IOException (Catalog.GetString ("File ") + videoFileName.Text + Catalog.GetString (" doesn't exists"));
+			foreach (object[] videoFile in videosStore) {
+				string filename = videoFile [0] as string;
+				try {
+					if (!File.Exists (filename))
+						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
-				var f = new VideoFileInfo ();
-				f.FileName = videoFileName.Text;
-				var x = controller.SearchSubtitles (f, Preferences.Instance.Languages);
+					var f = new VideoFileInfo ();
+					f.FileName = filename;
+					var x = controller.SearchSubtitles (f, Preferences.Instance.Languages);
 
-				var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
-				foreach (var sub in enumerable) {
-					subtitlesStore.AppendValues (false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
+					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
+					Application.Invoke ((e, s)=>{
+						TreeIter iter = subtitlesStore.AppendValues(null, null, null, null, Path.GetFileName(filename), null);
+					foreach (var sub in enumerable) {
+						subtitlesStore.AppendValues (iter, false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
+						}});
+
+					if (!enumerable.Any ()) {
+						Application.Invoke ((e, s) => ShowMessage (Catalog.GetString ("Subtitles not found")));
+					}
+				} catch (IOException ex) {
+					Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
+				} catch (WebException ex) {
+					Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
+				} finally {
+					Application.Invoke ((sndr, evnt) => {
+						treeParent.Remove (waitWidget);
+						treeParent.Add (subsTree);
+						searchButton.Sensitive = true;
+					});
 				}
-
-				if (!enumerable.Any ()) {
-					Application.Invoke((e, s) => ShowMessage (Catalog.GetString ("Subtitles not found")));
-				}
-			} catch (IOException ex) {
-				Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
-			} catch (WebException ex) {
-				Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
-			} finally {
-				Application.Invoke ((sndr, evnt) => {
-					treeParent.Remove (waitWidget);
-					treeParent.Add (subsTree);
-					searchButton.Sensitive = true;
-				});
 			}
 		}
 
@@ -144,6 +157,7 @@ namespace Subfinder
 			searchButton.Sensitive = false;
 			treeParent.Remove (subsTree);
 			treeParent.Add (waitWidget);
+
 			new System.Threading.Thread (new System.Threading.ThreadStart (FindSubtitles)).Start ();
 		}
 
@@ -151,13 +165,14 @@ namespace Subfinder
 		{
 			downloadSelectedButton.Sensitive = false;
 			var downloader = new SubtitleDownloader ();
-			foreach (object[] row in subtitlesStore) {
-				if ((bool)row [0]) {
-					var s = row [5] as SubtitleFileInfo;
+			subtitlesStore.Foreach((model, path, iter) => {
+				if ((bool)model.GetValue(iter, 0)) {
+					var s = model.GetValue(iter, 5) as SubtitleFileInfo;
 					if (s != null)
 						downloader.Add (s);
 				}
-			}
+				return false;
+			});
 				
 			downloader.DownloadStatusChanged += (sdr, evt) => {
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
