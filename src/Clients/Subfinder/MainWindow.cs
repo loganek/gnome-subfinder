@@ -211,6 +211,18 @@ namespace Subfinder
 			preferences.Run ();
 		}
 
+		void RemoveVideoBtnClick (object sender, EventArgs e) 
+		{
+			TreeIter iter;
+			TreePath[] treePath = filesTreeView.Selection.GetSelectedRows();
+
+			for (int i  = treePath.Length - 1; i >= 0; i--) {
+				if (videosStore.GetIter (out iter, treePath [i])) {
+					videosStore.Remove (ref iter);
+				}
+			}
+		}
+
 		static void ShowMessage (string text)
 		{
 			var md = new MessageDialog (null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, text);
