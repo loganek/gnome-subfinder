@@ -41,6 +41,7 @@
       <Package>gconf-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
+    <Reference Include="nunit.framework" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="SubtitleDownloader.cs" />
     <Compile Include="LanguageSet.cs" />
     <Compile Include="Preferences.cs" />
+    <Compile Include="SubtitleFileInfoTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

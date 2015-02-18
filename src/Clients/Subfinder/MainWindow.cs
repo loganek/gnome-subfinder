@@ -180,37 +180,47 @@ namespace Subfinder
 			new System.Threading.Thread (new System.Threading.ThreadStart (FindSubtitles)).Start ();
 		}
 
-		void DownloadSelectedBtnClick (object sender, EventArgs e)
+		void DownloadSubtitles (SubtitleFileInfo[] subs)
 		{
 			var downloader = new SubtitleDownloader ();
-			subtitlesStore.Foreach((model, path, iter) => {
-				if ((bool)model.GetValue(iter, 0)) {
-					var s = model.GetValue(iter, 5) as SubtitleFileInfo;
-					if (s != null)
-						downloader.Add (s);
-				}
-				return false;
-			});
 
-			if (downloader.Total == 0) {
-				ShowInfo ("Select subtitles first");
-				return;
-			}
-				
+			foreach (var s in subs)
+				downloader.Add (s);
+
 			downloadSelectedButton.Sensitive = false;
-				
+
 			downloader.DownloadStatusChanged += (sdr, evt) => {
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
 				downloadStatus.Fraction = downloader.Status;
 			};
 
 			new System.Threading.Thread (new System.Threading.ThreadStart (() => 
-				downloader.Download(Preferences.Instance.TemporaryDirectory, Preferences.Instance.SZipPath))).Start ();
+				downloader.Download (Preferences.Instance.TemporaryDirectory, Preferences.Instance.SZipPath))).Start ();
 
 			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
 				downloadSelectedButton.Sensitive = true;
 				ShowMessage (Catalog.GetString ("Download completed!"));
 			});
+		}
+
+		void DownloadSelectedBtnClick (object sender, EventArgs e)
+		{
+			var subs = new List<SubtitleFileInfo> ();
+			subtitlesStore.Foreach ((model, path, iter) => {
+				if ((bool)model.GetValue (iter, 0)) {
+					var s = model.GetValue (iter, 5) as SubtitleFileInfo;
+					if (s != null)
+						subs.Add (s);
+				}
+				return false;
+			});
+
+			if (subs.Count == 0) {
+				ShowMessage ("Select subtitles first");
+				return;
+			}
+
+			DownloadSubtitles (subs.ToArray ());
 		}
 
 		void ShowAboutActicate (object sender, EventArgs e)
@@ -236,9 +246,32 @@ namespace Subfinder
 			}
 		}
 
-		void OneClickDownloadBtn (object sender, EventArgs e)
+		void OneClickDownloadBtn (object sender, EventArgs evt)
 		{
+			var subs = new List<SubtitleFileInfo> ();
+			foreach (var filename in LoadVideoFiles ()) {
+				try {
+					if (!File.Exists (filename))
+						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
+					var x = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, Preferences.Instance.Languages);
+					var enumerable = x as SubtitleFileInfo[] ?? x.ToArray ();
+					var langs = Preferences.Instance.Languages.Split (new []{ ',' });
+					var backends = Preferences.Instance.Languages.Split (new []{ ',' });
+					subs.Add (SubtitleFileInfo.MatchBest (enumerable, langs, backends));
+					if (subs.Count == 0) {
+						ShowMessage ("Select subtitles first");
+						return;
+					}
+					DownloadSubtitles (subs.ToArray ());
+				} catch (IOException ex) {
+					Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
+				} catch (WebException ex) {
+					Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
+				} catch (ArgumentException ex) {
+					Application.Invoke ((e, s) => ShowMessage ("Subtitles not found: " + ex.Message));
+				}
+			}
 		}
 
 		static void ShowMessage (string text)
