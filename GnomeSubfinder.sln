@@ -58,6 +58,6 @@ Global
 		{C597283C-71A8-4ED6-86A4-043E174BB903} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = src\Clients\SubfinderConsole\SubfinderConsole.csproj
+		StartupItem = src\Clients\Subfinder\Subfinder.csproj
 	EndGlobalSection
 EndGlobal

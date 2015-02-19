@@ -188,7 +188,9 @@ namespace Subfinder
 			downloader.DownloadStatusChanged += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
 				downloadStatus.Fraction = downloader.Status;
-				oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (evt.Error ? "Subfinder.Resources.good.png" : "Subfinder.Resources.bad.png"), evt.SubtitleFile.Video.FileName);
+				oneClickVideoStore.AppendValues (
+					Gdk.Pixbuf.LoadFromResource (string.Format("Subfinder.Resources.{0}.png", evt.Error ? "bad" : "good")),
+					evt.SubtitleFile.Video.FileName);
 			});
 
 			new System.Threading.Thread (new System.Threading.ThreadStart (() => 
