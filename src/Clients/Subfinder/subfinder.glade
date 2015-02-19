@@ -395,6 +395,7 @@
                                     <property name="sizing">autosize</property>
                                     <property name="title" translatable="yes">Download?</property>
                                     <property name="clickable">True</property>
+                                    <property name="sort_indicator">True</property>
                                     <signal name="clicked" handler="ColumnClicked" swapped="no"/>
                                     <child>
                                       <object class="GtkCellRendererToggle" id="cellrenderertoggle1">
@@ -410,6 +411,7 @@
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn4">
                                     <property name="title" translatable="yes">Rating</property>
                                     <property name="clickable">True</property>
+                                    <property name="sort_indicator">True</property>
                                     <signal name="clicked" handler="ColumnClicked" swapped="no"/>
                                     <child>
                                       <object class="GtkCellRendererText" id="cellrenderertext2"/>
@@ -423,6 +425,7 @@
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn5">
                                     <property name="title" translatable="yes">Downloads count</property>
                                     <property name="clickable">True</property>
+                                    <property name="sort_indicator">True</property>
                                     <signal name="clicked" handler="ColumnClicked" swapped="no"/>
                                     <child>
                                       <object class="GtkCellRendererText" id="cellrenderertext3"/>
@@ -436,6 +439,7 @@
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn6">
                                     <property name="title" translatable="yes">Language</property>
                                     <property name="clickable">True</property>
+                                    <property name="sort_indicator">True</property>
                                     <signal name="clicked" handler="ColumnClicked" swapped="no"/>
                                     <child>
                                       <object class="GtkCellRendererText" id="cellrenderertext4"/>
@@ -449,6 +453,7 @@
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn7">
                                     <property name="title" translatable="yes">Subtitles database</property>
                                     <property name="clickable">True</property>
+                                    <property name="sort_indicator">True</property>
                                     <signal name="clicked" handler="ColumnClicked" swapped="no"/>
                                     <child>
                                       <object class="GtkCellRendererText" id="cellrenderertext5"/>
