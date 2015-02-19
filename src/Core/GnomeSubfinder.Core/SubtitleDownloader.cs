@@ -8,12 +8,44 @@ using System.Diagnostics;
 
 namespace GnomeSubfinder.Core.Core
 {
+	public class DownloadStatusChangedEventArgs : EventArgs
+	{
+		public SubtitleFileInfo SubtitleFile {get; private set;}
+		public bool Error { get; private set; }
+
+		public DownloadStatusChangedEventArgs (SubtitleFileInfo subtitleFile, bool error)
+		{
+			SubtitleFile = subtitleFile;
+			Error = error;
+		}
+	}
+
+	public delegate void DownloadStatusChangedEventHandler(object sender, DownloadStatusChangedEventArgs e);
+
 	public class SubtitleDownloader
 	{
+		class TimeoutedWebClient : WebClient
+		{
+			readonly int timeout;
+
+			public TimeoutedWebClient (int timeout)
+			{
+				this.timeout = timeout;
+			}
+
+			protected override WebRequest GetWebRequest( Uri address)
+			{
+				var result = base.GetWebRequest(address);
+				result.Timeout = timeout;
+				return result;
+			}
+		}
+
+		int timeout;
 		int processed;
 		readonly List<SubtitleFileInfo> subtitleFiles = new List<SubtitleFileInfo> ();
 
-		public event EventHandler DownloadStatusChanged;
+		public event DownloadStatusChangedEventHandler DownloadStatusChanged;
 		public event EventHandler DownloadCompleted;
 		string tempDirectory;
 
@@ -31,25 +63,41 @@ namespace GnomeSubfinder.Core.Core
 			get { return (double)Processed / subtitleFiles.Count; }
 		}
 
+		public SubtitleDownloader (int timeout)
+		{
+			this.timeout = timeout;
+		}
+
 		public void Download (string tempDir, string sZipPath)
 		{
 			tempDirectory = tempDir;
 			this.sZipPath = sZipPath;
 			processed = 0;
 			foreach (var subtitleFile in subtitleFiles) {
-				var cli = new WebClient ();
-				cli.DownloadDataAsync (new Uri (subtitleFile.DownloadFile));
+				DownloadSingleFile (subtitleFile);
+			}
+		}
 
-				var tmp = subtitleFile;
-				cli.DownloadDataCompleted += (sender, e) => {
+		private void DownloadSingleFile(SubtitleFileInfo file)
+		{
+			var cli = new TimeoutedWebClient (timeout);
+			cli.DownloadDataAsync (new Uri (file.DownloadFile));
+
+			var tmp = file;
+			cli.DownloadDataCompleted += (sender, e) => {
+				bool err = false;
+				try {
 					SaveFile (tmp, e.Result);
+				} catch (Exception ex) {
+					err = true;
+				} finally {
+					err = err | e.Cancelled | (e.Error == null);
+					OnDownloadStatusChanged (new DownloadStatusChangedEventArgs (tmp, err));
 					Interlocked.Increment (ref processed);
-					OnDownloadStatusChanged (new EventArgs ());
-
 					if (Processed == Total)
 						OnDownloadCompleted (new EventArgs ());
-				};
-			}
+				}
+			};
 		}
 
 		public void Add (SubtitleFileInfo s)
@@ -57,7 +105,7 @@ namespace GnomeSubfinder.Core.Core
 			subtitleFiles.Add (s);
 		}
 
-		protected virtual void OnDownloadStatusChanged (EventArgs e)
+		protected virtual void OnDownloadStatusChanged (DownloadStatusChangedEventArgs e)
 		{
 			if (DownloadStatusChanged != null)
 				DownloadStatusChanged (this, e);

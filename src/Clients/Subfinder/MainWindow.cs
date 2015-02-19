@@ -16,6 +16,7 @@ namespace Subfinder
 		[UI] readonly FileFilter videoFilter;
 		[UI] readonly TreeView filesTreeView;
 		[UI] readonly TreeView subsTree;
+		[UI] readonly TreeView treeview2;
 		[UI] readonly ProgressBar downloadStatus;
 		[UI] readonly Viewport treeParent;
 		[UI] readonly Button searchButton;
@@ -24,6 +25,8 @@ namespace Subfinder
 		[UI] readonly Notebook mainNotebook;
 		[UI] readonly ListStore videosStore;
 		[UI] readonly ListStore oneClickVideoStore;
+		[UI] readonly ScrolledWindow scrolledwindow4;
+		[UI] readonly ScrolledWindow scrolledwindow3;
 
 		TreeModelSort sorter;
 
@@ -42,7 +45,15 @@ namespace Subfinder
 			};
 
 			ConfigureTreeView ();
-			
+
+			mainNotebook.SwitchPage += (o, args) => {
+				if (args.PageNum == 0) {
+					scrolledwindow4.Child = treeview2;
+				} else {
+					scrolledwindow3.Child = treeview2;
+				}
+			};
+
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
 		}
 
@@ -162,7 +173,8 @@ namespace Subfinder
 
 		void DownloadSubtitles (SubtitleFileInfo[] subs)
 		{
-			var downloader = new SubtitleDownloader ();
+			var downloader = new SubtitleDownloader (1000);
+			oneClickVideoStore.Clear ();
 
 			foreach (var s in subs)
 				downloader.Add (s);
@@ -170,10 +182,11 @@ namespace Subfinder
 			ShowInfo ("Downloading subtitles...");
 			downloadSelectedButton.Sensitive = false;
 
-			downloader.DownloadStatusChanged += (sdr, evt) => {
+			downloader.DownloadStatusChanged += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
 				downloadStatus.Fraction = downloader.Status;
-			};
+				oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (evt.Error ? "Subfinder.Resources.good.png" : "Subfinder.Resources.bad.png"), evt.SubtitleFile.Video.FileName);
+			});
 
 			new System.Threading.Thread (new System.Threading.ThreadStart (() => 
 				downloader.Download (Preferences.Instance.TemporaryDirectory, Preferences.Instance.SZipPath))).Start ();
@@ -246,7 +259,6 @@ namespace Subfinder
 					var langs = Preferences.Instance.GetSelectedLanguages ();
 					var backends = langs; // todo!
 					subs.Add (SubtitleFileInfo.MatchBest (controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs), langs, backends));
-					oneClickVideoStore.AppendValues(Gdk.Pixbuf.LoadFromResource("Subfinder.Resources.good.png"), filename);
 				}
 				DownloadSubtitles (subs.ToArray ());
 			} catch (IOException ex) {
