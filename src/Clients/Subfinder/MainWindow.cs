@@ -23,11 +23,13 @@ namespace Subfinder
 		[UI] readonly Button downloadSelectedButton;
 		[UI] readonly Statusbar appStatusbar;
 		[UI] readonly Notebook mainNotebook;
+		[UI] readonly ListStore videosStore;
+		TreeModelSort sorter;
 
 		Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
 		TreeStore subtitlesStore;
-		ListStore videosStore;
+
 		BackendManager controller = new BackendManager ();
 
 		public MainWindow (Builder builder, IntPtr handle) : base (handle)
@@ -39,11 +41,7 @@ namespace Subfinder
 			};
 
 			ConfigureTreeView ();
-
-			videosStore = new ListStore (typeof(string));
-			filesTreeView.AppendColumn ("Path", new CellRendererText (), "text", 0);
-			filesTreeView.Model = videosStore;
-
+			
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
 		}
 
@@ -55,37 +53,25 @@ namespace Subfinder
 		void ConfigureTreeView ()
 		{
 			subtitlesStore = new TreeStore (typeof(bool), typeof(double), typeof(int), typeof(string), typeof(string), typeof(SubtitleFileInfo));
-
-			var rendererToggle = new CellRendererToggle ();
-			rendererToggle.Toggled += (o, args) => {
-				TreeIter iter;
-				if (subtitlesStore.GetIterFromString (out iter, args.Path)) {
-					bool val = (bool)subtitlesStore.GetValue (iter, 0);
-					subtitlesStore.SetValue (iter, 0, !val);
-				}
-			};
-
-			var sorter = new TreeModelSort (subtitlesStore);
-
-			var configureColumn = 
-				new Action<string, CellRenderer, int, object[]> ((columnName, cellRenderer, columnNo, p) => {
-					var cc = subsTree.AppendColumn (columnName, cellRenderer, p);
-					cc.Clickable = true;
-					cc.Clicked += (sender, e) => {
-						int id;
-						SortType order;
-						sorter.GetSortColumnId (out id, out order);
-						sorter.SetSortColumnId (columnNo, order == SortType.Descending || id == -1 ? SortType.Ascending : SortType.Descending);
-					};
-				});
-
-			configureColumn (Catalog.GetString ("Download?"), rendererToggle, 0, new object[]{ "active", 0 });
-			configureColumn (Catalog.GetString ("Rating"), new CellRendererText (), 1, new object[]{ "text", 1 });
-			configureColumn (Catalog.GetString ("Downloads count"), new CellRendererText (), 2, new object[]{ "text", 2 });
-			configureColumn (Catalog.GetString ("Language"), new CellRendererText (), 3, new object[]{ "text", 3 });
-			configureColumn (Catalog.GetString ("Subtitles database"), new CellRendererText (), 4, new object[]{ "text", 4 });
-
+			sorter = new TreeModelSort (subtitlesStore);
 			subsTree.Model = sorter;
+		}
+
+		void ColumnClicked (object sender, EventArgs e)
+		{
+			int id;
+			SortType order;
+			sorter.GetSortColumnId (out id, out order);
+			sorter.SetSortColumnId (Array.IndexOf (subsTree.Columns, sender), order == SortType.Descending || id == -1 ? SortType.Ascending : SortType.Descending);
+		}
+
+		void SelectSubToDownload(object sender, ToggledArgs e)
+		{
+			TreeIter iter;
+			if (subtitlesStore.GetIterFromString (out iter, e.Path)) {
+				bool val = (bool)subtitlesStore.GetValue (iter, 0);
+				subtitlesStore.SetValue (iter, 0, !val);
+			}
 		}
 
 		string[] LoadVideoFiles ()
@@ -283,4 +269,3 @@ namespace Subfinder
 		}
 	}
 }
-	

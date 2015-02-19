@@ -62,6 +62,38 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-save</property>
   </object>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name fileName -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">qwfne</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkFileFilter" id="videoFilter">
+    <mime-types>
+      <mime-type>avi</mime-type>
+      <mime-type>map4</mime-type>
+      <mime-type>mkv</mime-type>
+    </mime-types>
+    <patterns>
+      <pattern>*.avi</pattern>
+      <pattern>*.mp4</pattern>
+      <pattern>*.mkv</pattern>
+      <pattern>.3gp</pattern>
+      <pattern>*.wmv</pattern>
+      <pattern>*.mov</pattern>
+    </patterns>
+  </object>
+  <object class="GtkListStore" id="videosStore">
+    <columns>
+      <!-- column-name videoFiles -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkApplicationWindow" id="window">
     <property name="can_focus">False</property>
     <child>
@@ -159,14 +191,52 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkButton" id="button1">
-                <property name="label" translatable="yes">Select file(s) and download!</property>
+              <object class="GtkBox" id="box5">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="image">image5</property>
-                <property name="always_show_image">True</property>
-                <signal name="clicked" handler="OneClickDownloadBtn" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkButton" id="button1">
+                    <property name="label" translatable="yes">Select file(s) and download!</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">image5</property>
+                    <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="OneClickDownloadBtn" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTreeView" id="treeview1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="model">liststore1</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treeview-selection4"/>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="treeviewcolumn3">
+                        <property name="title" translatable="yes">,.kk</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
             </child>
             <child type="tab">
@@ -202,9 +272,21 @@
                               <object class="GtkTreeView" id="filesTreeView">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="model">videosStore</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection" id="treeview-selection">
                                     <property name="mode">multiple</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                                    <property name="title" translatable="yes">Path</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="videoFileCellRenderer"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
@@ -296,6 +378,74 @@
                                 <property name="can_focus">True</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection" id="treeview-selection3"/>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="treeviewcolumn2">
+                                    <property name="sizing">autosize</property>
+                                    <property name="title" translatable="yes">Download?</property>
+                                    <property name="clickable">True</property>
+                                    <signal name="clicked" handler="ColumnClicked" swapped="no"/>
+                                    <child>
+                                      <object class="GtkCellRendererToggle" id="cellrenderertoggle1">
+                                        <signal name="toggled" handler="SelectSubToDownload" swapped="no"/>
+                                      </object>
+                                      <attributes>
+                                        <attribute name="active">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="treeviewcolumn4">
+                                    <property name="title" translatable="yes">Rating</property>
+                                    <property name="clickable">True</property>
+                                    <signal name="clicked" handler="ColumnClicked" swapped="no"/>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                                      <attributes>
+                                        <attribute name="text">1</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="treeviewcolumn5">
+                                    <property name="title" translatable="yes">Downloads count</property>
+                                    <property name="clickable">True</property>
+                                    <signal name="clicked" handler="ColumnClicked" swapped="no"/>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext3"/>
+                                      <attributes>
+                                        <attribute name="text">2</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="treeviewcolumn6">
+                                    <property name="title" translatable="yes">Language</property>
+                                    <property name="clickable">True</property>
+                                    <signal name="clicked" handler="ColumnClicked" swapped="no"/>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext4"/>
+                                      <attributes>
+                                        <attribute name="text">3</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="treeviewcolumn7">
+                                    <property name="title" translatable="yes">Subtitles database</property>
+                                    <property name="clickable">True</property>
+                                    <signal name="clicked" handler="ColumnClicked" swapped="no"/>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext5"/>
+                                      <attributes>
+                                        <attribute name="text">4</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
                                 </child>
                               </object>
                             </child>
@@ -394,20 +544,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkFileFilter" id="videoFilter">
-    <mime-types>
-      <mime-type>avi</mime-type>
-      <mime-type>map4</mime-type>
-      <mime-type>mkv</mime-type>
-    </mime-types>
-    <patterns>
-      <pattern>*.avi</pattern>
-      <pattern>*.mp4</pattern>
-      <pattern>*.mkv</pattern>
-      <pattern>.3gp</pattern>
-      <pattern>*.wmv</pattern>
-      <pattern>*.mov</pattern>
-    </patterns>
   </object>
 </interface>
