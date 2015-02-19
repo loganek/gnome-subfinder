@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using GnomeSubfinder.Core.Core;
 using GnomeSubfinder.Core.Interfaces;
 using Gtk;
@@ -24,6 +23,8 @@ namespace Subfinder
 		[UI] readonly Statusbar appStatusbar;
 		[UI] readonly Notebook mainNotebook;
 		[UI] readonly ListStore videosStore;
+		[UI] readonly ListStore oneClickVideoStore;
+
 		TreeModelSort sorter;
 
 		Spinner waitWidget = new Spinner { Visible = true, Active = true };
@@ -245,6 +246,7 @@ namespace Subfinder
 					var langs = Preferences.Instance.GetSelectedLanguages ();
 					var backends = langs; // todo!
 					subs.Add (SubtitleFileInfo.MatchBest (controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs), langs, backends));
+					oneClickVideoStore.AppendValues(Gdk.Pixbuf.LoadFromResource("Subfinder.Resources.good.png"), filename);
 				}
 				DownloadSubtitles (subs.ToArray ());
 			} catch (IOException ex) {

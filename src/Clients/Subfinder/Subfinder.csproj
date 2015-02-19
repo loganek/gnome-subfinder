@@ -51,6 +51,8 @@
   <ItemGroup>
     <EmbeddedResource Include="subfinder.glade" />
     <EmbeddedResource Include="subfinder-properties.glade" />
+    <EmbeddedResource Include="Resources\bad.png" />
+    <EmbeddedResource Include="Resources\good.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Subfinder.cs" />
@@ -70,5 +72,8 @@
       <Project>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</Project>
       <Name>GnomeSubfinder.OpenSubtitles.org</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>
