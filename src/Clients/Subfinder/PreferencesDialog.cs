@@ -18,6 +18,8 @@ namespace Subfinder
 		readonly ComboBox backendsCombo;
 		[Builder.Object]
 		readonly Entry tempDirEntry;
+		[Builder.Object]
+		readonly SpinButton timeoutSpinButton;
 
 		ListStore langsStore;
 		readonly BackendManager controller;
@@ -28,6 +30,7 @@ namespace Subfinder
 			builder.Autoconnect (this);
 			sevenZipPath.Text = Preferences.Instance.SZipPath;
 			tempDirEntry.Text = Preferences.Instance.TemporaryDirectory;
+			timeoutSpinButton.Value = Preferences.Instance.DownloadingTimeout / 1000.0;
 
 			langsStore = new ListStore (typeof(bool), typeof(string), typeof(Pixbuf), typeof(string));
 
@@ -49,6 +52,7 @@ namespace Subfinder
 					Preferences.Instance.Languages = string.Join (",", l);
 					Preferences.Instance.SZipPath = sevenZipPath.Text;
 					Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
+					Preferences.Instance.DownloadingTimeout = (int)(timeoutSpinButton.Value * 1000);
 				}
 				Destroy ();
 			};

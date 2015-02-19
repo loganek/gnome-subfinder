@@ -176,7 +176,7 @@ namespace Subfinder
 			if (subs.Length == 0)
 				return;
 
-			var downloader = new SubtitleDownloader (1000);
+			var downloader = new SubtitleDownloader (Preferences.Instance.DownloadingTimeout);
 			oneClickVideoStore.Clear ();
 
 			foreach (var s in subs)

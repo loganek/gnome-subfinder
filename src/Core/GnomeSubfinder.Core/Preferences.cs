@@ -15,6 +15,7 @@ namespace GnomeSubfinder.Core.Core
 		const string TEMP_DIR_PATH_KEY = GCONF_APP_PATH + "/temp-dir-path";
 		const string LANGUAGES_KEY = GCONF_APP_PATH + "/languages";
 		const string ACTIVE_TAB_KEY = GCONF_APP_PATH + "/active_tab";
+		const string DOWN_TIMEOUT_PATH_KEY = GCONF_APP_PATH + "/down_timeout";
 
 		static Preferences instance;
 
@@ -43,6 +44,11 @@ namespace GnomeSubfinder.Core.Core
 		public string SZipPath {
 			get { return GetGConfNode (SZIP_PATH_KEY, GetDefaultSZipPath (), IsValidExecutable); }
 			set { SetGConfNode (SZIP_PATH_KEY, value, IsValidExecutable); }
+		}
+
+		public int DownloadingTimeout {
+			get { return GetGConfNode (DOWN_TIMEOUT_PATH_KEY, 3000, x => x > 0); }
+			set { SetGConfNode (DOWN_TIMEOUT_PATH_KEY, value, x => x > 0); }
 		}
 
 		public string Languages {
