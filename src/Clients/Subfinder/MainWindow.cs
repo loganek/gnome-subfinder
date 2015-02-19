@@ -16,7 +16,7 @@ namespace Subfinder
 		[UI] readonly FileFilter videoFilter;
 		[UI] readonly TreeView filesTreeView;
 		[UI] readonly TreeView subsTree;
-		[UI] readonly TreeView treeview2;
+		[UI] readonly TreeView treeview3;
 		[UI] readonly ProgressBar downloadStatus;
 		[UI] readonly Viewport treeParent;
 		[UI] readonly Button searchButton;
@@ -48,9 +48,9 @@ namespace Subfinder
 
 			mainNotebook.SwitchPage += (o, args) => {
 				if (args.PageNum == 0) {
-					scrolledwindow4.Child = treeview2;
+					treeview3.Reparent(scrolledwindow4);
 				} else {
-					scrolledwindow3.Child = treeview2;
+					treeview3.Reparent(scrolledwindow3);
 				}
 			};
 
@@ -173,6 +173,9 @@ namespace Subfinder
 
 		void DownloadSubtitles (SubtitleFileInfo[] subs)
 		{
+			if (subs.Length == 0)
+				return;
+
 			var downloader = new SubtitleDownloader (1000);
 			oneClickVideoStore.Clear ();
 

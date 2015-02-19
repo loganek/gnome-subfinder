@@ -70,69 +70,6 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkTreeView" id="treeview1">
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <property name="model">oneClickVideoStore</property>
-    <property name="enable_grid_lines">horizontal</property>
-    <child internal-child="selection">
-      <object class="GtkTreeSelection" id="treeview-selection4"/>
-    </child>
-    <child>
-      <object class="GtkTreeViewColumn" id="treeviewcolumn3">
-        <property name="title" translatable="yes">Status</property>
-        <child>
-          <object class="GtkCellRendererPixbuf" id="cellrendererpixbuf1"/>
-          <attributes>
-            <attribute name="pixbuf">0</attribute>
-          </attributes>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkTreeViewColumn" id="treeviewcolumn8">
-        <property name="title" translatable="yes">Path</property>
-        <child>
-          <object class="GtkCellRendererText" id="cellrenderertext6"/>
-          <attributes>
-            <attribute name="text">1</attribute>
-          </attributes>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkTreeView" id="treeview2">
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <property name="model">oneClickVideoStore</property>
-    <property name="search_column">1</property>
-    <property name="enable_grid_lines">horizontal</property>
-    <child internal-child="selection">
-      <object class="GtkTreeSelection" id="treeview-selection6"/>
-    </child>
-    <child>
-      <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-        <property name="title" translatable="yes">Status</property>
-        <child>
-          <object class="GtkCellRendererPixbuf" id="cellrendererpixbuf2"/>
-          <attributes>
-            <attribute name="pixbuf">0</attribute>
-          </attributes>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkTreeViewColumn" id="treeviewcolumn2">
-        <property name="title" translatable="yes">Path</property>
-        <child>
-          <object class="GtkCellRendererText" id="cellrenderertext1"/>
-          <attributes>
-            <attribute name="text">1</attribute>
-          </attributes>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkFileFilter" id="videoFilter">
     <mime-types>
       <mime-type>avi</mime-type>
@@ -155,6 +92,8 @@
     </columns>
   </object>
   <object class="GtkApplicationWindow" id="window">
+    <property name="width_request">600</property>
+    <property name="height_request">500</property>
     <property name="can_focus">False</property>
     <child>
       <object class="GtkBox" id="box1">
@@ -290,7 +229,6 @@
                         </child>
                         <child>
                           <object class="GtkTreeViewColumn" id="treeviewcolumn4">
-                            <property name="title" translatable="yes">Status</property>
                             <child>
                               <object class="GtkCellRendererPixbuf" id="cellrendererpixbuf3"/>
                               <attributes>
@@ -301,7 +239,7 @@
                         </child>
                         <child>
                           <object class="GtkTreeViewColumn" id="treeviewcolumn5">
-                            <property name="title" translatable="yes">Path</property>
+                            <property name="title" translatable="yes">Download results:</property>
                             <child>
                               <object class="GtkCellRendererText" id="cellrenderertext2"/>
                               <attributes>
@@ -343,9 +281,10 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkPaned" id="paned1">
-                        <property name="height_request">322</property>
+                        <property name="height_request">180</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="vexpand">True</property>
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkBox" id="box3">
@@ -452,10 +391,7 @@
                           <object class="GtkScrolledWindow" id="scrolledwindow1">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="vexpand">True</property>
-                            <property name="hscrollbar_policy">never</property>
                             <property name="shadow_type">in</property>
-                            <property name="min_content_height">200</property>
                             <child>
                               <object class="GtkViewport" id="treeParent">
                                 <property name="visible">True</property>
@@ -464,6 +400,7 @@
                                   <object class="GtkTreeView" id="subsTree">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="vexpand">True</property>
                                     <child internal-child="selection">
                                       <object class="GtkTreeSelection" id="treeview-selection3"/>
                                     </child>
@@ -557,13 +494,44 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow" id="scrolledwindow3">
+                      <object class="GtkBox" id="box6">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="shadow_type">in</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                          <placeholder/>
+                          <object class="GtkButton" id="downloadSelectedButton">
+                            <property name="label" translatable="yes">Download selected subtitles</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">image3</property>
+                            <property name="relief">half</property>
+                            <property name="xalign">0.49000000953674316</property>
+                            <property name="yalign">0.49000000953674316</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="DownloadSelectedBtnClick" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="scrolledwindow3">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="vexpand">True</property>
+                            <property name="shadow_type">in</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
                         </child>
                       </object>
                       <packing>
@@ -576,25 +544,6 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="downloadSelectedButton">
-                    <property name="label" translatable="yes">Download selected subtitles</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="image">image3</property>
-                    <property name="relief">half</property>
-                    <property name="xalign">0.49000000953674316</property>
-                    <property name="yalign">0.49000000953674316</property>
-                    <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="DownloadSelectedBtnClick" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
