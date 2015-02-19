@@ -18,8 +18,7 @@
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
     <PlatformTarget>x86</PlatformTarget>
-    <Commandlineparameters> ~/Downloads/The\ Office\ US\ Season\ 9\ \[HDTV\]/The.Office.US.S09E22E23.HDTV.x264-LOL.mp4 ~/Downloads/The\ Office\ US\ Season\ 9\ \[HDTV\]/The.Office.US.S09E21.HDTV.X264-LOL.mp4 --languages=pol,eng
-</Commandlineparameters>
+    <Commandlineparameters>-h</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>

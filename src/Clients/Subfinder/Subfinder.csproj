@@ -72,6 +72,10 @@
       <Project>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</Project>
       <Name>GnomeSubfinder.OpenSubtitles.org</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SubfinderConsole\SubfinderConsole.csproj">
+      <Project>{57E2301E-387A-4BD3-AE04-4AC5DCF31488}</Project>
+      <Name>SubfinderConsole</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />

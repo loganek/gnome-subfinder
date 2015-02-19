@@ -2,7 +2,7 @@
 using System.IO;
 using Gtk;
 using Mono.Unix;
-using System.Linq;
+using SubfinderConsole;
 
 namespace Subfinder
 {
@@ -22,8 +22,19 @@ namespace Subfinder
 
 		static void Main (String[] args)
 		{
-			if (args.Contains ("-c"))
+			var optParser = new OptionParser<Options> (new Options (), args);
+
+			try {
+				optParser.Parse ();
+			} catch (ArgumentException ex) {
+				Console.WriteLine ("Cannot parse arguments: " + ex.Message);
 				return;
+			}
+				
+			if (optParser.OptionsObject.Console) {
+				new SubfinderConsole.SubfinderConsole (optParser).Run ();
+				return;
+			}
 
 			Application.Init ();
 			Catalog.Init ("Subfinder", LocaleDir);

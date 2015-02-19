@@ -6,7 +6,7 @@ using System.IO;
 
 namespace SubfinderConsole
 {
-	class Options
+	public class Options
 	{
 		[Option ("languages", true, Help = "subtitles languages (prirority order, ISO 639-2 format), e.g. \"eng,pol,spa\"")]
 		public string Languages{ get; set; }
@@ -36,7 +36,7 @@ namespace SubfinderConsole
 		}
 	}
 
-	class SubfinderConsole
+	public class SubfinderConsole
 	{	
 		OptionParser<Options> parser; 
 
