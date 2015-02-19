@@ -2,6 +2,7 @@
 using System.IO;
 using Gtk;
 using Mono.Unix;
+using System.Linq;
 
 namespace Subfinder
 {
@@ -21,8 +22,12 @@ namespace Subfinder
 
 		static void Main (String[] args)
 		{
+			if (args.Contains ("-c"))
+				return;
+
 			Application.Init ();
 			Catalog.Init ("Subfinder", LocaleDir);
+
 			var builder = new Builder (null, "Subfinder.subfinder.glade", null);
 			var win = new MainWindow (builder, builder.GetObject ("window").Handle);
 			win.Show ();

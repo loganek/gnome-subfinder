@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{0537
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subfinder", "src\Clients\Subfinder\Subfinder.csproj", "{A7A2A5D9-C3D5-4FE6-9609-0D7153820C01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubfinderConsole", "src\Clients\SubfinderConsole\SubfinderConsole.csproj", "{57E2301E-387A-4BD3-AE04-4AC5DCF31488}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backends", "Backends", "{20FA1EED-7449-41E8-AE8F-80770D79942E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnomeSubfinder.OpenSubtitles.org", "src\Backends\Backends.OpenSubtitles.org\GnomeSubfinder.OpenSubtitles.org.csproj", "{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}"
@@ -27,6 +29,10 @@ Global
 		{1B4B0A58-0AFB-4090-91DD-18912CC7DE65}.Debug|x86.Build.0 = Debug|Any CPU
 		{1B4B0A58-0AFB-4090-91DD-18912CC7DE65}.Release|x86.ActiveCfg = Release|Any CPU
 		{1B4B0A58-0AFB-4090-91DD-18912CC7DE65}.Release|x86.Build.0 = Release|Any CPU
+		{57E2301E-387A-4BD3-AE04-4AC5DCF31488}.Debug|x86.ActiveCfg = Debug|x86
+		{57E2301E-387A-4BD3-AE04-4AC5DCF31488}.Debug|x86.Build.0 = Debug|x86
+		{57E2301E-387A-4BD3-AE04-4AC5DCF31488}.Release|x86.ActiveCfg = Release|x86
+		{57E2301E-387A-4BD3-AE04-4AC5DCF31488}.Release|x86.Build.0 = Release|x86
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}.Debug|x86.Build.0 = Debug|Any CPU
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}.Release|x86.ActiveCfg = Release|Any CPU
@@ -46,11 +52,12 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A7A2A5D9-C3D5-4FE6-9609-0D7153820C01} = {0537EEFE-CF72-499A-BFB7-A28C04EA3B2E}
+		{57E2301E-387A-4BD3-AE04-4AC5DCF31488} = {0537EEFE-CF72-499A-BFB7-A28C04EA3B2E}
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06} = {20FA1EED-7449-41E8-AE8F-80770D79942E}
 		{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
 		{C597283C-71A8-4ED6-86A4-043E174BB903} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = src\Clients\Subfinder\Subfinder.csproj
+		StartupItem = src\Clients\SubfinderConsole\SubfinderConsole.csproj
 	EndGlobalSection
 EndGlobal

@@ -66,6 +66,10 @@ namespace GnomeSubfinder.Core.Core
 			return l.ToArray ();
 		}
 
+		public string SelectedLanguages { 
+			get { return string.Join (",", GetSelectedLanguages ()); } 
+		}
+
 		public string[] GetAllLanguages ()
 		{
 			return Languages.Replace ("_", "").Split (new []{ ',' });

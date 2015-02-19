@@ -91,7 +91,7 @@ namespace GnomeSubfinder.Core.Core
 				} catch (Exception ex) {
 					err = true;
 				} finally {
-					err = err | e.Cancelled | (e.Error == null);
+					err = err | e.Cancelled | (e.Error != null);
 					OnDownloadStatusChanged (new DownloadStatusChangedEventArgs (tmp, err));
 					Interlocked.Increment (ref processed);
 					if (Processed == Total)

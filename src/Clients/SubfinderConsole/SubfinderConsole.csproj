@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{57E2301E-387A-4BD3-AE04-4AC5DCF31488}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SubfinderConsole</RootNamespace>
+    <AssemblyName>SubfinderConsole</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+    <Commandlineparameters> ~/Downloads/The\ Office\ US\ Season\ 9\ \[HDTV\]/The.Office.US.S09E22E23.HDTV.x264-LOL.mp4 ~/Downloads/The\ Office\ US\ Season\ 9\ \[HDTV\]/The.Office.US.S09E21.HDTV.X264-LOL.mp4 --languages=pol,eng
+</Commandlineparameters>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubfinderConsole.cs" />
+    <Compile Include="Options.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\GnomeSubfinder.Core\GnomeSubfinder.Core.csproj">
+      <Project>{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1}</Project>
+      <Name>GnomeSubfinder.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj">
+      <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
+      <Name>GnomeSubfinder.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
