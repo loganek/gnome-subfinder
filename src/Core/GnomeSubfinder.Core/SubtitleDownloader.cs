@@ -117,23 +117,9 @@ namespace GnomeSubfinder.Core.Core
 				DownloadCompleted (this, e);
 		}
 
-		private void SaveFile (SubtitleFileInfo tmp, byte[] data)
+		void SaveFile (SubtitleFileInfo tmp, byte[] data)
 		{
-			if (data == null)
-				return;
-
-			var tempName = Path.GetFileName (Path.GetTempFileName ()).Replace ('.', '_');
-			var tempFullFile = Path.Combine (tempDirectory, tempName);
-			File.WriteAllBytes (tempFullFile, data);
-
-			var p = new Process { StartInfo = new ProcessStartInfo (sZipPath, "x -y -o" + tempDirectory + " " + tempFullFile) {
-					UseShellExecute = false,
-					RedirectStandardOutput = true
-				}
-			};
-			p.Start ();
-			p.WaitForExit ();
-			File.Copy (tempFullFile + "~", Path.Combine(Path.GetDirectoryName(tmp.Video.FileName), Path.GetFileNameWithoutExtension (tmp.Video.FileName) + ".txt"));
+			new SubtitleSaver (tempDirectory, sZipPath).Save(tmp, data);
 		}
 	}
 }

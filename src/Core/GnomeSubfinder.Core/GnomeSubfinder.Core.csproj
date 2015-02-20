@@ -39,6 +39,7 @@
     <Compile Include="LanguageSet.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="SubtitleFileInfoTest.cs" />
+    <Compile Include="SubtitleSaver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
