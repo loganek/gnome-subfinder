@@ -31,6 +31,12 @@ namespace GnomeSubfinder.Core.Core
 
 		static readonly ConfigurationProperty _OverrideSubtitles = new ConfigurationProperty(Preferences.OVERRIDE_SUBTITLES_PATH_KEY, 
 			typeof(bool), false);
+
+		static readonly ConfigurationProperty _Player = new ConfigurationProperty(Preferences.PLAYER_PATH_KEY, 
+			typeof(string), string.Empty);
+
+		static readonly ConfigurationProperty _PlayerArgs = new ConfigurationProperty(Preferences.PLAYER_ARGS_PATH_KEY, 
+			typeof(string), string.Empty);
 			
 
 		public PreferencesConfiguration ()
@@ -43,6 +49,8 @@ namespace GnomeSubfinder.Core.Core
 			properties.Add(_ActiveTab);
 			properties.Add(_DownTimeout);
 			properties.Add (_OverrideSubtitles);
+			properties.Add (_Player);
+			properties.Add (_PlayerArgs);
 		}
 
 		protected override ConfigurationPropertyCollection Properties
@@ -64,6 +72,8 @@ namespace GnomeSubfinder.Core.Core
 		public const string ACTIVE_TAB_KEY = "active-tab";
 		public const string DOWN_TIMEOUT_PATH_KEY = "down-timeout";
 		public const string OVERRIDE_SUBTITLES_PATH_KEY = "override-subtitles";
+		public const string PLAYER_PATH_KEY = "player";
+		public const string PLAYER_ARGS_PATH_KEY = "player-args";
 
 		PreferencesConfiguration section;
 		Configuration appSettings;
@@ -125,6 +135,16 @@ namespace GnomeSubfinder.Core.Core
 		public int DownloadingTimeout {
 			get { return GetConfigNode (DOWN_TIMEOUT_PATH_KEY, 3000, x => x > 0); }
 			set { SetConfigNode (DOWN_TIMEOUT_PATH_KEY, value, x => x > 0); }
+		}
+
+		public string Player {
+			get { return GetConfigNode (PLAYER_PATH_KEY, string.Empty); }
+			set { SetConfigNode (PLAYER_PATH_KEY, value); }
+		}
+
+		public string PlayerArgs {	
+			get { return GetConfigNode (PLAYER_ARGS_PATH_KEY, string.Empty); }
+			set { SetConfigNode (PLAYER_ARGS_PATH_KEY, value); }
 		}
 
 		public string Languages {

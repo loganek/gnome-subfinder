@@ -4,6 +4,9 @@ namespace GnomeSubfinder.Core.DataStructures
 {
 	public class SubtitleFileInfo
 	{
+		public string CurrentPath 
+		{ get; set; }
+
 		public string DownloadFile
 		{ get; set; }
 

@@ -80,6 +80,7 @@
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Play video using this subtitles</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="PlayVideoFile" swapped="no"/>
       </object>
     </child>
   </object>

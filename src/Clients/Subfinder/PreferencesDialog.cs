@@ -18,6 +18,8 @@ namespace Subfinder
 		[UI] readonly Entry tempDirEntry;
 		[UI] readonly SpinButton timeoutSpinButton;
 		[UI] readonly CheckButton overrideSubtitlesCheckButton;
+		[UI] readonly Entry playerEntry;
+		[UI] readonly Entry playerArgsEntry;
 
 		ListStore langsStore;
 		readonly BackendManager controller;
@@ -30,6 +32,8 @@ namespace Subfinder
 			tempDirEntry.Text = Preferences.Instance.TemporaryDirectory;
 			timeoutSpinButton.Value = Preferences.Instance.DownloadingTimeout / 1000.0;
 			overrideSubtitlesCheckButton.Active = Preferences.Instance.OverrideSubtitles;
+			playerEntry.Text = Preferences.Instance.Player;
+			playerArgsEntry.Text = Preferences.Instance.PlayerArgs;
 
 			langsStore = new ListStore (typeof(bool), typeof(string), typeof(Pixbuf), typeof(string));
 
@@ -53,6 +57,8 @@ namespace Subfinder
 					Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
 					Preferences.Instance.DownloadingTimeout = (int)(timeoutSpinButton.Value * 1000);
 					Preferences.Instance.OverrideSubtitles = overrideSubtitlesCheckButton.Active;
+					Preferences.Instance.Player = playerEntry.Text;
+					Preferences.Instance.PlayerArgs = playerArgsEntry.Text;
 					Preferences.Instance.Save ();
 				}
 				Destroy ();
@@ -94,6 +100,9 @@ namespace Subfinder
 
 		void MoveItem (int position, bool absolute)
 		{
+			if (languagesTree.Selection.GetSelectedRows ().Length == 0)
+				return;
+
 			TreeIter iter, tmpIter;
 			languagesTree.Selection.GetSelected (out tmpIter);
 			int pos = absolute ? position : position + Convert.ToInt32 (langsStore.GetPath (tmpIter).ToString ());

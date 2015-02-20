@@ -326,11 +326,16 @@ namespace Subfinder
 			}
 		}
 
-		void ShowMovieInfo(object sender, EventArgs e)
+		SubtitleFileInfo GetSelected()
 		{
 			TreeIter iter;
 			treeview3.Selection.GetSelected (out iter);
-			var sub = treeview3.Model.GetValue (iter, 2) as SubtitleFileInfo;
+			return treeview3.Model.GetValue (iter, 2) as SubtitleFileInfo;
+		}
+
+		void ShowMovieInfo(object sender, EventArgs e)
+		{
+			var sub = GetSelected ();
 			if (sub == null)
 				return;
 			new System.Threading.Thread (new System.Threading.ThreadStart (() => {
@@ -341,6 +346,21 @@ namespace Subfinder
 					System.Diagnostics.Process.Start (url);
 				}
 			})).Start ();
+		}
+
+		void PlayVideoFile(object sender, EventArgs e)
+		{
+			var sub = GetSelected ();
+			if (sub == null)
+				return;
+		
+			if (Preferences.Instance.Player == string.Empty) {
+				ShowMessage ("Player not configured");
+				return;
+			}
+
+			string args = Preferences.Instance.PlayerArgs.Replace ("{0}", "\"" + sub.Video.FileName + "\"").Replace ("{1}", "\"" + sub.CurrentPath + "\""); 
+			System.Diagnostics.Process.Start (Preferences.Instance.Player, args);
 		}
 	}
 }
