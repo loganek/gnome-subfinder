@@ -30,12 +30,12 @@ namespace Subfinder
 
 		TreeModelSort sorter;
 
-	    readonly Spinner waitWidget = new Spinner { Visible = true, Active = true };
+		readonly Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
 		TreeStore subtitlesStore;
-	    readonly ListStore oneClickVideoStore;
+		readonly ListStore oneClickVideoStore;
 
-	    readonly BackendManager controller = new BackendManager ();
+		readonly BackendManager controller = new BackendManager ();
 
 		public MainWindow (Builder builder, IntPtr handle) : base (handle)
 		{
@@ -47,7 +47,7 @@ namespace Subfinder
 
 			ConfigureTreeView ();
 
-			mainNotebook.SwitchPage += (o, args) => treeview3.Reparent(args.PageNum == 0 ? scrolledwindow4 : scrolledwindow3);
+			mainNotebook.SwitchPage += (o, args) => treeview3.Reparent (args.PageNum == 0 ? scrolledwindow4 : scrolledwindow3);
 
 			oneClickVideoStore = new ListStore (typeof(Gdk.Pixbuf), typeof(string), typeof(SubtitleFileInfo));
 			treeview3.Model = oneClickVideoStore;
@@ -69,7 +69,7 @@ namespace Subfinder
 			sorter.SetSortColumnId (Array.IndexOf (subsTree.Columns, sender), order == SortType.Descending || id == -1 ? SortType.Ascending : SortType.Descending);
 		}
 
-		void SelectSubToDownload(object sender, ToggledArgs e)
+		void SelectSubToDownload (object sender, ToggledArgs e)
 		{
 			TreeIter iter;
 			if (subtitlesStore.GetIterFromString (out iter, e.Path)) {
@@ -92,7 +92,7 @@ namespace Subfinder
 
 			var files = new List<string> ();
 			if (videoChooser.Run () == (int)ResponseType.Accept) {
-			    files.AddRange(videoChooser.Files.Select(f => f.Path));
+				files.AddRange (videoChooser.Files.Select (f => f.Path));
 			}
 			videoChooser.Destroy ();
 			return files.ToArray ();
@@ -101,8 +101,8 @@ namespace Subfinder
 		void OpenBtnClick (object sender, EventArgs e)
 		{
 			foreach (var f in LoadVideoFiles ()) {
-				bool canAdd = videosStore.Cast<object[]>().All(filename => filename[0] as string != f);
-			    if (canAdd) {
+				bool canAdd = videosStore.Cast<object[]> ().All (filename => filename [0] as string != f);
+				if (canAdd) {
 					videosStore.AppendValues (f);
 				}
 			}
@@ -117,10 +117,10 @@ namespace Subfinder
 					if (!File.Exists (filename))
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
-					var subs = controller.SearchSubtitles (new VideoFileInfo {FileName = filename}, Preferences.Instance.GetSelectedLanguages ());
+					var subs = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, Preferences.Instance.GetSelectedLanguages ());
 
 					Application.Invoke ((e, s) => {
-						TreeIter iter = subtitlesStore.AppendValues(null, null, null, null, System.IO.Path.GetFileName(filename), null);
+						TreeIter iter = subtitlesStore.AppendValues (null, null, null, null, System.IO.Path.GetFileName (filename), null);
 						foreach (var sub in subs) {
 							subtitlesStore.AppendValues (iter, false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
 						}
@@ -174,7 +174,7 @@ namespace Subfinder
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
 				downloadStatus.Fraction = downloader.Status;
 				oneClickVideoStore.AppendValues (
-					Gdk.Pixbuf.LoadFromResource (string.Format("Subfinder.Resources.{0}.png", evt.Error ? "bad" : "good")),
+					Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.Resources.{0}.png", evt.Error ? "bad" : "good")),
 					evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
 			});
 
@@ -223,19 +223,18 @@ namespace Subfinder
 			preferences.Destroy ();
 		}
 
-		void RemoveVideoBtnClick (object sender, EventArgs e) 
+		void RemoveVideoBtnClick (object sender, EventArgs e)
 		{
-		    TreePath[] treePath = filesTreeView.Selection.GetSelectedRows();
+			TreePath[] treePath = filesTreeView.Selection.GetSelectedRows ();
 
-			for (int i  = treePath.Length - 1; i >= 0; i--)
-			{
-			    TreeIter iter;
-			    if (videosStore.GetIter (out iter, treePath [i])) {
+			for (int i = treePath.Length - 1; i >= 0; i--) {
+				TreeIter iter;
+				if (videosStore.GetIter (out iter, treePath [i])) {
 					videosStore.Remove (ref iter);
 				}
 			}
 		}
-		 	
+
 		void OneClickDownloadBtn (object sender, EventArgs evt)
 		{
 			var subs = new List<SubtitleFileInfo> ();
@@ -273,16 +272,16 @@ namespace Subfinder
 		}
 
 		[GLib.ConnectBefore]
-		void OnPopUpMenu(object sender, ButtonReleaseEventArgs e)
+		void OnPopUpMenu (object sender, ButtonReleaseEventArgs e)
 		{
-			if (e.Event.Type != Gdk.EventType.ButtonRelease || 
-				e.Event.Button != 3)
+			if (e.Event.Type != Gdk.EventType.ButtonRelease ||
+			    e.Event.Button != 3)
 				return;
 
 			ViewPopupMenu ();	
 		}
 
-		void PopupMenuNoClick(object sender, PopupMenuArgs e)
+		void PopupMenuNoClick (object sender, PopupMenuArgs e)
 		{
 			ViewPopupMenu ();
 		}
@@ -308,29 +307,29 @@ namespace Subfinder
 			}
 		}
 
-		SubtitleFileInfo GetSelected()
+		SubtitleFileInfo GetSelected ()
 		{
 			TreeIter iter;
 			treeview3.Selection.GetSelected (out iter);
 			return treeview3.Model.GetValue (iter, 2) as SubtitleFileInfo;
 		}
 
-		void ShowMovieInfo(object sender, EventArgs e)
+		void ShowMovieInfo (object sender, EventArgs e)
 		{
 			var sub = GetSelected ();
 			if (sub == null)
 				return;
 			new System.Threading.Thread (() => {
-			                                       string url = "http://www.imdb.com/title/tt" + sub.IdMovieImdb;
-			                                       if (sub.IdMovieImdb == string.Empty || !PageExists (url)) {
-			                                           Application.Invoke ((s, ev) => ShowMessage ("Info not available"));
-			                                       } else {
-			                                           System.Diagnostics.Process.Start (url);
-			                                       }
+				string url = "http://www.imdb.com/title/tt" + sub.IdMovieImdb;
+				if (sub.IdMovieImdb == string.Empty || !PageExists (url)) {
+					Application.Invoke ((s, ev) => ShowMessage ("Info not available"));
+				} else {
+					System.Diagnostics.Process.Start (url);
+				}
 			}).Start ();
 		}
 
-		void PlayVideoFile(object sender, EventArgs e)
+		void PlayVideoFile (object sender, EventArgs e)
 		{
 			var sub = GetSelected ();
 			if (sub == null)

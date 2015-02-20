@@ -9,7 +9,7 @@ namespace GnomeSubfinder.Core.Core
 		static LanguageSet instance;
 
 		public static LanguageSet Instance {
-			get { return instance ?? (instance = new LanguageSet()); }
+			get { return instance ?? (instance = new LanguageSet ()); }
 		}
 
 		LanguageSet ()
@@ -41,7 +41,7 @@ namespace GnomeSubfinder.Core.Core
 		public string this [string key] {
 			get { return langs [key]; }
 		}
-			
+
 		public Dictionary<string, string> Languages {
 			get { return langs; }
 		}

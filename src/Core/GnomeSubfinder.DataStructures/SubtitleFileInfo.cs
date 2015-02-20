@@ -28,7 +28,7 @@ namespace GnomeSubfinder.Core.DataStructures
 		public VideoFileInfo Video 
 		{ get; set; }
 
-		public static SubtitleFileInfo MatchBest(SubtitleFileInfo[] enumerable, string[] langs, string[] backends)
+		public static SubtitleFileInfo MatchBest (SubtitleFileInfo[] enumerable, string[] langs, string[] backends)
 		{
 			if (enumerable.Length == 0)
 				throw new ArgumentException ("cannot get best match from empty array");

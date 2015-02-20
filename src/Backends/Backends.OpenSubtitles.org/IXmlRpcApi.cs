@@ -41,7 +41,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 		public double seconds;
 	}
 
-	[XmlRpcMissingMapping(MappingAction.Ignore)]
+	[XmlRpcMissingMapping (MappingAction.Ignore)]
 	public struct SubSearchInfo
 	{
 		public string sublanguageid;
@@ -49,7 +49,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 		public double? moviebytesize;
 		public string imdbid;
 
-		public SubSearchInfo(string sublanguageid, string moviehash, double? moviebytesize, string imdbid)
+		public SubSearchInfo (string sublanguageid, string moviehash, double? moviebytesize, string imdbid)
 		{
 			this.sublanguageid = sublanguageid;
 			this.moviehash = moviehash;
@@ -62,16 +62,16 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 	public interface IXmlRpcApi : IXmlRpcProxy
 	{
 		[XmlRpcMethod]
-		LogInOutInfo LogIn(string username, string password, string language, string useragent);
+		LogInOutInfo LogIn (string username, string password, string language, string useragent);
 
 		[XmlRpcMethod]
-		LogInOutInfo LogOut(string token);
+		LogInOutInfo LogOut (string token);
 
 		[XmlRpcMethod] 
 		NoOperationInfo NoOperation (string token);
 
 		[XmlRpcMethod]
-		FoundSubtitleResponse SearchSubtitles(string token, SubSearchInfo[] searchInfo);
+		FoundSubtitleResponse SearchSubtitles (string token, SubSearchInfo[] searchInfo);
 
 	}
 }

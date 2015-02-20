@@ -52,7 +52,4 @@
       <Name>GnomeSubfinder.DataStructures</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
 </Project>

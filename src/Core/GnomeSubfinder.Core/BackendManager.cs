@@ -15,7 +15,7 @@ namespace GnomeSubfinder.Core.Core
 
 		public DataStructures.SubtitleFileInfo[] SearchSubtitles (DataStructures.VideoFileInfo video, string[] languages)
 		{
-		    return backends.SelectMany(b => b.SearchSubtitles(video, languages)).ToArray();
+			return backends.SelectMany (b => b.SearchSubtitles (video, languages)).ToArray ();
 		}
 
 		public BackendCollection Backends {

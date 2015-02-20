@@ -8,7 +8,8 @@ namespace GnomeSubfinder.Core.Core
 {
 	public class DownloadStatusChangedEventArgs : EventArgs
 	{
-		public SubtitleFileInfo SubtitleFile {get; private set;}
+		public SubtitleFileInfo SubtitleFile { get; private set; }
+
 		public bool Error { get; private set; }
 
 		public DownloadStatusChangedEventArgs (SubtitleFileInfo subtitleFile, bool error)
@@ -18,7 +19,7 @@ namespace GnomeSubfinder.Core.Core
 		}
 	}
 
-	public delegate void DownloadStatusChangedEventHandler(object sender, DownloadStatusChangedEventArgs e);
+	public delegate void DownloadStatusChangedEventHandler (object sender, DownloadStatusChangedEventArgs e);
 
 	public class SubtitleDownloader
 	{
@@ -31,23 +32,24 @@ namespace GnomeSubfinder.Core.Core
 				this.timeout = timeout;
 			}
 
-			protected override WebRequest GetWebRequest( Uri address)
+			protected override WebRequest GetWebRequest (Uri address)
 			{
-				var result = base.GetWebRequest(address);
-			    if (result == null) return null;
-			    result.Timeout = timeout;
-			    return result;
+				var result = base.GetWebRequest (address);
+				if (result == null)
+					return null;
+				result.Timeout = timeout;
+				return result;
 			}
 		}
 
-	    readonly int timeout;
+		readonly int timeout;
 		int processed;
 		readonly List<SubtitleFileInfo> subtitleFiles = new List<SubtitleFileInfo> ();
 
 		public event DownloadStatusChangedEventHandler DownloadStatusChanged;
 		public event EventHandler DownloadCompleted;
 
-	    public int Processed { 
+		public int Processed { 
 			get { return processed; }
 		}
 
@@ -66,13 +68,13 @@ namespace GnomeSubfinder.Core.Core
 
 		public void Download ()
 		{
-		    processed = 0;
+			processed = 0;
 			foreach (var subtitleFile in subtitleFiles) {
 				DownloadSingleFile (subtitleFile);
 			}
 		}
 
-		private void DownloadSingleFile(SubtitleFileInfo file)
+		void DownloadSingleFile (SubtitleFileInfo file)
 		{
 			var cli = new TimeoutedWebClient (timeout);
 			cli.DownloadDataAsync (new Uri (file.DownloadFile));
@@ -81,7 +83,7 @@ namespace GnomeSubfinder.Core.Core
 			cli.DownloadDataCompleted += (sender, e) => {
 				bool err = false;
 				try {
-					SaveFile (tmp, e.Result);
+					new SubtitleSaver ().Save (tmp, e.Result);
 				} catch (Exception) {
 					err = true;
 				} finally {
@@ -109,11 +111,6 @@ namespace GnomeSubfinder.Core.Core
 		{
 			if (DownloadCompleted != null)
 				DownloadCompleted (this, e);
-		}
-
-		void SaveFile (SubtitleFileInfo tmp, byte[] data)
-		{
-			new SubtitleSaver ().Save(tmp, data);
 		}
 	}
 }

@@ -10,12 +10,12 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 {
 	public class OpenSubtitlesBackend : IBackend
 	{
-	    readonly IXmlRpcApi osProxy;
+		readonly IXmlRpcApi osProxy;
 		string userToken;
 
 		public OpenSubtitlesBackend ()
 		{
-			osProxy = XmlRpcProxyGen.Create<IXmlRpcApi>();
+			osProxy = XmlRpcProxyGen.Create<IXmlRpcApi> ();
 			osProxy.Url = "http://api.opensubtitles.org/xml-rpc";
 		}
 
@@ -23,12 +23,9 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 		{
 			LogInOutInfo info = osProxy.LogIn (username, password, language, "SolEol 0.0.8"); // todo own useragent!
 
-			try
-			{
+			try {
 				CheckStatus (info.status);
-			}
-			catch
-			{
+			} catch {
 				//todo log
 				return false;
 			}
@@ -43,8 +40,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 
 			try {
 				CheckStatus (info.token);
-			} catch
-			{
+			} catch {
 				//todo log
 				return false;
 			}
@@ -53,13 +49,12 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			return true;
 		}
 
-		static void CheckStatus(string status)
+		static void CheckStatus (string status)
 		{
 			int num = Convert.ToInt32 (status.Substring (0, 3));
 			if (num >= 200 && num < 300)
 				; // todo logger status ok
-			else 
-			{
+			else {
 				throw new Exception (status);
 			}
 		}
@@ -86,31 +81,28 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			var subs = new List<SubtitleFileInfo> ();
 			string hash = ComputeMovieHash (video.FileName);
 
-			var subinfo = new [] {new SubSearchInfo(String.Join(",", languages), hash, video.Size, null) };
+			var subinfo = new [] { new SubSearchInfo (String.Join (",", languages), hash, video.Size, null) };
 
 			var foundSubs = osProxy.SearchSubtitles (userToken, subinfo);
 
 			try {
 				CheckStatus (foundSubs.status);
-			} catch 
-			{
+			} catch {
 				//todo log
 				return subs.ToArray ();
 			}
 
 			var a = foundSubs.data as object[];
 
-			if (a != null) 
-			{
-				foreach (var subnode in a) 
-				{
+			if (a != null) {
+				foreach (var subnode in a) {
 					var dict = subnode as XmlRpcStruct;
 					subs.Add (new SubtitleFileInfo {
 						DownloadFile = dict ["SubDownloadLink"].ToString (), 
 						Rating = Convert.ToDouble (dict ["SubRating"]),
 						Language = dict ["SubLanguageID"].ToString (),
 						DownloadsCount = Convert.ToInt32 (dict ["SubDownloadsCnt"]),
-						IdMovieImdb = dict["IDMovieImdb"].ToString (),
+						IdMovieImdb = dict ["IDMovieImdb"].ToString (),
 						Backend = this,
 						Video = video
 					});
@@ -132,42 +124,39 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 		{
 			return Tuple.Create (Assembly.GetExecutingAssembly (), "GnomeSubfinder.Backends.OpenSubtitles.logo.gif");
 		}
+
 		#endregion
 
-		static string ComputeMovieHash(string filename)
+		static string ComputeMovieHash (string filename)
 		{
 			byte[] result;
-			using (Stream input = File.OpenRead(filename))
-			{
-			    long streamsize = input.Length;
+			using (Stream input = File.OpenRead (filename)) {
+				long streamsize = input.Length;
 				long lhash = streamsize;
 
 				long i = 0;
 				var buffer = new byte[sizeof(long)];
-				while (i < 65536 / sizeof(long) && (input.Read(buffer, 0, sizeof(long)) > 0))
-				{
+				while (i < 65536 / sizeof(long) && (input.Read (buffer, 0, sizeof(long)) > 0)) {
 					i++;
-					lhash += BitConverter.ToInt64(buffer, 0);
+					lhash += BitConverter.ToInt64 (buffer, 0);
 				}
 
-				input.Position = Math.Max(0, streamsize - 65536);
+				input.Position = Math.Max (0, streamsize - 65536);
 				i = 0;
-				while (i < 65536 / sizeof(long) && (input.Read(buffer, 0, sizeof(long)) > 0))
-				{
+				while (i < 65536 / sizeof(long) && (input.Read (buffer, 0, sizeof(long)) > 0)) {
 					i++;
-					lhash += BitConverter.ToInt64(buffer, 0);
+					lhash += BitConverter.ToInt64 (buffer, 0);
 				}
-				input.Close();
-				result = BitConverter.GetBytes(lhash);
-				Array.Reverse(result);
+				input.Close ();
+				result = BitConverter.GetBytes (lhash);
+				Array.Reverse (result);
 			}
 
-			var hexBuilder = new StringBuilder();
-			foreach (byte t in result)
-			{
-			    hexBuilder.Append(t.ToString("x2"));
+			var hexBuilder = new StringBuilder ();
+			foreach (byte t in result) {
+				hexBuilder.Append (t.ToString ("x2"));
 			}
-		    return hexBuilder.ToString();
+			return hexBuilder.ToString ();
 		}
 	}
 }

@@ -27,21 +27,21 @@ namespace SubfinderConsole
 		[Option ("7zip", true, Help = "7zip path")]
 		public string SZipPath { get; set; }
 
-		public Options()
+		public Options ()
 		{
 			var p = Preferences.Instance;
 			Languages = p.SelectedLanguages;
 			Timeout = p.DownloadingTimeout;
-			Tempdir = p.TemporaryDirectory;
-			SZipPath = p.SZipPath;
+			Tempdir = p.TempDirPath;
+			SZipPath = p.SevenZipPath;
 		}
 	}
 
 	public class SubfinderConsole
 	{
-	    readonly OptionParser<Options> parser;
+		readonly OptionParser<Options> parser;
 
-	    readonly string[] files;
+		readonly string[] files;
 		readonly object syncer = new object ();
 		bool ready;
 
@@ -51,22 +51,21 @@ namespace SubfinderConsole
 			files = parser.FreeArguments;
 		}
 
-		void Download()
+		void Download ()
 		{
 			Console.WriteLine ("Downloading subtitles for {0} files...", files.Length);
 			ready = false;
 			var downloader = new SubtitleDownloader (parser.OptionsObject.Timeout);
 			var backends = new BackendManager ();
 			var l = parser.OptionsObject.Languages.Split (new []{ ',' });
-		    foreach (var subs in files.Select(file => backends.SearchSubtitles(new VideoFileInfo {FileName = file}, l)).Where(subs => subs.Length > 0))
-		    {
-		        downloader.Add(SubtitleFileInfo.MatchBest(subs, l, l)); // todo langs twice!
-		    }
+			foreach (var subs in files.Select(file => backends.SearchSubtitles(new VideoFileInfo {FileName = file}, l)).Where(subs => subs.Length > 0)) {
+				downloader.Add (SubtitleFileInfo.MatchBest (subs, l, l)); // todo langs twice!
+			}
             
-		    downloader.Download ();
+			downloader.Download ();
 
 			downloader.DownloadStatusChanged += (sender, e) => Console.WriteLine (" * [{0}] Download subtitles for {1} {2}!", 
-				e.Error ? "Error" : "OK", Path.GetFileName(e.SubtitleFile.Video.FileName), e.Error ? "failed" : "succeeded");
+				e.Error ? "Error" : "OK", Path.GetFileName (e.SubtitleFile.Video.FileName), e.Error ? "failed" : "succeeded");
 
 			downloader.DownloadCompleted += (sender, e) => {
 				lock (syncer) {
@@ -75,17 +74,14 @@ namespace SubfinderConsole
 				}
 				Console.WriteLine (" * Download completed");
 			};
-		    if (downloader.Total > 0)
-		    {
-		        lock (syncer)
-		        {
-		            while (!ready)
-		            {
-		                Monitor.Wait(syncer);
-		            }
-		        }
-		    }
-            else Console.WriteLine("No subtitles found!");
+			if (downloader.Total > 0) {
+				lock (syncer) {
+					while (!ready) {
+						Monitor.Wait (syncer);
+					}
+				}
+			} else
+				Console.WriteLine ("No subtitles found!");
 		}
 
 		public void Run ()
@@ -98,7 +94,7 @@ namespace SubfinderConsole
 			Download ();
 		}
 
-		public void PrintHelp()
+		public void PrintHelp ()
 		{
 			Console.WriteLine (parser.GetHelp ("[options] FILE1 FILE2 ...\nOptions: \n"));
 		}

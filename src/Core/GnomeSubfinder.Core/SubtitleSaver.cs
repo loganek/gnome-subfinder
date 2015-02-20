@@ -6,12 +6,12 @@ namespace GnomeSubfinder.Core.Core
 {
 	public class SubtitleSaver
 	{
-		public void Save(SubtitleFileInfo fileInfo, byte[] zipData)
+		public void Save (SubtitleFileInfo fileInfo, byte[] zipData)
 		{
 			if (zipData == null)
 				return;
 
-			string tempDir = Preferences.Instance.TemporaryDirectory;
+			string tempDir = Preferences.Instance.TempDirPath;
 			var tempName = Path.GetFileName (Path.GetTempFileName ()).Replace ('.', '_');
 			var tempFullFile = Path.Combine (tempDir, tempName);
 
@@ -27,15 +27,16 @@ namespace GnomeSubfinder.Core.Core
 			if (!overrideSubs) {
 				MakeSpace (destination, outDirectory);
 			}
-		    if (outDirectory == null) return;
-		    string outputFilename = Path.Combine (outDirectory, destination);
-		    File.Copy (tempFullFile + "~", outputFilename, overrideSubs);
-		    fileInfo.CurrentPath = outputFilename;
+			if (outDirectory == null)
+				return;
+			string outputFilename = Path.Combine (outDirectory, destination);
+			File.Copy (tempFullFile + "~", outputFilename, overrideSubs);
+			fileInfo.CurrentPath = outputFilename;
 		}
 
-		static void RunUnzipProcess(string tempDir, string tempFullFile)
+		static void RunUnzipProcess (string tempDir, string tempFullFile)
 		{
-			var p = new Process { StartInfo = new ProcessStartInfo (Preferences.Instance.SZipPath, "x -y -o" + tempDir + " " + tempFullFile) {
+			var p = new Process { StartInfo = new ProcessStartInfo (Preferences.Instance.SevenZipPath, "x -y -o" + tempDir + " " + tempFullFile) {
 					UseShellExecute = false,
 					RedirectStandardOutput = true
 				}

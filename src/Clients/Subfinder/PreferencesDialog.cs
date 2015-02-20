@@ -22,15 +22,15 @@ namespace Subfinder
 		[UI] readonly Entry playerEntry;
 		[UI] readonly Entry playerArgsEntry;
 
-	    readonly ListStore langsStore;
+		readonly ListStore langsStore;
 		readonly BackendManager controller;
 
 		public PreferencesDialog (BackendManager controller, Builder builder, IntPtr handle) : base (handle)
 		{
 			this.controller = controller;
 			builder.Autoconnect (this);
-			sevenZipPath.Text = Preferences.Instance.SZipPath;
-			tempDirEntry.Text = Preferences.Instance.TemporaryDirectory;
+			sevenZipPath.Text = Preferences.Instance.SevenZipPath;
+			tempDirEntry.Text = Preferences.Instance.TempDirPath;
 			timeoutSpinButton.Value = Preferences.Instance.DownloadingTimeout / 1000.0;
 			overrideSubtitlesCheckButton.Active = Preferences.Instance.OverrideSubtitles;
 			playerEntry.Text = Preferences.Instance.Player;
@@ -54,8 +54,8 @@ namespace Subfinder
 					}
 
 					Preferences.Instance.Languages = string.Join (",", l);
-					Preferences.Instance.SZipPath = sevenZipPath.Text;
-					Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
+					Preferences.Instance.SevenZipPath = sevenZipPath.Text;
+					Preferences.Instance.TempDirPath = tempDirEntry.Text;
 					Preferences.Instance.DownloadingTimeout = (int)(timeoutSpinButton.Value * 1000);
 					Preferences.Instance.OverrideSubtitles = overrideSubtitlesCheckButton.Active;
 					Preferences.Instance.Player = playerEntry.Text;

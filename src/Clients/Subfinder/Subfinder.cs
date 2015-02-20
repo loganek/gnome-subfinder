@@ -1,20 +1,11 @@
 ﻿using System;
 using System.IO;
 using Gtk;
-//using Mono.Unix;
+using Mono.Unix;
 using SubfinderConsole;
 
 namespace Subfinder
 {
-    class Catalog { public static string GetString(string msg)
-    {
-        return msg;
-    }
-
-        public static void Init(string msg, string i)
-        {
-        }
-    }
 	public class Subfinder
 	{
 		public static string LocaleDir {
