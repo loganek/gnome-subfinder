@@ -1,25 +1,23 @@
-﻿using Gtk;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Gdk;
 using GnomeSubfinder.Core.Core;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using GnomeSubfinder.Core.GUIHelper;
+using Gtk;
+
+using UI = Gtk.Builder.ObjectAttribute;
 
 namespace Subfinder
 {
 	public class PreferencesDialog : Dialog
 	{
-		[Builder.Object]
-		readonly TreeView languagesTree;
-		[Builder.Object]
-		readonly Entry sevenZipPath;
-		[Builder.Object]
-		readonly ComboBox backendsCombo;
-		[Builder.Object]
-		readonly Entry tempDirEntry;
-		[Builder.Object]
-		readonly SpinButton timeoutSpinButton;
+		[UI] readonly TreeView languagesTree;
+		[UI] readonly Entry sevenZipPath;
+		[UI] readonly ComboBox backendsCombo;
+		[UI] readonly Entry tempDirEntry;
+		[UI] readonly SpinButton timeoutSpinButton;
+		[UI] readonly CheckButton overrideSubtitlesCheckButton;
 
 		ListStore langsStore;
 		readonly BackendManager controller;
@@ -31,6 +29,7 @@ namespace Subfinder
 			sevenZipPath.Text = Preferences.Instance.SZipPath;
 			tempDirEntry.Text = Preferences.Instance.TemporaryDirectory;
 			timeoutSpinButton.Value = Preferences.Instance.DownloadingTimeout / 1000.0;
+			overrideSubtitlesCheckButton.Active = Preferences.Instance.OverrideSubtitles;
 
 			langsStore = new ListStore (typeof(bool), typeof(string), typeof(Pixbuf), typeof(string));
 
@@ -53,6 +52,7 @@ namespace Subfinder
 					Preferences.Instance.SZipPath = sevenZipPath.Text;
 					Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
 					Preferences.Instance.DownloadingTimeout = (int)(timeoutSpinButton.Value * 1000);
+					Preferences.Instance.OverrideSubtitles = overrideSubtitlesCheckButton.Active;
 					Preferences.Instance.Save ();
 				}
 				Destroy ();

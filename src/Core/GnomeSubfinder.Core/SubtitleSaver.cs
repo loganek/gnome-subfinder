@@ -6,25 +6,34 @@ namespace GnomeSubfinder.Core.Core
 {
 	public class SubtitleSaver
 	{
-		readonly string tempDir;
-		readonly string sZipPath;
-
-		public SubtitleSaver ( string tempDirectory, string sZipPath)
-		{
-			tempDir = tempDirectory;
-			this.sZipPath = sZipPath;
-		}
-
 		public void Save(SubtitleFileInfo fileInfo, byte[] zipData)
 		{
 			if (zipData == null)
 				return;
 
+			string tempDir = Preferences.Instance.TemporaryDirectory;
 			var tempName = Path.GetFileName (Path.GetTempFileName ()).Replace ('.', '_');
 			var tempFullFile = Path.Combine (tempDir, tempName);
+
 			File.WriteAllBytes (tempFullFile, zipData);
 
-			var p = new Process { StartInfo = new ProcessStartInfo (sZipPath, "x -y -o" + tempDir + " " + tempFullFile) {
+			RunUnzipProcess (tempDir, tempFullFile);
+
+			string destination = Path.GetFileNameWithoutExtension (fileInfo.Video.FileName) + ".txt";
+			string outDirectory = Path.GetDirectoryName (fileInfo.Video.FileName);
+
+			bool overrideSubs = Preferences.Instance.OverrideSubtitles;
+
+			if (!overrideSubs) {
+				MakeSpace (destination, outDirectory);
+			}
+
+			File.Copy (tempFullFile + "~", Path.Combine(outDirectory, destination), overrideSubs);
+		}
+
+		static void RunUnzipProcess(string tempDir, string tempFullFile)
+		{
+			var p = new Process { StartInfo = new ProcessStartInfo (Preferences.Instance.SZipPath, "x -y -o" + tempDir + " " + tempFullFile) {
 					UseShellExecute = false,
 					RedirectStandardOutput = true
 				}
@@ -32,13 +41,9 @@ namespace GnomeSubfinder.Core.Core
 
 			p.Start ();
 			p.WaitForExit ();
-			string destination = Path.GetFileNameWithoutExtension (fileInfo.Video.FileName) + ".txt";
-			string outDirectory = Path.GetDirectoryName (fileInfo.Video.FileName);
-			MakeSpace (destination, outDirectory);
-			File.Copy (tempFullFile + "~", Path.Combine(outDirectory, destination));
 		}
 
-		void MakeSpace (string filename, string directory)
+		static void MakeSpace (string filename, string directory)
 		{
 			string newFilename = filename;
 			int index = 1;

@@ -119,7 +119,7 @@ namespace GnomeSubfinder.Core.Core
 
 		void SaveFile (SubtitleFileInfo tmp, byte[] data)
 		{
-			new SubtitleSaver (tempDirectory, sZipPath).Save(tmp, data);
+			new SubtitleSaver ().Save(tmp, data);
 		}
 	}
 }

@@ -28,6 +28,9 @@ namespace GnomeSubfinder.Core.Core
 
 		static readonly ConfigurationProperty _DownTimeout = new ConfigurationProperty(Preferences.DOWN_TIMEOUT_PATH_KEY, 
 			typeof(int), 3000);
+
+		static readonly ConfigurationProperty _OverrideSubtitles = new ConfigurationProperty(Preferences.OVERRIDE_SUBTITLES_PATH_KEY, 
+			typeof(bool), false);
 			
 
 		public PreferencesConfiguration ()
@@ -39,6 +42,7 @@ namespace GnomeSubfinder.Core.Core
 			properties.Add(_Languages);
 			properties.Add(_ActiveTab);
 			properties.Add(_DownTimeout);
+			properties.Add (_OverrideSubtitles);
 		}
 
 		protected override ConfigurationPropertyCollection Properties
@@ -59,6 +63,7 @@ namespace GnomeSubfinder.Core.Core
 		public const string LANGUAGES_KEY = "languages";
 		public const string ACTIVE_TAB_KEY = "active-tab";
 		public const string DOWN_TIMEOUT_PATH_KEY = "down-timeout";
+		public const string OVERRIDE_SUBTITLES_PATH_KEY = "override-subtitles";
 
 		PreferencesConfiguration section;
 		Configuration appSettings;
@@ -110,6 +115,11 @@ namespace GnomeSubfinder.Core.Core
 		public string SZipPath {
 			get { return GetConfigNode (SZIP_PATH_KEY, GetDefaultSZipPath (), IsValidExecutable); }
 			set { SetConfigNode (SZIP_PATH_KEY, value, IsValidExecutable); }
+		}
+
+		public bool OverrideSubtitles {
+			get { return GetConfigNode (OVERRIDE_SUBTITLES_PATH_KEY, false); }
+			set { SetConfigNode (OVERRIDE_SUBTITLES_PATH_KEY, value); }
 		}
 
 		public int DownloadingTimeout {
