@@ -98,28 +98,28 @@ namespace GnomeSubfinder.Core.Core
 
 
 		public int ActiveTab {
-			get { return GetGConfNode (ACTIVE_TAB_KEY, 0); }
-			set { SetGConfNode (ACTIVE_TAB_KEY, value); }
+			get { return GetConfigNode (ACTIVE_TAB_KEY, 0); }
+			set { SetConfigNode (ACTIVE_TAB_KEY, value); }
 		}
 
 		public string TemporaryDirectory {
-			get { return GetGConfNode (TEMP_DIR_PATH_KEY, Path.GetTempPath (), Directory.Exists); }
-			set { SetGConfNode (TEMP_DIR_PATH_KEY, value, Directory.Exists); }
+			get { return GetConfigNode (TEMP_DIR_PATH_KEY, Path.GetTempPath (), Directory.Exists); }
+			set { SetConfigNode (TEMP_DIR_PATH_KEY, value, Directory.Exists); }
 		}
 
 		public string SZipPath {
-			get { return GetGConfNode (SZIP_PATH_KEY, GetDefaultSZipPath (), IsValidExecutable); }
-			set { SetGConfNode (SZIP_PATH_KEY, value, IsValidExecutable); }
+			get { return GetConfigNode (SZIP_PATH_KEY, GetDefaultSZipPath (), IsValidExecutable); }
+			set { SetConfigNode (SZIP_PATH_KEY, value, IsValidExecutable); }
 		}
 
 		public int DownloadingTimeout {
-			get { return GetGConfNode (DOWN_TIMEOUT_PATH_KEY, 3000, x => x > 0); }
-			set { SetGConfNode (DOWN_TIMEOUT_PATH_KEY, value, x => x > 0); }
+			get { return GetConfigNode (DOWN_TIMEOUT_PATH_KEY, 3000, x => x > 0); }
+			set { SetConfigNode (DOWN_TIMEOUT_PATH_KEY, value, x => x > 0); }
 		}
 
 		public string Languages {
-			private get { return GetGConfNode (LANGUAGES_KEY, LanguageSet.Instance.JoinedLanguages, x=> x!= string.Empty); }
-			set { SetGConfNode (LANGUAGES_KEY, value, x => x != string.Empty); }
+			private get { return GetConfigNode (LANGUAGES_KEY, LanguageSet.Instance.JoinedLanguages, x=> x!= string.Empty); }
+			set { SetConfigNode (LANGUAGES_KEY, value, x => x != string.Empty); }
 		}
 
 		public string[] GetSelectedLanguages ()
@@ -141,7 +141,7 @@ namespace GnomeSubfinder.Core.Core
 			return Languages.Replace ("_", "").Split (new []{ ',' });
 		}
 
-		T GetGConfNode<T> (string nodePath, T defaultValue, Func<T, bool> verifyMethod = null)
+		T GetConfigNode<T> (string nodePath, T defaultValue, Func<T, bool> verifyMethod = null)
 		{
 			var val = (T)section [nodePath];
 			if (verifyMethod != null)
@@ -149,7 +149,7 @@ namespace GnomeSubfinder.Core.Core
 			return val;
 		}
 
-		bool SetGConfNode<T> (string nodePath, T value, Func<T, bool> verifyMethod = null)
+		bool SetConfigNode<T> (string nodePath, T value, Func<T, bool> verifyMethod = null)
 		{
 			if (verifyMethod != null && !verifyMethod (value))
 				return false;
