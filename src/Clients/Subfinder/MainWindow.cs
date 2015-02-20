@@ -60,11 +60,6 @@ namespace Subfinder
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
 		}
 
-		void QuitAppClick (object sender, EventArgs e)
-		{
-			Destroy ();
-		}
-
 		void ConfigureTreeView ()
 		{
 			subtitlesStore = new TreeStore (typeof(bool), typeof(double), typeof(int), typeof(string), typeof(string), typeof(SubtitleFileInfo));
@@ -353,7 +348,7 @@ namespace Subfinder
 			var sub = GetSelected ();
 			if (sub == null)
 				return;
-		
+
 			if (Preferences.Instance.Player == string.Empty) {
 				ShowMessage ("Player not configured");
 				return;
@@ -361,6 +356,21 @@ namespace Subfinder
 
 			string args = Preferences.Instance.PlayerArgs.Replace ("{0}", "\"" + sub.Video.FileName + "\"").Replace ("{1}", "\"" + sub.CurrentPath + "\""); 
 			System.Diagnostics.Process.Start (Preferences.Instance.Player, args);
+		}
+
+		void CopyToClipboard (object sender, EventArgs e)
+		{
+			var sub = GetSelected ();
+			if (sub == null)
+				return;
+
+			var cp = treeview3.GetClipboard (Gdk.Selection.Clipboard);
+			cp.Text = sub.CurrentPath;
+		}
+
+		void QuitClick (object sender, EventArgs e)
+		{
+			Destroy ();
 		}
 	}
 }

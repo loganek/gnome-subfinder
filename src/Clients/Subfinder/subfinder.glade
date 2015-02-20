@@ -83,6 +83,21 @@
         <signal name="activate" handler="PlayVideoFile" swapped="no"/>
       </object>
     </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="copyMenuItem">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Copy subtitles path to clipboard</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="CopyToClipboard" swapped="no"/>
+      </object>
+    </child>
   </object>
   <object class="GtkFileFilter" id="videoFilter">
     <mime-types>
@@ -136,6 +151,7 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="always_show_image">True</property>
+                        <signal name="activate" handler="QuitClick" swapped="no"/>
                       </object>
                     </child>
                   </object>
