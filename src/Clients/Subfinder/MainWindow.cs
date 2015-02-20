@@ -5,6 +5,7 @@ using System.Linq;
 using GnomeSubfinder.Core.Core;
 using GnomeSubfinder.Core.DataStructures;
 using Gtk;
+using Mono.Posix;
 using System.Net;
 
 using UI = Gtk.Builder.ObjectAttribute;

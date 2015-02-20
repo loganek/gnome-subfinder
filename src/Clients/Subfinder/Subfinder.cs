@@ -10,13 +10,14 @@ namespace Subfinder
 	{
 		public static string LocaleDir {
 			get {
-				string installed_application_prefix = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly ().Location);
-				if (Directory.Exists (Path.Combine (installed_application_prefix, "share", "Subfinder")))
-					return installed_application_prefix;
-				var entry_directory = new DirectoryInfo (installed_application_prefix);
-				if (entry_directory != null && entry_directory.Parent != null && entry_directory.Parent.Parent != null)
-					installed_application_prefix = entry_directory.Parent.Parent.FullName;
-				return Path.Combine (installed_application_prefix, "share", "locale");
+				string applicationPrefix = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly ().Location);
+				var pathWithLocale = Path.Combine (applicationPrefix, "locale");
+				if (Directory.Exists (pathWithLocale))
+					return pathWithLocale;
+				var entry_directory = new DirectoryInfo (applicationPrefix);
+				if (entry_directory != null && entry_directory.Parent != null)
+					applicationPrefix = entry_directory.Parent.FullName;
+				return Path.Combine (applicationPrefix, "share", "locale");
 			}
 		}
 
