@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GnomeSubfinder.Core.Interfaces
+namespace GnomeSubfinder.Core.DataStructures
 {
 	public class SubtitleFileInfo
 	{

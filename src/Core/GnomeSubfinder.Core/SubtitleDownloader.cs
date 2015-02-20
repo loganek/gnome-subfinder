@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
-using GnomeSubfinder.Core.Interfaces;
+using GnomeSubfinder.Core.DataStructures;
 using System.Diagnostics;
 
 namespace GnomeSubfinder.Core.Core

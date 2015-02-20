@@ -44,9 +44,9 @@
       <Project>{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1}</Project>
       <Name>GnomeSubfinder.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj">
+    <ProjectReference Include="..\..\Core\GnomeSubfinder.DataStructures\GnomeSubfinder.DataStructures.csproj">
       <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
-      <Name>GnomeSubfinder.Interfaces</Name>
+      <Name>GnomeSubfinder.DataStructures</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

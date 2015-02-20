@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using GnomeSubfinder.Core.Core;
-using GnomeSubfinder.Core.Interfaces;
+using GnomeSubfinder.Core.DataStructures;
 using Gtk;
 using Mono.Unix;
 using System.Net;

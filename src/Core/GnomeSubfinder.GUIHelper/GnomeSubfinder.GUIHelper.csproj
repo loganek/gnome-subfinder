@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{5EE3CD46-EB60-4A4D-A534-90343FA36E10}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>GnomeSubfinder.GUIHelper</RootNamespace>
+    <RootNamespace>GnomeSubfinder.Core.GUIHelper</RootNamespace>
     <AssemblyName>GnomeSubfinder.GUIHelper</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

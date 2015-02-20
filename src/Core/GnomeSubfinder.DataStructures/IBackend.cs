@@ -1,4 +1,4 @@
-﻿namespace GnomeSubfinder.Core.Interfaces
+﻿namespace GnomeSubfinder.Core.DataStructures
 {
 	public interface IBackend
 	{

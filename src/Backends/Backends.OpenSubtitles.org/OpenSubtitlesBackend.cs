@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CookComputing.XmlRpc;
-using GnomeSubfinder.Core.Interfaces;
+using GnomeSubfinder.Core.DataStructures;
 using Gdk;
 
 namespace GnomeSubfinder.Backends.OpenSubtitles

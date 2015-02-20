@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using GnomeSubfinder.Core.Interfaces;
+using GnomeSubfinder.Core.DataStructures;
 using GnomeSubfinder.Backends.OpenSubtitles;
 
 namespace Core

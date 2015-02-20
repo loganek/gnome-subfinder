@@ -1,6 +1,6 @@
 ﻿using System;
 using GnomeSubfinder.Core.Core;
-using GnomeSubfinder.Core.Interfaces;
+using GnomeSubfinder.Core.DataStructures;
 using System.Threading;
 using System.IO;
 

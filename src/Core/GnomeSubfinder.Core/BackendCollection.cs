@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using GnomeSubfinder.Core.Interfaces;
+using GnomeSubfinder.Core.DataStructures;
 using System.Linq;
 
 namespace GnomeSubfinder.Core.Core

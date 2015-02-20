@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C597283C-71A8-4ED6-86A4-043E174BB903}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Interfaces</RootNamespace>
+    <RootNamespace>GnomeSubfinder.Core.DataStructures</RootNamespace>
     <AssemblyName>Interfaces</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

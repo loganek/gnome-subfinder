@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Core</RootNamespace>
+    <RootNamespace>GnomeSubfinder.Core.Core</RootNamespace>
     <AssemblyName>Core</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -42,13 +42,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj">
-      <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
-      <Name>GnomeSubfinder.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Backends\Backends.OpenSubtitles.org\GnomeSubfinder.OpenSubtitles.org.csproj">
       <Project>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</Project>
       <Name>GnomeSubfinder.OpenSubtitles.org</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GnomeSubfinder.DataStructures\GnomeSubfinder.DataStructures.csproj">
+      <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
+      <Name>GnomeSubfinder.DataStructures</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

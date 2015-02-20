@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>OpenSubtitles.org</RootNamespace>
+    <RootNamespace>GnomeSubfinder.Backends.OpenSubtitles</RootNamespace>
     <AssemblyName>OpenSubtitles.org</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -49,9 +49,9 @@
       <Project>{1B4B0A58-0AFB-4090-91DD-18912CC7DE65}</Project>
       <Name>xmlrpc</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj">
+    <ProjectReference Include="..\..\Core\GnomeSubfinder.DataStructures\GnomeSubfinder.DataStructures.csproj">
       <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
-      <Name>GnomeSubfinder.Interfaces</Name>
+      <Name>GnomeSubfinder.DataStructures</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
