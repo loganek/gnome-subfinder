@@ -13,8 +13,8 @@ namespace Core
 		[Test]
 		public void CheckLanguageSelector ()
 		{
-			var s1 = new SubtitleFileInfo ("", 0.0, "eng", 0, null, null);
-			var s2 = new SubtitleFileInfo ("", 0.0, "pol", 0, null, null);
+			var s1 = new SubtitleFileInfo {Language = "eng"};
+			var s2 = new SubtitleFileInfo {Language = "pol"};
 			Assert.AreEqual (s2, SubtitleFileInfo.MatchBest (new []{ s1, s2 }, langs, backends));
 		}
 
@@ -22,24 +22,34 @@ namespace Core
 		[Ignore("Implement second backend first")]
 		public void CheckBackendSelector ()
 		{
-			var s1 = new SubtitleFileInfo ("", 0.0, "eng", 0, new OpenSubtitlesBackend (), null);
-			var s2 = new SubtitleFileInfo ("", 0.0, "eng", 0, null /* todo */, null);
+			var s1 = new SubtitleFileInfo {Language = "eng", Backend = new OpenSubtitlesBackend ()};
+				var s2 = new SubtitleFileInfo {Language = "eng", Backend = null /* todo */};
 			Assert.AreEqual (s2, SubtitleFileInfo.MatchBest (new []{ s1, s2 }, langs, backends));
 		}
 
 		[Test]
 		public void CheckDownloadsCountSelector ()
 		{
-			var s1 = new SubtitleFileInfo ("", 0.0, "eng", 14, new OpenSubtitlesBackend (), null);
-			var s2 = new SubtitleFileInfo ("", 0.0, "eng", 20, new OpenSubtitlesBackend (), null);
+			var s1 = new SubtitleFileInfo {Language = "eng", DownloadsCount = 14, Backend =new OpenSubtitlesBackend ()};
+			var s2 = new SubtitleFileInfo { Language = "eng", DownloadsCount = 20, Backend = new OpenSubtitlesBackend () };
 			Assert.AreEqual (s2, SubtitleFileInfo.MatchBest (new []{ s1, s2 }, langs, backends));
 		}
 
 		[Test]
 		public void CheckRatingSelector ()
 		{
-			var s1 = new SubtitleFileInfo ("", 3.0, "eng", 20, new OpenSubtitlesBackend (), null);
-			var s2 = new SubtitleFileInfo ("", 1.4, "eng", 20, new OpenSubtitlesBackend (), null);
+			var s1 = new SubtitleFileInfo {
+				Language = "eng",
+				DownloadsCount = 14,
+				Backend = new OpenSubtitlesBackend (),
+				Rating = 3.4
+			};
+			var s2 = new SubtitleFileInfo {
+				Language = "eng",
+				DownloadsCount = 14,
+				Backend = new OpenSubtitlesBackend (),
+				Rating = 1.6
+			};
 			Assert.AreEqual (s1, SubtitleFileInfo.MatchBest (new []{ s1, s2 }, langs, backends));
 		}
 	}

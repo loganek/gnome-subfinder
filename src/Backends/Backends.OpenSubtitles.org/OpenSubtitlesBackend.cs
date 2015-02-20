@@ -105,14 +105,15 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 				foreach (var subnode in a) 
 				{
 					var dict = subnode as XmlRpcStruct;
-					subs.Add (new SubtitleFileInfo (
-						dict ["SubDownloadLink"].ToString (), 
-						Convert.ToDouble (dict ["SubRating"]),
-						dict ["SubLanguageID"].ToString (),
-						Convert.ToInt32 (dict ["SubDownloadsCnt"]),
-						this,
-						video
-					));
+					subs.Add (new SubtitleFileInfo {
+						DownloadFile = dict ["SubDownloadLink"].ToString (), 
+						Rating = Convert.ToDouble (dict ["SubRating"]),
+						Language = dict ["SubLanguageID"].ToString (),
+						DownloadsCount = Convert.ToInt32 (dict ["SubDownloadsCnt"]),
+						IdMovieImdb = dict["IDMovieImdb"].ToString (),
+						Backend = this,
+						Video = video
+					});
 				}
 			}
 

@@ -24,15 +24,16 @@ namespace Subfinder
 		[UI] readonly Statusbar appStatusbar;
 		[UI] readonly Notebook mainNotebook;
 		[UI] readonly ListStore videosStore;
-		[UI] readonly ListStore oneClickVideoStore;
 		[UI] readonly ScrolledWindow scrolledwindow4;
 		[UI] readonly ScrolledWindow scrolledwindow3;
+		[UI] readonly Menu subsInfoMenu;
 
 		TreeModelSort sorter;
 
 		Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
 		TreeStore subtitlesStore;
+		ListStore oneClickVideoStore;
 
 		BackendManager controller = new BackendManager ();
 
@@ -54,6 +55,8 @@ namespace Subfinder
 				}
 			};
 
+			oneClickVideoStore = new ListStore (typeof(Gdk.Pixbuf), typeof(string), typeof(SubtitleFileInfo));
+			treeview3.Model = oneClickVideoStore;
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
 		}
 
@@ -190,7 +193,7 @@ namespace Subfinder
 				downloadStatus.Fraction = downloader.Status;
 				oneClickVideoStore.AppendValues (
 					Gdk.Pixbuf.LoadFromResource (string.Format("Subfinder.Resources.{0}.png", evt.Error ? "bad" : "good")),
-					evt.SubtitleFile.Video.FileName);
+					evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
 			});
 
 			new System.Threading.Thread (new System.Threading.ThreadStart (() => 
@@ -285,6 +288,59 @@ namespace Subfinder
 		void ShowInfo (string message)
 		{
 			appStatusbar.Push (0, message);
+		}
+
+		[GLib.ConnectBefore]
+		void OnPopUpMenu(object sender, ButtonReleaseEventArgs e)
+		{
+			if (e.Event.Type != Gdk.EventType.ButtonRelease || 
+				e.Event.Button != 3)
+				return;
+
+			ViewPopupMenu ();	
+		}
+
+		void PopupMenuNoClick(object sender, PopupMenuArgs e)
+		{
+			ViewPopupMenu ();
+		}
+
+		void ViewPopupMenu ()
+		{
+			if (treeview3.Selection.CountSelectedRows () == 0)
+				return;
+
+			subsInfoMenu.Show ();
+			subsInfoMenu.Popup ();
+		}
+
+		static bool PageExists (string url)
+		{
+			try {
+				var request = (HttpWebRequest)WebRequest.Create (url);
+				request.Method = "HEAD";
+				request.Timeout = Preferences.Instance.DownloadingTimeout;
+				return ((HttpWebResponse)request.GetResponse ()).StatusCode == HttpStatusCode.OK;
+			} catch {
+				return false;
+			}
+		}
+
+		void ShowMovieInfo(object sender, EventArgs e)
+		{
+			TreeIter iter;
+			treeview3.Selection.GetSelected (out iter);
+			var sub = treeview3.Model.GetValue (iter, 2) as SubtitleFileInfo;
+			if (sub == null)
+				return;
+			new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+				string url = "http://www.imdb.com/title/tt" + sub.IdMovieImdb;
+				if (sub.IdMovieImdb == string.Empty || !PageExists (url)) {
+					Application.Invoke ((s, ev) => ShowMessage ("Info not available"));
+				} else {
+					System.Diagnostics.Process.Start (url);
+				}
+			})).Start ();
 		}
 	}
 }

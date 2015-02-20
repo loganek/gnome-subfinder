@@ -5,32 +5,25 @@ namespace GnomeSubfinder.Core.DataStructures
 	public class SubtitleFileInfo
 	{
 		public string DownloadFile
-		{ get; private set; }
+		{ get; set; }
 
 		public double Rating
-		{ get; private set; }
+		{ get; set; }
 
 		public int DownloadsCount 
-		{ get;	private set; }
+		{ get;	set; }
 
 		public string Language 
-		{ get; private set; }
+		{ get; set; }
+
+		public string IdMovieImdb 
+		{ get; set; }
 
 		public IBackend Backend
-		{ get; private set; }
+		{ get; set; }
 
 		public VideoFileInfo Video 
-		{ get; private set; }
-
-		public SubtitleFileInfo (string downloadFile, double rating, string language, int downloadsCount, IBackend backend, VideoFileInfo video)
-		{
-			DownloadFile = downloadFile;
-			Rating = rating;
-			Language = language;
-			DownloadsCount = downloadsCount;
-			Backend = backend;
-			Video = video;
-		}
+		{ get; set; }
 
 		public static SubtitleFileInfo MatchBest(SubtitleFileInfo[] enumerable, string[] langs, string[] backends)
 		{
