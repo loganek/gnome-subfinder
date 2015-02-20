@@ -22,7 +22,8 @@ namespace GnomeSubfinder.Core.Core
 			         where backend is T
 			         select backend);
 
-			return c.Any () ? c.First () as T : null;
+		    var enumerable = c as IBackend[] ?? c.ToArray();
+		    return enumerable.Any () ? enumerable.First () as T : null;
 		}
 
 		public IBackend GetByDatabase (string dbName)

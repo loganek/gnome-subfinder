@@ -34,7 +34,7 @@ namespace GnomeSubfinder.Core.DataStructures
 				throw new ArgumentException ("cannot get best match from empty array");
 
 			Array.Sort (enumerable,
-				(SubtitleFileInfo x, SubtitleFileInfo y) => {
+				(x, y) => {
 					int ix = Array.IndexOf (langs, x.Language), iy = Array.IndexOf (langs, y.Language);
 					if (ix != iy)
 						return ix > iy ? 1 : -1;

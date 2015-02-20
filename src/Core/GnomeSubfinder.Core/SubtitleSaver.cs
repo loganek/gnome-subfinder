@@ -27,9 +27,10 @@ namespace GnomeSubfinder.Core.Core
 			if (!overrideSubs) {
 				MakeSpace (destination, outDirectory);
 			}
-			string outputFilename = Path.Combine (outDirectory, destination);
-			File.Copy (tempFullFile + "~", outputFilename, overrideSubs);
-			fileInfo.CurrentPath = outputFilename;
+		    if (outDirectory == null) return;
+		    string outputFilename = Path.Combine (outDirectory, destination);
+		    File.Copy (tempFullFile + "~", outputFilename, overrideSubs);
+		    fileInfo.CurrentPath = outputFilename;
 		}
 
 		static void RunUnzipProcess(string tempDir, string tempFullFile)

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Threading;
 using GnomeSubfinder.Core.DataStructures;
-using System.Diagnostics;
 
 namespace GnomeSubfinder.Core.Core
 {
@@ -36,22 +34,20 @@ namespace GnomeSubfinder.Core.Core
 			protected override WebRequest GetWebRequest( Uri address)
 			{
 				var result = base.GetWebRequest(address);
-				result.Timeout = timeout;
-				return result;
+			    if (result == null) return null;
+			    result.Timeout = timeout;
+			    return result;
 			}
 		}
 
-		int timeout;
+	    readonly int timeout;
 		int processed;
 		readonly List<SubtitleFileInfo> subtitleFiles = new List<SubtitleFileInfo> ();
 
 		public event DownloadStatusChangedEventHandler DownloadStatusChanged;
 		public event EventHandler DownloadCompleted;
-		string tempDirectory;
 
-		string sZipPath;
-
-		public int Processed { 
+	    public int Processed { 
 			get { return processed; }
 		}
 
@@ -68,11 +64,9 @@ namespace GnomeSubfinder.Core.Core
 			this.timeout = timeout;
 		}
 
-		public void Download (string tempDir, string sZipPath)
+		public void Download ()
 		{
-			tempDirectory = tempDir;
-			this.sZipPath = sZipPath;
-			processed = 0;
+		    processed = 0;
 			foreach (var subtitleFile in subtitleFiles) {
 				DownloadSingleFile (subtitleFile);
 			}
@@ -88,7 +82,7 @@ namespace GnomeSubfinder.Core.Core
 				bool err = false;
 				try {
 					SaveFile (tmp, e.Result);
-				} catch (Exception ex) {
+				} catch (Exception) {
 					err = true;
 				} finally {
 					err = err | e.Cancelled | (e.Error != null);

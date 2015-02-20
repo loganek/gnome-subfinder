@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using GnomeSubfinder.Core.Core;
 using GnomeSubfinder.Core.DataStructures;
 using Gtk;
-using Mono.Unix;
 using System.Net;
 
 using UI = Gtk.Builder.ObjectAttribute;
@@ -30,12 +30,12 @@ namespace Subfinder
 
 		TreeModelSort sorter;
 
-		Spinner waitWidget = new Spinner { Visible = true, Active = true };
+	    readonly Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
 		TreeStore subtitlesStore;
-		ListStore oneClickVideoStore;
+	    readonly ListStore oneClickVideoStore;
 
-		BackendManager controller = new BackendManager ();
+	    readonly BackendManager controller = new BackendManager ();
 
 		public MainWindow (Builder builder, IntPtr handle) : base (handle)
 		{
@@ -47,13 +47,7 @@ namespace Subfinder
 
 			ConfigureTreeView ();
 
-			mainNotebook.SwitchPage += (o, args) => {
-				if (args.PageNum == 0) {
-					treeview3.Reparent(scrolledwindow4);
-				} else {
-					treeview3.Reparent(scrolledwindow3);
-				}
-			};
+			mainNotebook.SwitchPage += (o, args) => treeview3.Reparent(args.PageNum == 0 ? scrolledwindow4 : scrolledwindow3);
 
 			oneClickVideoStore = new ListStore (typeof(Gdk.Pixbuf), typeof(string), typeof(SubtitleFileInfo));
 			treeview3.Model = oneClickVideoStore;
@@ -79,12 +73,12 @@ namespace Subfinder
 		{
 			TreeIter iter;
 			if (subtitlesStore.GetIterFromString (out iter, e.Path)) {
-				bool val = (bool)subtitlesStore.GetValue (iter, 0);
+				var val = (bool)subtitlesStore.GetValue (iter, 0);
 				subtitlesStore.SetValue (iter, 0, !val);
 			}
 		}
 
-		string[] LoadVideoFiles ()
+		IEnumerable<string> LoadVideoFiles ()
 		{
 			var videoChooser = new FileChooserDialog (Catalog.GetString ("Choose the file to open"), this, FileChooserAction.Open, new Object[] {
 				Catalog.GetString ("Cancel"),
@@ -98,8 +92,7 @@ namespace Subfinder
 
 			var files = new List<string> ();
 			if (videoChooser.Run () == (int)ResponseType.Accept) {
-				foreach (var f in videoChooser.Files)
-					files.Add (f.Path);
+			    files.AddRange(videoChooser.Files.Select(f => f.Path));
 			}
 			videoChooser.Destroy ();
 			return files.ToArray ();
@@ -108,14 +101,8 @@ namespace Subfinder
 		void OpenBtnClick (object sender, EventArgs e)
 		{
 			foreach (var f in LoadVideoFiles ()) {
-				bool canAdd = true;
-				foreach (object[] filename in videosStore) {
-					if (filename [0] as string == f) {
-						canAdd = false;
-						break;
-					}
-				}
-				if (canAdd) {
+				bool canAdd = videosStore.Cast<object[]>().All(filename => filename[0] as string != f);
+			    if (canAdd) {
 					videosStore.AppendValues (f);
 				}
 			}
@@ -125,7 +112,7 @@ namespace Subfinder
 		{
 			int count = 0;
 			foreach (object[] videoFile in videosStore) {
-				string filename = videoFile [0] as string;
+				var filename = videoFile [0] as string;
 				try {
 					if (!File.Exists (filename))
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
@@ -166,7 +153,7 @@ namespace Subfinder
 			treeParent.Remove (subsTree);
 			treeParent.Add (waitWidget);
 			ShowInfo ("Searching subtitles.");
-			new System.Threading.Thread (new System.Threading.ThreadStart (FindSubtitles)).Start ();
+			new System.Threading.Thread (FindSubtitles).Start ();
 		}
 
 		void DownloadSubtitles (SubtitleFileInfo[] subs)
@@ -191,8 +178,7 @@ namespace Subfinder
 					evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
 			});
 
-			new System.Threading.Thread (new System.Threading.ThreadStart (() => 
-				downloader.Download (Preferences.Instance.TemporaryDirectory, Preferences.Instance.SZipPath))).Start ();
+			new System.Threading.Thread (downloader.Download).Start ();
 
 			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
 				downloadSelectedButton.Sensitive = true;
@@ -239,11 +225,12 @@ namespace Subfinder
 
 		void RemoveVideoBtnClick (object sender, EventArgs e) 
 		{
-			TreeIter iter;
-			TreePath[] treePath = filesTreeView.Selection.GetSelectedRows();
+		    TreePath[] treePath = filesTreeView.Selection.GetSelectedRows();
 
-			for (int i  = treePath.Length - 1; i >= 0; i--) {
-				if (videosStore.GetIter (out iter, treePath [i])) {
+			for (int i  = treePath.Length - 1; i >= 0; i--)
+			{
+			    TreeIter iter;
+			    if (videosStore.GetIter (out iter, treePath [i])) {
 					videosStore.Remove (ref iter);
 				}
 			}
@@ -333,14 +320,14 @@ namespace Subfinder
 			var sub = GetSelected ();
 			if (sub == null)
 				return;
-			new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-				string url = "http://www.imdb.com/title/tt" + sub.IdMovieImdb;
-				if (sub.IdMovieImdb == string.Empty || !PageExists (url)) {
-					Application.Invoke ((s, ev) => ShowMessage ("Info not available"));
-				} else {
-					System.Diagnostics.Process.Start (url);
-				}
-			})).Start ();
+			new System.Threading.Thread (() => {
+			                                       string url = "http://www.imdb.com/title/tt" + sub.IdMovieImdb;
+			                                       if (sub.IdMovieImdb == string.Empty || !PageExists (url)) {
+			                                           Application.Invoke ((s, ev) => ShowMessage ("Info not available"));
+			                                       } else {
+			                                           System.Diagnostics.Process.Start (url);
+			                                       }
+			}).Start ();
 		}
 
 		void PlayVideoFile(object sender, EventArgs e)

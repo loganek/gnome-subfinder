@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using GnomeSubfinder.Core.Core;
 using GnomeSubfinder.Core.DataStructures;
 using System.Threading;
@@ -37,10 +38,10 @@ namespace SubfinderConsole
 	}
 
 	public class SubfinderConsole
-	{	
-		OptionParser<Options> parser; 
+	{
+	    readonly OptionParser<Options> parser;
 
-		string[] files;
+	    readonly string[] files;
 		readonly object syncer = new object ();
 		bool ready;
 
@@ -57,10 +58,12 @@ namespace SubfinderConsole
 			var downloader = new SubtitleDownloader (parser.OptionsObject.Timeout);
 			var backends = new BackendManager ();
 			var l = parser.OptionsObject.Languages.Split (new []{ ',' });
-			foreach (var file in files) {
-				downloader.Add (SubtitleFileInfo.MatchBest (backends.SearchSubtitles (new VideoFileInfo { FileName = file }, l), l, l)); // todo langs twice!
-			}
-			downloader.Download (parser.OptionsObject.Tempdir, parser.OptionsObject.SZipPath);
+		    foreach (var subs in files.Select(file => backends.SearchSubtitles(new VideoFileInfo {FileName = file}, l)).Where(subs => subs.Length > 0))
+		    {
+		        downloader.Add(SubtitleFileInfo.MatchBest(subs, l, l)); // todo langs twice!
+		    }
+            
+		    downloader.Download ();
 
 			downloader.DownloadStatusChanged += (sender, e) => Console.WriteLine (" * [{0}] Download subtitles for {1} {2}!", 
 				e.Error ? "Error" : "OK", Path.GetFileName(e.SubtitleFile.Video.FileName), e.Error ? "failed" : "succeeded");
@@ -72,11 +75,17 @@ namespace SubfinderConsole
 				}
 				Console.WriteLine (" * Download completed");
 			};
-			lock (syncer) {
-				while (!ready) {
-					Monitor.Wait (syncer);
-				}
-			}
+		    if (downloader.Total > 0)
+		    {
+		        lock (syncer)
+		        {
+		            while (!ready)
+		            {
+		                Monitor.Wait(syncer);
+		            }
+		        }
+		    }
+            else Console.WriteLine("No subtitles found!");
 		}
 
 		public void Run ()

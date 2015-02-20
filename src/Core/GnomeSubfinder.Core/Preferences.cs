@@ -1,67 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 
 
 namespace GnomeSubfinder.Core.Core
 {
 	public class PreferencesConfiguration : ConfigurationSection
 	{
-		static ConfigurationPropertyCollection properties;
+        [ConfigurationProperty("languages", DefaultValue = "")]
+        public string Languages
+        {
+            get { return this["languages"].ToString(); }
+            set { this["languages"] = value; }
+        }
 
-		static readonly ConfigurationProperty _SZPath = new ConfigurationProperty(Preferences.SZIP_PATH_KEY, 
-			typeof(string), Preferences.GetDefaultSZipPath ());
+        [ConfigurationProperty("sevenzip-path", DefaultValue = "")]
+        public string SevenZipPath
+        {
+            get { return this["sevenzip-path"].ToString(); }
+            set { this["sevenzip-path"] = value; }
+        }
 
-		static readonly ConfigurationProperty _TmpDirPath = new ConfigurationProperty(Preferences.TEMP_DIR_PATH_KEY, 
-			typeof(string), Path.GetTempPath ());
+        [ConfigurationProperty("temp-dir-path", DefaultValue = "")]
+        public string TempDirPath
+        {
+            get { return this["temp-dir-path"].ToString(); }
+            set { this["temp-dir-path"] = value; }
+        }
 
+        [ConfigurationProperty("override-subtitles", DefaultValue = false)]
+        public bool OverrideSubtitles
+        {
+            get { return (bool) this["override-subtitles"]; }
+            set { this["override-subtitles"] = value; }
+        }
 
-		static readonly ConfigurationProperty _Languages = new ConfigurationProperty(Preferences.LANGUAGES_KEY, 
-			typeof(string), string.Empty);
-
-
-		static readonly ConfigurationProperty _ActiveTab = new ConfigurationProperty(Preferences.ACTIVE_TAB_KEY, 
-			typeof(int), 0);
-
-
-		static readonly ConfigurationProperty _DownTimeout = new ConfigurationProperty(Preferences.DOWN_TIMEOUT_PATH_KEY, 
-			typeof(int), 3000);
-
-		static readonly ConfigurationProperty _OverrideSubtitles = new ConfigurationProperty(Preferences.OVERRIDE_SUBTITLES_PATH_KEY, 
-			typeof(bool), false);
-
-		static readonly ConfigurationProperty _Player = new ConfigurationProperty(Preferences.PLAYER_PATH_KEY, 
-			typeof(string), string.Empty);
-
-		static readonly ConfigurationProperty _PlayerArgs = new ConfigurationProperty(Preferences.PLAYER_ARGS_PATH_KEY, 
-			typeof(string), string.Empty);
-			
-
-		public PreferencesConfiguration ()
-		{	
-			properties = new ConfigurationPropertyCollection();
-
-			properties.Add(_SZPath);
-			properties.Add(_TmpDirPath);
-			properties.Add(_Languages);
-			properties.Add(_ActiveTab);
-			properties.Add(_DownTimeout);
-			properties.Add (_OverrideSubtitles);
-			properties.Add (_Player);
-			properties.Add (_PlayerArgs);
-		}
-
-		protected override ConfigurationPropertyCollection Properties
-		{
-			get { return properties; }
-		}
-
-		public new object this [string index] {
-				get { return base [index]; }
-			set{ base [index] = value; }
-		}
+        [ConfigurationProperty("down-timeout", DefaultValue = 3000)]
+        public int DownTimeout
+        {
+            get { return Convert.ToInt32(this["down-timeout"]); }
+            set { this["down-timeout"] = value; }
+        }
 	}
 
 	public class Preferences
@@ -75,23 +57,18 @@ namespace GnomeSubfinder.Core.Core
 		public const string PLAYER_PATH_KEY = "player";
 		public const string PLAYER_ARGS_PATH_KEY = "player-args";
 
-		PreferencesConfiguration section;
-		Configuration appSettings;
+	    readonly PreferencesConfiguration section;
+	    readonly Configuration appSettings;
 		static Preferences instance;
 
 		public static Preferences Instance {
-			get {
-				if (instance == null)
-					instance = new Preferences ();
-				return instance;
-			}
+			get { return instance ?? (instance = new Preferences()); }
 		}
 
 		public Preferences()
 		{
-			var configFileMap = new ExeConfigurationFileMap();
-			configFileMap.ExeConfigFilename =  "gnome-subdownloader.config.1";
-			configFileMap.RoamingUserConfigFilename = Path.Combine (
+			var configFileMap = new ExeConfigurationFileMap {ExeConfigFilename = "gnome-subdownloader.config.1"};
+		    configFileMap.RoamingUserConfigFilename = Path.Combine (
 				Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), 
 				"gnome-subdownloader", configFileMap.ExeConfigFilename
 			);
@@ -99,7 +76,7 @@ namespace GnomeSubfinder.Core.Core
 			appSettings = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.PerUserRoaming);
 
 			
-			if (appSettings.Sections ["settings"] == null || !(appSettings.Sections ["settings"] is PreferencesConfiguration)) {
+			if (!(appSettings.Sections ["settings"] is PreferencesConfiguration)) {
 				appSettings.Sections.Add ("settings", new PreferencesConfiguration ());
 			}
 			section = appSettings.Sections ["settings"] as PreferencesConfiguration;
@@ -118,48 +95,44 @@ namespace GnomeSubfinder.Core.Core
 		}
 
 		public string TemporaryDirectory {
-			get { return GetConfigNode (TEMP_DIR_PATH_KEY, Path.GetTempPath (), Directory.Exists); }
-			set { SetConfigNode (TEMP_DIR_PATH_KEY, value, Directory.Exists); }
+			get { return section.TempDirPath; }
+			set { section.TempDirPath = value; }
 		}
 
-		public string SZipPath {
-			get { return GetConfigNode (SZIP_PATH_KEY, GetDefaultSZipPath (), IsValidExecutable); }
-			set { SetConfigNode (SZIP_PATH_KEY, value, IsValidExecutable); }
-		}
+	    public string SZipPath
+	    {
+	        get { return section.SevenZipPath; }
+	        set { section.SevenZipPath = value; }
+	    }
 
-		public bool OverrideSubtitles {
-			get { return GetConfigNode (OVERRIDE_SUBTITLES_PATH_KEY, false); }
-			set { SetConfigNode (OVERRIDE_SUBTITLES_PATH_KEY, value); }
+	    public bool OverrideSubtitles {
+			get { return section.OverrideSubtitles; }
+			set { section.OverrideSubtitles = value; }
 		}
 
 		public int DownloadingTimeout {
-			get { return GetConfigNode (DOWN_TIMEOUT_PATH_KEY, 3000, x => x > 0); }
-			set { SetConfigNode (DOWN_TIMEOUT_PATH_KEY, value, x => x > 0); }
+            get { return section.DownTimeout; }
+            set { section.DownTimeout = value; }
 		}
 
 		public string Player {
-			get { return GetConfigNode (PLAYER_PATH_KEY, string.Empty); }
-			set { SetConfigNode (PLAYER_PATH_KEY, value); }
+            get { return ""; }
+            set {  }
 		}
 
-		public string PlayerArgs {	
-			get { return GetConfigNode (PLAYER_ARGS_PATH_KEY, string.Empty); }
-			set { SetConfigNode (PLAYER_ARGS_PATH_KEY, value); }
+		public string PlayerArgs {
+            get { return ""; }
+            set { }
 		}
 
 		public string Languages {
-			private get { return GetConfigNode (LANGUAGES_KEY, LanguageSet.Instance.JoinedLanguages, x=> x!= string.Empty); }
-			set { SetConfigNode (LANGUAGES_KEY, value, x => x != string.Empty); }
+			private get { return section.Languages; }
+			set { section.Languages = value; }
 		}
 
 		public string[] GetSelectedLanguages ()
 		{
-			var l = new List<string> ();
-			foreach (var lang in Languages.Split(new []{','})) {
-				if (lang.EndsWith ("_"))
-					l.Add (lang.Remove(3));
-			}
-			return l.ToArray ();
+		    return (from lang in Languages.Split(new[] {','}) where lang.EndsWith("_") select lang.Remove(3)).ToArray();
 		}
 
 		public string SelectedLanguages { 
@@ -171,21 +144,20 @@ namespace GnomeSubfinder.Core.Core
 			return Languages.Replace ("_", "").Split (new []{ ',' });
 		}
 
-		T GetConfigNode<T> (string nodePath, T defaultValue, Func<T, bool> verifyMethod = null)
+		T GetConfigNode<T> (string nodePath, T defaultValue, Func<T, bool> verifyMethod = null) where T : new()
 		{
-			var val = (T)section [nodePath];
+		    var val = new T();//(T)section [nodePath];
 			if (verifyMethod != null)
 				return verifyMethod (val) ? val : defaultValue;
 			return val;
 		}
 
-		bool SetConfigNode<T> (string nodePath, T value, Func<T, bool> verifyMethod = null)
+		void SetConfigNode<T> (string nodePath, T value, Func<T, bool> verifyMethod = null)
 		{
 			if (verifyMethod != null && !verifyMethod (value))
-				return false;
+			    return;
 
-			section [nodePath] = value;
-			return true;	
+		    //section [nodePath] = value;
 		}
 
 		public static string GetDefaultSZipPath ()
@@ -201,7 +173,7 @@ namespace GnomeSubfinder.Core.Core
 			p.WaitForExit ();
 
 			var paths = output.Split (' ');
-			string szPath = "7z";
+			const string szPath = "7z";
 
 			if (paths.Length < 2)
 				return szPath;

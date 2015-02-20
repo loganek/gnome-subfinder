@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -45,7 +47,7 @@ namespace SubfinderConsole
 
 		readonly string[] arguments;
 
-		List<string> freeArgs = new List<string> ();
+	    readonly List<string> freeArgs = new List<string> ();
 
 		public string[] FreeArguments {
 			get { return freeArgs.ToArray (); }
@@ -53,15 +55,13 @@ namespace SubfinderConsole
 
 		static OptName GetNameFromArg (string arg)
 		{
-			var o = new OptName ();
-			o.Noattr = false;
-			if (arg.StartsWith ("--", StringComparison.Ordinal)) {
+			var o = new OptName {Noattr = false};
+		    if (arg.StartsWith ("--", StringComparison.Ordinal)) {
 				int index = arg.IndexOf ("=", StringComparison.Ordinal);
-				if (index >= 0) {
-					o.Name = arg.Substring (2, index - 2);
-					o.Value = arg.Substring (index + 1);
-				}
-			} else if (arg.StartsWith ("-", StringComparison.Ordinal)) {
+		        if (index < 0) return o;
+		        o.Name = arg.Substring (2, index - 2);
+		        o.Value = arg.Substring (index + 1);
+		    } else if (arg.StartsWith ("-", StringComparison.Ordinal)) {
 				o.Name = arg.Substring (1);
 			} else {
 				o.Name = arg;
@@ -73,29 +73,27 @@ namespace SubfinderConsole
 		void LoadPropertyAttributes()
 		{
 			attributes = new Dictionary<OptionAttribute, PropertyInfo> ();
-			foreach (var prop in obj.GetType ().GetProperties()) {
-				var attribs = prop.GetCustomAttributes (true);
-				for (int i = 0; i < attribs.Length; i++) {
-					var attr = attribs [i] as OptionAttribute;
-					if (attr != null) {
-						attributes.Add (attr, prop);
-						break; // one attribute per property
-					}
-				}
+			foreach (var prop in obj.GetType ().GetProperties())
+			{
+			    var attribs = prop.GetCustomAttributes (true);
+			    foreach (var attr in attribs.OfType<OptionAttribute>())
+			    {
+			        attributes.Add (attr, prop);
+			        break; // one attribute per property
+			    }
 			}
 		}
 
-		KeyValuePair<OptionAttribute, PropertyInfo>? GetPropertyByOptionName (Type t, string name)
+		KeyValuePair<OptionAttribute, PropertyInfo>? GetPropertyByOptionName (string name)
 		{
-			foreach (var attribute in attributes) {
-				if (attribute.Key.Fullname == name || attribute.Key.Shortcut.ToString () == name) {
-					return attribute;
-				}
-			}
-			return null;
+		    foreach (var attribute in attributes.Where(attribute => attribute.Key.Fullname == name || attribute.Key.Shortcut.ToString (CultureInfo.InvariantCulture) == name))
+		    {
+		        return attribute;
+		    }
+		    return null;
 		}
 
-		public T OptionsObject {
+	    public T OptionsObject {
 			get { return obj; }
 		}
 
@@ -109,8 +107,7 @@ namespace SubfinderConsole
 
 		public void Parse()
 		{
-			var info = obj.GetType ();
-			freeArgs.Clear ();
+		    freeArgs.Clear ();
 
 			foreach (var arg in arguments) {
 				var argObj = GetNameFromArg (arg);
@@ -120,7 +117,7 @@ namespace SubfinderConsole
 					continue;
 				}
 
-				var o = GetPropertyByOptionName (info, argObj.Name);
+				var o = GetPropertyByOptionName (argObj.Name);
 				if (o == null) {
 					throw new ArgumentException ("Unrecognized option " + argObj.Name);
 				}
@@ -135,11 +132,7 @@ namespace SubfinderConsole
 						argObj.Name, opt.Key.HasValue ? "expects" : "doesn't expect", opt.Key.HasValue? "not" : ""));
 				}
 
-				if (opt.Key.HasValue) {
-					opt.Value.SetValue (obj, Convert.ChangeType (argObj.Value, opt.Value.PropertyType), null);
-				} else {
-					opt.Value.SetValue (obj, true, null);
-				}
+			    opt.Value.SetValue(obj, !opt.Key.HasValue || (bool) Convert.ChangeType(argObj.Value, opt.Value.PropertyType), null);
 			}
 		}
 

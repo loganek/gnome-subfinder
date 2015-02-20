@@ -9,12 +9,7 @@ namespace GnomeSubfinder.Core.Core
 		static LanguageSet instance;
 
 		public static LanguageSet Instance {
-			get {
-				if (instance == null) {
-					instance = new LanguageSet ();
-				}
-				return instance;
-			}
+			get { return instance ?? (instance = new LanguageSet()); }
 		}
 
 		LanguageSet ()

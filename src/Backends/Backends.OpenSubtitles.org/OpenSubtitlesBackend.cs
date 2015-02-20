@@ -10,7 +10,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 {
 	public class OpenSubtitlesBackend : IBackend
 	{
-		IXmlRpcApi osProxy;
+	    readonly IXmlRpcApi osProxy;
 		string userToken;
 
 		public OpenSubtitlesBackend ()
@@ -139,9 +139,8 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			byte[] result;
 			using (Stream input = File.OpenRead(filename))
 			{
-				long lhash, streamsize;
-				streamsize = input.Length;
-				lhash = streamsize;
+			    long streamsize = input.Length;
+				long lhash = streamsize;
 
 				long i = 0;
 				var buffer = new byte[sizeof(long)];
@@ -164,11 +163,11 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			}
 
 			var hexBuilder = new StringBuilder();
-			for(int i = 0; i < result.Length; i++)
+			foreach (byte t in result)
 			{
-				hexBuilder.Append(result[i].ToString("x2"));
+			    hexBuilder.Append(t.ToString("x2"));
 			}
-			return hexBuilder.ToString();
+		    return hexBuilder.ToString();
 		}
 	}
 }

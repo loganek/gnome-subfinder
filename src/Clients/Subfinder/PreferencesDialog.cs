@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Gdk;
 using GnomeSubfinder.Core.Core;
@@ -21,7 +22,7 @@ namespace Subfinder
 		[UI] readonly Entry playerEntry;
 		[UI] readonly Entry playerArgsEntry;
 
-		ListStore langsStore;
+	    readonly ListStore langsStore;
 		readonly BackendManager controller;
 
 		public PreferencesDialog (BackendManager controller, Builder builder, IntPtr handle) : base (handle)
@@ -46,7 +47,7 @@ namespace Subfinder
 				if ((int)e.ResponseId == 1) { 
 					var l = new List<string> ();
 					foreach (object[] row in langsStore) {
-						string s = row [3] as string;
+						var s = row [3] as string;
 						if ((bool)row [0])
 							s += "_";
 						l.Add (s);
@@ -69,7 +70,7 @@ namespace Subfinder
 		{ 
 			TreeIter iter;
 			if (langsStore.GetIterFromString (out iter, e.Path)) {
-				bool val = (bool)langsStore.GetValue (iter, 0);
+				var val = (bool)langsStore.GetValue (iter, 0);
 				langsStore.SetValue (iter, 0, !val);
 			}	
 		}
@@ -92,7 +93,7 @@ namespace Subfinder
 
 			foreach (var s in controller.Backends) {
 				var assemblyInfo = s.GetLogoAssemblyInfo ();
-				store.AppendValues (new Gdk.Pixbuf (assemblyInfo.Item1, assemblyInfo.Item2), s.GetName ());          
+				store.AppendValues (new Pixbuf (assemblyInfo.Item1, assemblyInfo.Item2), s.GetName ());          
 			}
 			if (store.IterNChildren () > 0)
 				backendsCombo.Active = 0;
@@ -110,7 +111,7 @@ namespace Subfinder
 			if (pos == -1 || pos >= langsStore.IterNChildren ())
 				return;
 
-			langsStore.GetIterFromString (out iter, pos.ToString ());
+			langsStore.GetIterFromString (out iter, pos.ToString (CultureInfo.InvariantCulture));
 			if (position <= 0)
 				langsStore.MoveBefore (tmpIter, iter);
 			else

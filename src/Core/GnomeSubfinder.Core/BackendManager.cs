@@ -1,5 +1,5 @@
-﻿using GnomeSubfinder.Backends.OpenSubtitles;
-using System.Collections.Generic;
+﻿using System.Linq;
+using GnomeSubfinder.Backends.OpenSubtitles;
 using System.Globalization;
 
 namespace GnomeSubfinder.Core.Core
@@ -13,14 +13,9 @@ namespace GnomeSubfinder.Core.Core
 			backends.Add <OpenSubtitlesBackend> ("loganek", "test", CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
 		}
 
-		public GnomeSubfinder.Core.DataStructures.SubtitleFileInfo[] SearchSubtitles (GnomeSubfinder.Core.DataStructures.VideoFileInfo video, string[] languages)
+		public DataStructures.SubtitleFileInfo[] SearchSubtitles (DataStructures.VideoFileInfo video, string[] languages)
 		{
-			var l = new List<GnomeSubfinder.Core.DataStructures.SubtitleFileInfo> ();
-			foreach (var b in backends) {
-				foreach (var s in b.SearchSubtitles (video, languages))
-					l.Add (s);
-			}
-			return l.ToArray ();
+		    return backends.SelectMany(b => b.SearchSubtitles(video, languages)).ToArray();
 		}
 
 		public BackendCollection Backends {
