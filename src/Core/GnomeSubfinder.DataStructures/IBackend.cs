@@ -1,4 +1,7 @@
-﻿namespace GnomeSubfinder.Core.DataStructures
+﻿using System.Reflection;
+using System;
+
+namespace GnomeSubfinder.Core.DataStructures
 {
 	public interface IBackend
 	{
@@ -12,7 +15,7 @@
 
 		string GetName ();
 
-		Gdk.Pixbuf GetPixbuf (int width, int height);
+		Tuple<Assembly, string> GetLogoAssemblyInfo ();
 	}
 }
 

@@ -84,9 +84,10 @@ namespace Subfinder
 			var store = new ListStore (typeof(Pixbuf), typeof(string));
 			backendsCombo.Model = store;
 
-			foreach (var s in controller.Backends)
-				store.AppendValues (s.GetPixbuf (10, 10), s.GetName ());          
-
+			foreach (var s in controller.Backends) {
+				var assemblyInfo = s.GetLogoAssemblyInfo ();
+				store.AppendValues (new Gdk.Pixbuf (assemblyInfo.Item1, assemblyInfo.Item2), s.GetName ());          
+			}
 			if (store.IterNChildren () > 0)
 				backendsCombo.Active = 0;
 		}

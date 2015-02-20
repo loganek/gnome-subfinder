@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using CookComputing.XmlRpc;
 using GnomeSubfinder.Core.DataStructures;
-using Gdk;
+using System.Reflection;
 
 namespace GnomeSubfinder.Backends.OpenSubtitles
 {
@@ -53,7 +53,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			return true;
 		}
 
-		private void CheckStatus(string status)
+		static void CheckStatus(string status)
 		{
 			int num = Convert.ToInt32 (status.Substring (0, 3));
 			if (num >= 200 && num < 300)
@@ -127,13 +127,13 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			return LogIn (parameters [0].ToString (), parameters [1].ToString (), parameters [2].ToString ());
 		}
 
-		public Pixbuf GetPixbuf (int width, int height)
+		public Tuple<Assembly, string> GetLogoAssemblyInfo ()
 		{
-			return Pixbuf.LoadFromResource ("GnomeSubfinder.Backends.OpenSubtitles.logo.gif").ScaleSimple (width, height, InterpType.Bilinear);
+			return Tuple.Create (Assembly.GetExecutingAssembly (), "GnomeSubfinder.Backends.OpenSubtitles.logo.gif");
 		}
 		#endregion
 
-		private static string ComputeMovieHash(string filename)
+		static string ComputeMovieHash(string filename)
 		{
 			byte[] result;
 			using (Stream input = File.OpenRead(filename))
@@ -143,7 +143,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 				lhash = streamsize;
 
 				long i = 0;
-				byte[] buffer = new byte[sizeof(long)];
+				var buffer = new byte[sizeof(long)];
 				while (i < 65536 / sizeof(long) && (input.Read(buffer, 0, sizeof(long)) > 0))
 				{
 					i++;
