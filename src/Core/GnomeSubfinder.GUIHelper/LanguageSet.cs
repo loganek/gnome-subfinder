@@ -8,7 +8,7 @@ namespace GnomeSubfinder.Core.GUIHelper
 		public static Pixbuf GetFlag (this LanguageSet langset, string country, int width, int height)
 		{
 			country = country.Replace (' ', '_');
-			return Pixbuf.LoadFromResource ("GnomeSubfinder.GUIHelper.Resources.flags." + country + ".png").ScaleSimple (width, height, InterpType.Nearest);
+			return Pixbuf.LoadFromResource ("GnomeSubfinder.Core.GUIHelper.Resources.flags." + country + ".png").ScaleSimple (width, height, InterpType.Nearest);
 
 		}
 	}

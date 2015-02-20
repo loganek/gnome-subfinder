@@ -129,7 +129,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 
 		public Pixbuf GetPixbuf (int width, int height)
 		{
-			return Pixbuf.LoadFromResource ("OpenSubtitles.org.logo.gif").ScaleSimple (width, height, InterpType.Bilinear);
+			return Pixbuf.LoadFromResource ("GnomeSubfinder.Backends.OpenSubtitles.logo.gif").ScaleSimple (width, height, InterpType.Bilinear);
 		}
 		#endregion
 
