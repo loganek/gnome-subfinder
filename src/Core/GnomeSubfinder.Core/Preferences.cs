@@ -74,7 +74,15 @@ namespace GnomeSubfinder.Core.Core
 
 		public Preferences()
 		{
-			appSettings = ConfigurationManager.OpenExeConfiguration (ConfigurationUserLevel.PerUserRoamingAndLocal);
+			var configFileMap = new ExeConfigurationFileMap();
+			configFileMap.ExeConfigFilename =  "gnome-subdownloader.config.1";
+			configFileMap.RoamingUserConfigFilename = Path.Combine (
+				Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), 
+				"gnome-subdownloader", configFileMap.ExeConfigFilename
+			);
+
+			appSettings = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.PerUserRoaming);
+
 			
 			if (appSettings.Sections ["settings"] == null || !(appSettings.Sections ["settings"] is PreferencesConfiguration)) {
 				appSettings.Sections.Add ("settings", new PreferencesConfiguration ());
