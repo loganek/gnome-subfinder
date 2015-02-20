@@ -1,22 +1,68 @@
 ﻿using System;
-using GConf;
 using System.Diagnostics;
 using System.IO;
 using Mono.Unix.Native;
 using System.Collections.Generic;
+using System.Configuration;
+
 
 namespace GnomeSubfinder.Core.Core
 {
+	public class PreferencesConfiguration : ConfigurationSection
+	{
+		static ConfigurationPropertyCollection properties;
+
+		static readonly ConfigurationProperty _SZPath = new ConfigurationProperty(Preferences.SZIP_PATH_KEY, 
+			typeof(string), Preferences.GetDefaultSZipPath ());
+
+		static readonly ConfigurationProperty _TmpDirPath = new ConfigurationProperty(Preferences.TEMP_DIR_PATH_KEY, 
+			typeof(string), Path.GetTempPath ());
+
+
+		static readonly ConfigurationProperty _Languages = new ConfigurationProperty(Preferences.LANGUAGES_KEY, 
+			typeof(string), string.Empty);
+
+
+		static readonly ConfigurationProperty _ActiveTab = new ConfigurationProperty(Preferences.ACTIVE_TAB_KEY, 
+			typeof(int), 0);
+
+
+		static readonly ConfigurationProperty _DownTimeout = new ConfigurationProperty(Preferences.DOWN_TIMEOUT_PATH_KEY, 
+			typeof(int), 3000);
+			
+
+		public PreferencesConfiguration ()
+		{	
+			properties = new ConfigurationPropertyCollection();
+
+			properties.Add(_SZPath);
+			properties.Add(_TmpDirPath);
+			properties.Add(_Languages);
+			properties.Add(_ActiveTab);
+			properties.Add(_DownTimeout);
+		}
+
+		protected override ConfigurationPropertyCollection Properties
+		{
+			get { return properties; }
+		}
+
+		public new object this [string index] {
+				get { return base [index]; }
+			set{ base [index] = value; }
+		}
+	}
+
 	public class Preferences
 	{
-		readonly Client client = new Client ();
-		const string GCONF_APP_PATH = "/apps/gnome-subfinder";
-		const string SZIP_PATH_KEY = GCONF_APP_PATH + "/7zip-path";
-		const string TEMP_DIR_PATH_KEY = GCONF_APP_PATH + "/temp-dir-path";
-		const string LANGUAGES_KEY = GCONF_APP_PATH + "/languages";
-		const string ACTIVE_TAB_KEY = GCONF_APP_PATH + "/active_tab";
-		const string DOWN_TIMEOUT_PATH_KEY = GCONF_APP_PATH + "/down_timeout";
+		public const string SZIP_PATH_KEY = "sevenzip-path";
+		public const string TEMP_DIR_PATH_KEY = "temp-dir-path";
+		public const string LANGUAGES_KEY = "languages";
+		public const string ACTIVE_TAB_KEY = "active-tab";
+		public const string DOWN_TIMEOUT_PATH_KEY = "down-timeout";
 
+		PreferencesConfiguration section;
+		Configuration appSettings;
 		static Preferences instance;
 
 		public static Preferences Instance {
@@ -27,9 +73,22 @@ namespace GnomeSubfinder.Core.Core
 			}
 		}
 
-		Preferences ()
+		public Preferences()
 		{
+			appSettings = ConfigurationManager.OpenExeConfiguration (ConfigurationUserLevel.PerUserRoamingAndLocal);
+			
+			if (appSettings.Sections ["settings"] == null || !(appSettings.Sections ["settings"] is PreferencesConfiguration)) {
+				appSettings.Sections.Add ("settings", new PreferencesConfiguration ());
+			}
+			section = appSettings.Sections ["settings"] as PreferencesConfiguration;
 		}
+
+		public void Save()
+		{
+			appSettings.Save ();
+		}
+
+
 
 		public int ActiveTab {
 			get { return GetGConfNode (ACTIVE_TAB_KEY, 0); }
@@ -52,8 +111,8 @@ namespace GnomeSubfinder.Core.Core
 		}
 
 		public string Languages {
-			private get { return GetGConfNode (LANGUAGES_KEY, string.Empty); }
-			set { SetGConfNode (LANGUAGES_KEY, value); }
+			private get { return GetGConfNode (LANGUAGES_KEY, LanguageSet.Instance.JoinedLanguages, x=> x!= string.Empty); }
+			set { SetGConfNode (LANGUAGES_KEY, value, x => x != string.Empty); }
 		}
 
 		public string[] GetSelectedLanguages ()
@@ -77,15 +136,10 @@ namespace GnomeSubfinder.Core.Core
 
 		T GetGConfNode<T> (string nodePath, T defaultValue, Func<T, bool> verifyMethod = null)
 		{
-			try {
-				var val = (T)client.Get (nodePath);
-				if (verifyMethod != null)
-					return verifyMethod (val) ? val : defaultValue;
-				return val;
-			} catch {
-				// todo log
-				return defaultValue;
-			}
+			var val = (T)section [nodePath];
+			if (verifyMethod != null)
+				return verifyMethod (val) ? val : defaultValue;
+			return val;
 		}
 
 		bool SetGConfNode<T> (string nodePath, T value, Func<T, bool> verifyMethod = null)
@@ -93,11 +147,11 @@ namespace GnomeSubfinder.Core.Core
 			if (verifyMethod != null && !verifyMethod (value))
 				return false;
 
-			client.Set (nodePath, value);
+			section [nodePath] = value;
 			return true;	
 		}
 
-		static string GetDefaultSZipPath ()
+		public static string GetDefaultSZipPath ()
 		{
 			var p = new Process { StartInfo = new ProcessStartInfo ("whereis", "7z") {
 					UseShellExecute = false,

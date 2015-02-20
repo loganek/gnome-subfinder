@@ -53,6 +53,7 @@ namespace Subfinder
 					Preferences.Instance.SZipPath = sevenZipPath.Text;
 					Preferences.Instance.TemporaryDirectory = tempDirEntry.Text;
 					Preferences.Instance.DownloadingTimeout = (int)(timeoutSpinButton.Value * 1000);
+					Preferences.Instance.Save ();
 				}
 				Destroy ();
 			};

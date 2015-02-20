@@ -47,6 +47,7 @@
       <Package>gio-sharp-3.0</Package>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="subfinder.glade" />

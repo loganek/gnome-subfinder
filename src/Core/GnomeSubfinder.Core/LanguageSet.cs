@@ -57,6 +57,12 @@ namespace GnomeSubfinder.Core.Core
 		public Dictionary<string, string> Languages {
 			get { return langs; }
 		}
+
+		public string JoinedLanguages {
+			get {
+				return string.Join (",", langs.Values);
+			}
+		}
 	}
 }
 
