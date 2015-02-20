@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnomeSubfinder.Core", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnomeSubfinder.Interfaces", "src\Core\GnomeSubfinder.Interfaces\GnomeSubfinder.Interfaces.csproj", "{C597283C-71A8-4ED6-86A4-043E174BB903}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnomeSubfinder.GUIHelper", "src\Core\GnomeSubfinder.GUIHelper\GnomeSubfinder.GUIHelper.csproj", "{5EE3CD46-EB60-4A4D-A534-90343FA36E10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -33,6 +35,10 @@ Global
 		{57E2301E-387A-4BD3-AE04-4AC5DCF31488}.Debug|x86.Build.0 = Debug|x86
 		{57E2301E-387A-4BD3-AE04-4AC5DCF31488}.Release|x86.ActiveCfg = Release|x86
 		{57E2301E-387A-4BD3-AE04-4AC5DCF31488}.Release|x86.Build.0 = Release|x86
+		{5EE3CD46-EB60-4A4D-A534-90343FA36E10}.Debug|x86.ActiveCfg = Debug|x86
+		{5EE3CD46-EB60-4A4D-A534-90343FA36E10}.Debug|x86.Build.0 = Debug|x86
+		{5EE3CD46-EB60-4A4D-A534-90343FA36E10}.Release|x86.ActiveCfg = Release|x86
+		{5EE3CD46-EB60-4A4D-A534-90343FA36E10}.Release|x86.Build.0 = Release|x86
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}.Debug|x86.Build.0 = Debug|Any CPU
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}.Release|x86.ActiveCfg = Release|Any CPU
@@ -56,6 +62,7 @@ Global
 		{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06} = {20FA1EED-7449-41E8-AE8F-80770D79942E}
 		{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
 		{C597283C-71A8-4ED6-86A4-043E174BB903} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
+		{5EE3CD46-EB60-4A4D-A534-90343FA36E10} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\Clients\Subfinder\Subfinder.csproj

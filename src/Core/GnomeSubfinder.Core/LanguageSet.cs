@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Gdk;
 
 namespace GnomeSubfinder.Core.Core
 {
@@ -47,13 +46,7 @@ namespace GnomeSubfinder.Core.Core
 		public string this [string key] {
 			get { return langs [key]; }
 		}
-
-		public Pixbuf GetFlag (string country, int width, int height)
-		{
-			country = country.Replace (' ', '_');
-			return Pixbuf.LoadFromResource ("Core.Resources.flags." + country + ".png").ScaleSimple (width, height, InterpType.Nearest);
-		}
-
+			
 		public Dictionary<string, string> Languages {
 			get { return langs; }
 		}

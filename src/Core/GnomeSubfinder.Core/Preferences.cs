@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using Mono.Unix.Native;
 using System.Collections.Generic;
 using System.Configuration;
 
@@ -178,12 +177,13 @@ namespace GnomeSubfinder.Core.Core
 
 		static bool IsValidExecutable (string path)
 		{
-			if (!File.Exists (path))
-				return false;
+			return File.Exists (path);
 
-			Stat buf;
-			Syscall.stat (path, out buf);
-			return (int)(buf.st_mode & (FilePermissions.S_IXGRP | FilePermissions.S_IXUSR | FilePermissions.S_IXOTH)) > 0;
+			// todo On unix systems it can be extended by following code (but it requires Mono.Posix...): 
+			// Mono.Unix.Native.Stat buf;
+			// Mono.Unix.Native.Syscall.stat (path, out buf);
+			// return (int)(buf.st_mode & (Mono.Unix.Native.FilePermissions.S_IXGRP |
+			//	Mono.Unix.Native.FilePermissions.S_IXUSR | Mono.Unix.Native.FilePermissions.S_IXOTH)) > 0;
 		}
 	}
 }

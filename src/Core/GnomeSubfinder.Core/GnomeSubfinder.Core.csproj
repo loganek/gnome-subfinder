@@ -28,19 +28,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-3.0</Package>
-    </Reference>
-    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gio-sharp-3.0</Package>
-    </Reference>
-    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>glib-sharp-3.0</Package>
-    </Reference>
-    <Reference Include="gconf-sharp, Version=2.24.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gconf-sharp-2.0</Package>
-    </Reference>
-    <Reference Include="Mono.Posix" />
     <Reference Include="nunit.framework" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
@@ -65,25 +52,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\flags\Belarusian.png" />
-    <EmbeddedResource Include="Resources\flags\Bulgarian.png" />
-    <EmbeddedResource Include="Resources\flags\Czech.png" />
-    <EmbeddedResource Include="Resources\flags\Chinese.png" />
-    <EmbeddedResource Include="Resources\flags\Danish.png" />
-    <EmbeddedResource Include="Resources\flags\English.png" />
-    <EmbeddedResource Include="Resources\flags\Finnish.png" />
-    <EmbeddedResource Include="Resources\flags\French.png" />
-    <EmbeddedResource Include="Resources\flags\Greek.png" />
-    <EmbeddedResource Include="Resources\flags\Hindi.png" />
-    <EmbeddedResource Include="Resources\flags\Hungarian.png" />
-    <EmbeddedResource Include="Resources\flags\Irish.png" />
-    <EmbeddedResource Include="Resources\flags\Italian.png" />
-    <EmbeddedResource Include="Resources\flags\Japanese.png" />
-    <EmbeddedResource Include="Resources\flags\Polish.png" />
-    <EmbeddedResource Include="Resources\flags\Portuguese.png" />
-    <EmbeddedResource Include="Resources\flags\Slovak.png" />
-    <EmbeddedResource Include="Resources\flags\Slovenian.png" />
-    <EmbeddedResource Include="Resources\flags\Spanish.png" />
-    <EmbeddedResource Include="Resources\flags\Turkish.png" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>

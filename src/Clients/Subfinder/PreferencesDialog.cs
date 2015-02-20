@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using Gdk;
-using Mono.Unix;
 using GnomeSubfinder.Core.Core;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using GnomeSubfinder.Core.GUIHelper;
 
 namespace Subfinder
 {

@@ -77,6 +77,10 @@
       <Project>{57E2301E-387A-4BD3-AE04-4AC5DCF31488}</Project>
       <Name>SubfinderConsole</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\GnomeSubfinder.GUIHelper\GnomeSubfinder.GUIHelper.csproj">
+      <Project>{5EE3CD46-EB60-4A4D-A534-90343FA36E10}</Project>
+      <Name>GnomeSubfinder.GUIHelper</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
