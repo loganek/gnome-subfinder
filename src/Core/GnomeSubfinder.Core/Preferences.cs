@@ -65,22 +65,6 @@ namespace GnomeSubfinder.Core.Core
 			return val;
 		}
 
-		public string[] GetSelectedLanguages ()
-		{
-			return (from lang in Languages.Split (new[] { ',' })
-			        where lang.EndsWith ("_", StringComparison.Ordinal)
-			        select lang.Remove (3)).ToArray ();
-		}
-
-		public string SelectedLanguages { 
-			get { return string.Join (",", GetSelectedLanguages ()); } 
-		}
-
-		public string[] GetAllLanguages ()
-		{
-			return Languages.Replace ("_", "").Split (new []{ ',' });
-		}
-
 		public static string GetDefaultSZipPath ()
 		{
 			var p = new Process { StartInfo = new ProcessStartInfo ("whereis", "7z") {
@@ -118,9 +102,10 @@ namespace GnomeSubfinder.Core.Core
 		}
 	}
 
-	public class Preferences : PreferencesConfiguration
+	public class Preferences
 	{
 		readonly Configuration appSettings;
+		readonly PreferencesConfiguration configuration;
 		static Preferences instance;
 
 		public static Preferences Instance {
@@ -141,11 +126,69 @@ namespace GnomeSubfinder.Core.Core
 			if (!(appSettings.Sections ["settings"] is PreferencesConfiguration)) {
 				appSettings.Sections.Add ("settings", new PreferencesConfiguration ());
 			}
+
+			configuration = appSettings.Sections ["settings"] as PreferencesConfiguration;
 		}
 
 		public void Save ()
 		{
 			appSettings.Save ();
+		}
+
+		public string Languages {
+			get { return configuration.Languages; }
+			set { configuration.Languages = value; }
+		}
+
+		public string SevenZipPath {
+			get { return configuration.SevenZipPath; }
+			set { configuration.SevenZipPath = value; }
+		}
+
+		public string TempDirPath {
+			get { return configuration.TempDirPath; }
+			set { configuration.TempDirPath = value; }
+		}
+
+		public bool OverrideSubtitles {
+			get { return configuration.OverrideSubtitles; }
+			set { configuration.OverrideSubtitles = value; }
+		}
+
+		public int DownloadingTimeout {
+			get { return configuration.DownloadingTimeout; }
+			set { configuration.DownloadingTimeout = value; }
+		}
+
+		public int ActiveTab {
+			get { return configuration.ActiveTab; }
+			set { configuration.ActiveTab = value; }
+		}
+
+		public string Player {
+			get { return configuration.Player; }
+			set { configuration.Player = value; }
+		}
+
+		public string PlayerArgs {
+			get { return configuration.PlayerArgs; }
+			set { configuration.PlayerArgs = value; }
+		}
+
+		public string[] GetSelectedLanguages ()
+		{
+			return (from lang in Languages.Split (new[] { ',' })
+				where lang.EndsWith ("_", StringComparison.Ordinal)
+				select lang.Remove (3)).ToArray ();
+		}
+
+		public string SelectedLanguages { 
+			get { return string.Join (",", GetSelectedLanguages ()); } 
+		}
+
+		public string[] GetAllLanguages ()
+		{
+			return Languages.Replace ("_", "").Split (new []{ ',' });
 		}
 	}
 }
