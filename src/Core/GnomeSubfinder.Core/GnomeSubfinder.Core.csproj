@@ -38,15 +38,10 @@
     <Compile Include="SubtitleDownloader.cs" />
     <Compile Include="LanguageSet.cs" />
     <Compile Include="Preferences.cs" />
-    <Compile Include="SubtitleFileInfoTest.cs" />
     <Compile Include="SubtitleSaver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\Backends\Backends.OpenSubtitles.org\GnomeSubfinder.OpenSubtitles.org.csproj">
-      <Project>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</Project>
-      <Name>GnomeSubfinder.OpenSubtitles.org</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GnomeSubfinder.DataStructures\GnomeSubfinder.DataStructures.csproj">
       <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
       <Name>GnomeSubfinder.DataStructures</Name>

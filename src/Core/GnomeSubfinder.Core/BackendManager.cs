@@ -1,6 +1,5 @@
 ﻿using System.Linq;
-using GnomeSubfinder.Backends.OpenSubtitles;
-using System.Globalization;
+using GnomeSubfinder.Core.DataStructures;
 
 namespace GnomeSubfinder.Core.Core
 {
@@ -8,12 +7,12 @@ namespace GnomeSubfinder.Core.Core
 	{
 		readonly BackendCollection backends = new BackendCollection ();
 
-		public BackendManager ()
+		public void AddBackend<T> (params object[] parameters) where T : IBackend, new()
 		{
-			backends.Add <OpenSubtitlesBackend> ("loganek", "test", CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
+			backends.Add<T> (parameters);
 		}
 
-		public DataStructures.SubtitleFileInfo[] SearchSubtitles (DataStructures.VideoFileInfo video, string[] languages)
+		public SubtitleFileInfo[] SearchSubtitles (VideoFileInfo video, string[] languages)
 		{
 			return backends.SelectMany (b => b.SearchSubtitles (video, languages)).ToArray ();
 		}
