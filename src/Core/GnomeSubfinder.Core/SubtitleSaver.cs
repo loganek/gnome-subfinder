@@ -25,7 +25,7 @@ namespace GnomeSubfinder.Core.Core
 			bool overrideSubs = Preferences.Instance.OverrideSubtitles;
 
 			if (!overrideSubs) {
-				MakeSpace (destination, outDirectory);
+				destination = GenerateNewFilename (destination, outDirectory);
 			}
 			if (outDirectory == null)
 				return;
@@ -46,7 +46,7 @@ namespace GnomeSubfinder.Core.Core
 			p.WaitForExit ();
 		}
 
-		static void MakeSpace (string filename, string directory)
+		static string GenerateNewFilename (string filename, string directory)
 		{
 			string newFilename = filename;
 			int index = 1;
@@ -54,9 +54,7 @@ namespace GnomeSubfinder.Core.Core
 				newFilename = GenerateFilenameWithBrackets (filename, index++);
 			}
 
-			if (filename != newFilename) {
-				File.Move (Path.Combine (directory, filename), Path.Combine (directory, newFilename));
-			}
+			return newFilename;
 		}
 
 		static string GenerateFilenameWithBrackets (string filename, int index)

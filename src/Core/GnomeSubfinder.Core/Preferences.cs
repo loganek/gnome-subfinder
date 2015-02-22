@@ -35,7 +35,7 @@ namespace GnomeSubfinder.Core.Core
 
 		[ConfigurationProperty ("down-timeout")]
 		public int DownloadingTimeout {
-			get { return GetConfigNode (Convert.ToInt32 (this ["down-timeout"]), 3000, x => x > 0); }
+			get { return GetConfigNode (Convert.ToInt32 (this ["down-timeout"]), 6000, x => x > 0); }
 			set { this ["down-timeout"] = value; }
 		}
 
