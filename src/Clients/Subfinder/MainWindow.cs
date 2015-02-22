@@ -219,7 +219,7 @@ namespace Subfinder
 		void PreferencesActiveBtn (object sender, EventArgs e)
 		{
 			var builder = new Builder (null, "Subfinder.subfinder-properties.glade", null);
-			var preferences = new PreferencesDialog (controller, builder, builder.GetObject ("preferencesDialog").Handle);
+			var preferences = new PreferencesDialog (builder, builder.GetObject ("preferencesDialog").Handle);
 			preferences.Run ();
 			preferences.Destroy ();
 		}
