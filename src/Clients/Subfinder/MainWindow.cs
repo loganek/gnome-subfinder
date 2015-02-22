@@ -29,12 +29,14 @@ namespace Subfinder
 		[UI] readonly ScrolledWindow scrolledwindow3;
 		[UI] readonly Menu subsInfoMenu;
 
+		readonly object appenderLocker = new object ();
+
 		TreeModelSort sorter;
 
 		readonly Spinner waitWidget = new Spinner { Visible = true, Active = true };
 
 		TreeStore subtitlesStore;
-		readonly ListStore oneClickVideoStore;
+		readonly TreeStore oneClickVideoStore;
 
 		readonly BackendManager controller = new BackendManager ();
 
@@ -50,7 +52,7 @@ namespace Subfinder
 
 			mainNotebook.SwitchPage += (o, args) => treeview3.Reparent (args.PageNum == 0 ? scrolledwindow4 : scrolledwindow3);
 
-			oneClickVideoStore = new ListStore (typeof(Gdk.Pixbuf), typeof(string), typeof(SubtitleFileInfo));
+			oneClickVideoStore = new TreeStore (typeof(Gdk.Pixbuf), typeof(string), typeof(SubtitleFileInfo));
 			treeview3.Model = oneClickVideoStore;
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
 		}
@@ -157,6 +159,20 @@ namespace Subfinder
 			new System.Threading.Thread (FindSubtitles).Start ();
 		}
 
+		TreeIter FindParentIter (SubtitleFileInfo subtitleFile)
+		{
+			TreeIter iter;
+			bool ok = oneClickVideoStore.GetIterFirst (out iter);
+			while (ok) {
+				var t = oneClickVideoStore.GetValue (iter, 1) as string;
+				if (t == subtitleFile.Video.FileName) {
+					return iter;
+				}
+				ok = oneClickVideoStore.IterNext (ref iter);
+			}
+			return TreeIter.Zero;
+		}
+
 		void DownloadSubtitles (SubtitleFileInfo[] subs)
 		{
 			if (subs.Length == 0)
@@ -174,9 +190,17 @@ namespace Subfinder
 			downloader.DownloadStatusChanged += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
 				downloadStatus.Fraction = downloader.Status;
-				oneClickVideoStore.AppendValues (
-					Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", evt.Error ? "bad" : "good")),
-					evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
+
+				lock (appenderLocker) {
+					TreeIter parent = FindParentIter (evt.SubtitleFile);
+					if (parent.Equals (TreeIter.Zero)) {
+						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", evt.Error ? "bad" : "good")),
+							evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
+					}
+					oneClickVideoStore.AppendValues (parent, 
+						Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", evt.Error ? "bad" : "good")),
+						evt.SubtitleFile.CurrentPath, evt.SubtitleFile);
+				}
 			});
 
 			new System.Threading.Thread (downloader.Download).Start ();
@@ -247,7 +271,7 @@ namespace Subfinder
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
 					var langs = Preferences.Instance.GetSelectedLanguages ();
-					var backends = controller.Backends.Select(b=>b.GetName()).ToArray();
+					var backends = controller.Backends.Select (b => b.GetName ()).ToArray ();
 					subs.Add (SubtitleFileInfo.MatchBest (controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs), langs, backends));
 				}
 				DownloadSubtitles (subs.ToArray ());
@@ -289,9 +313,6 @@ namespace Subfinder
 
 		void ViewPopupMenu ()
 		{
-			if (treeview3.Selection.CountSelectedRows () == 0)
-				return;
-
 			subsInfoMenu.Show ();
 			subsInfoMenu.Popup ();
 		}
@@ -312,7 +333,7 @@ namespace Subfinder
 		{
 			TreeIter iter;
 			treeview3.Selection.GetSelected (out iter);
-			return treeview3.Model.GetValue (iter, 2) as SubtitleFileInfo;
+			return iter.Equals (TreeIter.Zero) ? null : treeview3.Model.GetValue (iter, 2) as SubtitleFileInfo;
 		}
 
 		void ShowMovieInfo (object sender, EventArgs e)
