@@ -175,7 +175,7 @@ namespace Subfinder
 				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
 				downloadStatus.Fraction = downloader.Status;
 				oneClickVideoStore.AppendValues (
-					Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.Resources.{0}.png", evt.Error ? "bad" : "good")),
+					Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", evt.Error ? "bad" : "good")),
 					evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
 			});
 

@@ -18,7 +18,7 @@ namespace GnomeSubfinder.Core.Core
 		public void ReloadBackends ()
 		{
 			var path = Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location);
-			string[] backendDlls = { Path.Combine(path, "OpenSubtitles.org.dll") }; 
+			string[] backendDlls = { Path.Combine(path, "GnomeSubfinder.OpenSubtitles.dll") }; 
 			backends.Clear ();
 
 			foreach (var dllFile in backendDlls) {

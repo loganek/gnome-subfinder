@@ -2,3 +2,14 @@
 obj
 bin
 *~
+
+autom4te.cache
+configure
+Makefile
+Makefile.in
+aclocal.m4
+config.log
+config.status
+install-sh
+missing
+src/AssemblyInfo.cs

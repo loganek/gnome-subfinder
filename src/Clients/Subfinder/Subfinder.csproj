@@ -52,8 +52,12 @@
   <ItemGroup>
     <EmbeddedResource Include="subfinder.glade" />
     <EmbeddedResource Include="subfinder-properties.glade" />
-    <EmbeddedResource Include="Resources\bad.png" />
-    <EmbeddedResource Include="Resources\good.png" />
+    <EmbeddedResource Include="Resources\bad.png">
+      <LogicalName>Subfinder.bad.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\good.png">
+      <LogicalName>Subfinder.good.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Subfinder.cs" />

@@ -6,7 +6,7 @@
     <ProjectGuid>{8927B43B-F3F1-42BB-B84A-2AB3BC54EF06}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>GnomeSubfinder.Backends.OpenSubtitles</RootNamespace>
-    <AssemblyName>OpenSubtitles.org</AssemblyName>
+    <AssemblyName>GnomeSubfinder.OpenSubtitles</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
