@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1}</ProjectGuid>
+    <ProjectGuid>{E920EC1E-6ED8-411C-8EEF-296BEA58027F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>GnomeSubfinder.Core.Core</RootNamespace>
-    <AssemblyName>Core</AssemblyName>
+    <RootNamespace>GnomeSubfinder.CoreTest</RootNamespace>
+    <AssemblyName>GnomeSubfinder.CoreTest</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,19 +29,16 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="nunit.framework" />
-    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BackendCollection.cs" />
-    <Compile Include="BackendManager.cs" />
-    <Compile Include="SubtitleDownloader.cs" />
-    <Compile Include="LanguageSet.cs" />
-    <Compile Include="Preferences.cs" />
-    <Compile Include="SubtitleSaver.cs" />
+    <Compile Include="SubtitleFileInfoTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\GnomeSubfinder.Core\GnomeSubfinder.Core.csproj">
+      <Project>{D30C5C3F-FE4D-4F2B-A73E-A0FB1971EEB1}</Project>
+      <Name>GnomeSubfinder.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GnomeSubfinder.DataStructures\GnomeSubfinder.DataStructures.csproj">
       <Project>{C597283C-71A8-4ED6-86A4-043E174BB903}</Project>
       <Name>GnomeSubfinder.DataStructures</Name>

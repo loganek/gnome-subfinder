@@ -24,7 +24,6 @@ namespace Subfinder
 		static void Main (String[] args)
 		{
 			var optParser = new OptionParser<Options> (new Options (), args);
-
 			try {
 				optParser.Parse ();
 			} catch (ArgumentException ex) {

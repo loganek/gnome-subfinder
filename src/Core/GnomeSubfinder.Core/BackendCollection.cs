@@ -9,9 +9,14 @@ namespace GnomeSubfinder.Core.Core
 		readonly List<IBackend> backends = new List<IBackend> ();
 		int position = -1;
 
-		public void Add<T> (params object[] parameters) where T : IBackend, new()
+		public void Clear ()
 		{
-			var backend = new T ();
+			backends.Clear ();
+			Reset ();
+		}
+
+		public void Add (IBackend backend, params object[] parameters)
+		{
 			backend.Init (parameters);
 			backends.Add (backend);
 		}
@@ -26,7 +31,7 @@ namespace GnomeSubfinder.Core.Core
 			return enumerable.Any () ? enumerable [0] as T : null;
 		}
 
-		public IBackend GetByDatabase (string dbName)
+		public IBackend GetByName (string dbName)
 		{
 			var c = (from backend in backends
 			         where backend.GetName () == dbName

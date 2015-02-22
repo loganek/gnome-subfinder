@@ -5,6 +5,7 @@ using System.Text;
 using CookComputing.XmlRpc;
 using GnomeSubfinder.Core.DataStructures;
 using System.Reflection;
+using System.Globalization;
 
 namespace GnomeSubfinder.Backends.OpenSubtitles
 {
@@ -19,9 +20,9 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 			osProxy.Url = "http://api.opensubtitles.org/xml-rpc";
 		}
 
-		public bool LogIn (string username, string password, string language)
+		public bool LogIn (string username, string password)
 		{
-			LogInOutInfo info = osProxy.LogIn (username, password, language, "SolEol 0.0.8"); // todo own useragent!
+			LogInOutInfo info = osProxy.LogIn (username, password, CultureInfo.CurrentCulture.TwoLetterISOLanguageName, "SolEol 0.0.8"); // todo own useragent!
 
 			try {
 				CheckStatus (info.status);
@@ -114,10 +115,8 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 
 		public bool Init (params object[] parameters)
 		{
-			if (parameters.Length != 3)
-				throw new Exception ("Not enough arguments. Required: (login, password, language)");
+			return parameters.Length != 2 ? LogIn ("", "") : LogIn (parameters [0].ToString (), parameters [1].ToString ());
 
-			return LogIn (parameters [0].ToString (), parameters [1].ToString (), parameters [2].ToString ());
 		}
 
 		public Tuple<Assembly, string> GetLogoAssemblyInfo ()
