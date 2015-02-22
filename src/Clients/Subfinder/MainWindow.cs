@@ -194,7 +194,7 @@ namespace Subfinder
 				lock (appenderLocker) {
 					TreeIter parent = FindParentIter (evt.SubtitleFile);
 					if (parent.Equals (TreeIter.Zero)) {
-						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", evt.Error ? "bad" : "good")),
+						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.mov.png")),
 							evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
 					}
 					oneClickVideoStore.AppendValues (parent, 
