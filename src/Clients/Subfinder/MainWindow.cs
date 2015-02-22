@@ -203,7 +203,7 @@ namespace Subfinder
 				}
 			});
 
-			new System.Threading.Thread (downloader.Download).Start ();
+			downloader.Download ();
 
 			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
 				downloadSelectedButton.Sensitive = true;

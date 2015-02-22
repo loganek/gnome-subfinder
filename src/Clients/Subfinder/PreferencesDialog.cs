@@ -16,7 +16,6 @@ namespace Subfinder
 		[UI] readonly TreeView nonSelectedLanguagesView;
 		[UI] readonly TreeView selectedLanguagesView;
 		[UI] readonly Entry sevenZipPath;
-		[UI] readonly ComboBox backendsCombo;
 		[UI] readonly Entry tempDirEntry;
 		[UI] readonly SpinButton timeoutSpinButton;
 		[UI] readonly CheckButton overrideSubtitlesCheckButton;

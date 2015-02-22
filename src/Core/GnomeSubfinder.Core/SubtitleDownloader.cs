@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading;
 using GnomeSubfinder.Core.DataStructures;
 
 namespace GnomeSubfinder.Core.Core
@@ -68,32 +67,30 @@ namespace GnomeSubfinder.Core.Core
 
 		public void Download ()
 		{
-			processed = 0;
-			foreach (var subtitleFile in subtitleFiles) {
-				DownloadSingleFile (subtitleFile);
-			}
+			new System.Threading.Thread (() => {
+				processed = 0;
+				foreach (var subtitleFile in subtitleFiles) {
+					DownloadSingleFile (subtitleFile);
+				}
+			}).Start ();
 		}
 
 		void DownloadSingleFile (SubtitleFileInfo file)
 		{
 			var cli = new TimeoutedWebClient (timeout);
-			cli.DownloadDataAsync (new Uri (file.DownloadFile));
-
-			var tmp = file;
-			cli.DownloadDataCompleted += (sender, e) => {
-				bool err = false;
-				try {
-					new SubtitleSaver ().Save (tmp, e.Result);
-				} catch (Exception) {
-					err = true;
-				} finally {
-					err = err | e.Cancelled | (e.Error != null);
-					OnDownloadStatusChanged (new DownloadStatusChangedEventArgs (tmp, err));
-					Interlocked.Increment (ref processed);
-					if (Processed == Total)
-						OnDownloadCompleted (new EventArgs ());
-				}
-			};
+			byte[] data = null;
+			bool err = false;
+			try {
+				data = cli.DownloadData (file.DownloadFile);
+				new SubtitleSaver ().Save (file, data);
+			} catch (Exception) {
+				err = true;
+			} finally {
+				OnDownloadStatusChanged (new DownloadStatusChangedEventArgs (file, err));
+				processed++;
+				if (Processed == Total)
+					OnDownloadCompleted (new EventArgs ());
+			}
 		}
 
 		public void Add (SubtitleFileInfo s)
