@@ -33,6 +33,11 @@ namespace GnomeSubfinder.Core.Core
 			}
 		}
 
+		public string[] GetBackendNames ()
+		{
+			return backends.Select (b => b.GetName ()).ToArray ();
+		}
+
 		public SubtitleFileInfo[] SearchSubtitles (VideoFileInfo video, string[] languages)
 		{
 			return backends.SelectMany (b => b.SearchSubtitles (video, languages)).ToArray ();

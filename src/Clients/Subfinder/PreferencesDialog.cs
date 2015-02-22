@@ -90,21 +90,10 @@ namespace Subfinder
 				store.AppendValues (langName, LanguageSet.Instance.GetFlag (langName, 40, 20), lang);
 			}
 		}
-			
-		static TreeIter GetSelectedIter(TreeView tree)
-		{
-			if (tree.Selection.GetSelectedRows ().Length == 0)
-				return TreeIter.Zero;
-
-			TreeIter iter;
-			tree.Selection.GetSelected (out iter);
-
-			return iter;
-		}
 
 		void MoveItem (int position, bool absolute)
 		{
-			TreeIter tmpIter = GetSelectedIter (selectedLanguagesView);
+			TreeIter tmpIter = Utils.GetSelectedIter (selectedLanguagesView);
 			if (tmpIter.Equals(TreeIter.Zero))
 				return;
 			TreeIter iter;
@@ -142,7 +131,7 @@ namespace Subfinder
 
 		static void SwapLanguages(TreeView t, ListStore l1, ListStore l2)
 		{
-			var iter = GetSelectedIter (t);
+			var iter = Utils.GetSelectedIter (t);
 			if (iter.Equals(TreeIter.Zero))
 				return;
 

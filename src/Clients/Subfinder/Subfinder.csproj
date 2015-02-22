@@ -66,6 +66,7 @@
     <Compile Include="Subfinder.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="PreferencesDialog.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\GnomeSubfinder.Core\GnomeSubfinder.Core.csproj">

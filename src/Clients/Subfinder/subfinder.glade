@@ -62,16 +62,16 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-save</property>
   </object>
-  <object class="GtkMenu" id="subsInfoMenu">
+  <object class="GtkMenu" id="subtitlesMenu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkMenuItem" id="showInfoMenuItem">
+      <object class="GtkMenuItem" id="showMovieInfoMenuItem">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Show movie info</property>
         <property name="use_underline">True</property>
-        <signal name="activate" handler="ShowMovieInfo" swapped="no"/>
+        <signal name="activate" handler="on_showMovieInfo_activate" swapped="no"/>
       </object>
     </child>
     <child>
@@ -80,13 +80,14 @@
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Play video using this subtitles</property>
         <property name="use_underline">True</property>
-        <signal name="activate" handler="PlayVideoFile" swapped="no"/>
+        <signal name="activate" handler="on_playVideo_activate" swapped="no"/>
       </object>
     </child>
     <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+      <object class="GtkSeparatorMenuItem" id="copySubtitlesMenuItem">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <signal name="activate" handler="on_copySubtitlesPath_activate" swapped="no"/>
       </object>
     </child>
     <child>
@@ -95,7 +96,7 @@
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Copy subtitles path to clipboard</property>
         <property name="use_underline">True</property>
-        <signal name="activate" handler="CopyToClipboard" swapped="no"/>
+        <signal name="activate" handler="on_copySubtitlesPath_activate" swapped="no"/>
       </object>
     </child>
   </object>
@@ -144,14 +145,12 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem5">
-                        <property name="label">gtk-quit</property>
+                      <object class="GtkMenuItem" id="quitMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <property name="always_show_image">True</property>
-                        <signal name="activate" handler="QuitClick" swapped="no"/>
+                        <signal name="activate" handler="on_quit_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -169,37 +168,36 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkMenuItem" id="menuitem3">
+                      <object class="GtkMenuItem" id="showMovieInfoMenuItem2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Show movie info</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="ShowMovieInfo" swapped="no"/>
+                        <signal name="activate" handler="on_showMovieInfo_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="menuitem5">
+                      <object class="GtkMenuItem" id="playVideoMenuItem2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Play video using this subtitles</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="PlayVideoFile" swapped="no"/>
+                        <signal name="activate" handler="on_playVideo_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="menuitem6">
+                      <object class="GtkMenuItem" id="copySubtitlesMenuItem2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Copy subtitles path to clipboard</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="CopyToClipboard" swapped="no"/>
+                        <signal name="activate" handler="on_copySubtitlesPath_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="menuitem7">
+                      <object class="GtkSeparatorMenuItem" id="separatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <signal name="activate" handler="CopyToClipboard" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -259,7 +257,7 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkButton" id="button1">
+                  <object class="GtkButton" id="oneClickDownloadButton">
                     <property name="label" translatable="yes">Select file(s) and download!</property>
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
@@ -268,7 +266,7 @@
                     <property name="image">image5</property>
                     <property name="relief">half</property>
                     <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="OneClickDownloadBtn" swapped="no"/>
+                    <signal name="clicked" handler="on_oneClickDownload_click" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -277,18 +275,18 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow4">
+                  <object class="GtkScrolledWindow" id="simpleModeContainer">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="shadow_type">in</property>
                     <child>
-                      <object class="GtkTreeView" id="treeview3">
+                      <object class="GtkTreeView" id="downloadedSubtitlesView">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="search_column">1</property>
                         <property name="enable_grid_lines">horizontal</property>
-                        <signal name="button-release-event" handler="OnPopUpMenu" swapped="no"/>
-                        <signal name="popup-menu" handler="PopupMenuNoClick" swapped="no"/>
+                        <signal name="button-release-event" handler="on_downloadedSubtitles_release" swapped="no"/>
+                        <signal name="popup-menu" handler="on_downloadedSubtitles_popup" swapped="no"/>
                         <child internal-child="selection">
                           <object class="GtkTreeSelection" id="treeview-selection8"/>
                         </child>
@@ -361,7 +359,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="shadow_type">in</property>
                                 <child>
-                                  <object class="GtkTreeView" id="filesTreeView">
+                                  <object class="GtkTreeView" id="videoFilesView">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="model">videosStore</property>
@@ -396,13 +394,13 @@
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <object class="GtkButton" id="openFileButton">
+                                  <object class="GtkButton" id="addVideoButton">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="image">image1</property>
                                     <property name="always_show_image">True</property>
-                                    <signal name="clicked" handler="OpenBtnClick" swapped="no"/>
+                                    <signal name="clicked" handler="on_addVideo_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -417,7 +415,7 @@
                                     <property name="receives_default">True</property>
                                     <property name="image">image4</property>
                                     <property name="yalign">0.49000000953674316</property>
-                                    <signal name="clicked" handler="RemoveVideoBtnClick" swapped="no"/>
+                                    <signal name="clicked" handler="on_removeVideo_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -431,7 +429,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="image">image2</property>
-                                    <signal name="clicked" handler="SearchBtnClick" swapped="no"/>
+                                    <signal name="clicked" handler="on_searchSubtitles_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -462,7 +460,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <object class="GtkTreeView" id="subsTree">
+                                  <object class="GtkTreeView" id="foundSubtitlesView">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="vexpand">True</property>
@@ -564,7 +562,7 @@
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkButton" id="downloadSelectedButton">
+                          <object class="GtkButton" id="downloadSubtitles">
                             <property name="label" translatable="yes">Download selected subtitles</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -574,7 +572,7 @@
                             <property name="xalign">0.49000000953674316</property>
                             <property name="yalign">0.49000000953674316</property>
                             <property name="always_show_image">True</property>
-                            <signal name="clicked" handler="DownloadSelectedBtnClick" swapped="no"/>
+                            <signal name="clicked" handler="on_downloadSelected_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -583,7 +581,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkScrolledWindow" id="scrolledwindow3">
+                          <object class="GtkScrolledWindow" id="advancedModeContainer">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="vexpand">True</property>
