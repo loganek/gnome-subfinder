@@ -45,6 +45,7 @@ namespace Subfinder
 			builder.Autoconnect (this);
 			Destroyed += (sender, e) => {
 				Preferences.Instance.ActiveTab = mainNotebook.CurrentPage;
+				Preferences.Instance.Save ();
 				Application.Quit ();
 			};
 
