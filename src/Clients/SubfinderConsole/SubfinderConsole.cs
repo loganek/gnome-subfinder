@@ -74,7 +74,7 @@ namespace SubfinderConsole
 				}
 				Console.WriteLine (" * Download completed");
 			};
-			if (downloader.Total > 0) {
+			if (downloader.Count > 0) {
 				lock (syncer) {
 					while (!ready) {
 						Monitor.Wait (syncer);

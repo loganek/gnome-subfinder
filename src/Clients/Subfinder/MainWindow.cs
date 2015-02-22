@@ -15,6 +15,7 @@ namespace Subfinder
 	public class MainWindow : Window
 	{
 		#region UI controls
+
 		[UI] readonly FileFilter videoFilter;
 		[UI] readonly TreeView videoFilesView;
 		[UI] readonly TreeView foundSubtitlesView;
@@ -29,6 +30,8 @@ namespace Subfinder
 		[UI] readonly ScrolledWindow simpleModeContainer;
 		[UI] readonly ScrolledWindow advancedModeContainer;
 		[UI] readonly Menu subtitlesMenu;
+		[UI] readonly Button oneClickDownloadButton;
+
 		#endregion UI controls
 
 		readonly Spinner waitWidget = new Spinner { Visible = true, Active = true };
@@ -40,6 +43,8 @@ namespace Subfinder
 
 		readonly BackendManager controller = new BackendManager ();
 
+		SubtitleDownloader downloader = new SubtitleDownloader (Preferences.Instance.DownloadingTimeout);
+
 		public MainWindow (Builder builder, IntPtr handle) : base (handle)
 		{
 			builder.Autoconnect (this);
@@ -49,6 +54,9 @@ namespace Subfinder
 				Preferences.Instance.Save ();
 				Application.Quit ();
 			};
+
+			downloader.DownloadStatusChanged += on_DownloadStatusChanged;
+			downloader.DownloadCompleted += on_downloadCompleted;
 
 			foundSubtitlesView.Model = new TreeModelSort (subtitlesStore);
 
@@ -96,95 +104,63 @@ namespace Subfinder
 			return files.ToArray ();
 		}
 
+		int FindSubtitlesForSingleVideo (string filename)
+		{
+			int cnt = 0;
+			try {
+				if (!File.Exists (filename))
+					throw new IOException (string.Format (Catalog.GetString ("File {0} doesn't exist."), filename));
 
+				var languages = Preferences.Instance.GetSelectedLanguages ();
+				var subs = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, languages);
+				var bestSubs = SubtitleFileInfo.MatchBest (subs, languages, controller.GetBackendNames ());
+				Application.Invoke ((e, s) => {
+					TreeIter iter = subtitlesStore.AppendValues (null, null, null, null, System.IO.Path.GetFileName (filename), null);
+					foreach (var sub in subs) {
+						subtitlesStore.AppendValues (iter, sub == bestSubs, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
+					}
+				});
+				cnt = subs.Length;
+			} catch (IOException ex) {
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Error: " + ex.Message, MessageType.Error));
+			} catch (WebException ex) {
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Web exception: " + ex.Message, MessageType.Error));
+			} catch (ApplicationException ex) {
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Application exception: " + ex.Message, MessageType.Error));
+			} catch (ArgumentException ex) {
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Argument exception: " + ex.Message, MessageType.Error));
+			}
+			return cnt;
+		}
 
 		void FindSubtitles ()
 		{
+			Application.Invoke ((sndr, evnt) => ShowInfo ("Searching subtitles."));
 			int count = 0;
 			foreach (object[] videoFile in videosStore) {
-				var filename = videoFile [0] as string;
-				try {
-					if (!File.Exists (filename))
-						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
-
-					var subs = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, Preferences.Instance.GetSelectedLanguages ());
-
-					Application.Invoke ((e, s) => {
-						TreeIter iter = subtitlesStore.AppendValues (null, null, null, null, System.IO.Path.GetFileName (filename), null);
-						foreach (var sub in subs) {
-							subtitlesStore.AppendValues (iter, false, sub.Rating, sub.DownloadsCount, sub.Language, sub.Backend.GetName (), sub);
-						}
-						count += subs.Length;
-					});
-				} catch (IOException ex) {
-					Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Error: " + ex.Message, MessageType.Error));
-				} catch (WebException ex) {
-					Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Web exception: " + ex.Message, MessageType.Error));
-				} catch (ApplicationException ex) {
-					Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Web exception: " + ex.Message, MessageType.Error));
-				}
+				count += FindSubtitlesForSingleVideo (videoFile [0] as string);
 			}
 			Application.Invoke ((sndr, evnt) => {
 				treeParent.Remove (waitWidget);
 				treeParent.Add (foundSubtitlesView);
-				searchButton.Sensitive = true;
+				ActivateButtons (true);
 				ShowInfo (String.Format ("Search completed. Found: {0} file(s).", count));
 			});
 		}
 
-
-
 		TreeIter FindParentIter (SubtitleFileInfo subtitleFile)
 		{
-			TreeIter iter;
-			bool ok = oneClickVideoStore.GetIterFirst (out iter);
-			while (ok) {
+			TreeIter ret = TreeIter.Zero;
+			oneClickVideoStore.Foreach ((model, path, iter) => {
 				var t = oneClickVideoStore.GetValue (iter, 1) as string;
 				if (t == subtitleFile.Video.FileName) {
-					return iter;
+					ret = iter;
+					return true;
 				}
-				ok = oneClickVideoStore.IterNext (ref iter);
-			}
-			return TreeIter.Zero;
-		}
-
-		void DownloadSubtitles (SubtitleFileInfo[] subs)
-		{
-			if (subs.Length == 0)
-				return;
-
-			var downloader = new SubtitleDownloader (Preferences.Instance.DownloadingTimeout);
-			oneClickVideoStore.Clear ();
-
-			foreach (var s in subs)
-				downloader.Add (s);
-
-			ShowInfo ("Downloading subtitles...");
-			downloadSubtitles.Sensitive = false;
-
-			downloader.DownloadStatusChanged += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
-				downloadStatus.Text = downloader.Processed + "/" + downloader.Total;
-				downloadStatus.Fraction = downloader.Status;
-
-				lock (appenderLocker) {
-					TreeIter parent = FindParentIter (evt.SubtitleFile);
-					if (parent.Equals (TreeIter.Zero)) {
-						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.mov.png")),
-							evt.SubtitleFile.Video.FileName, evt.SubtitleFile);
-					}
-					oneClickVideoStore.AppendValues (parent, 
-						Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", evt.Error ? "bad" : "good")),
-						evt.SubtitleFile.CurrentPath, evt.SubtitleFile);
-				}
+				return false;
 			});
-
-			downloader.Download ();
-
-			downloader.DownloadCompleted += (sdr, evt) => Application.Invoke ((sndr, evnt) => {
-				downloadSubtitles.Sensitive = true;
-				ShowInfo ("Download completed");
-				Utils.ShowMessageDialog (Catalog.GetString ("Download completed!"), MessageType.Info);
-			});
+			
+			return ret;
 		}
 
 		static void ShowAboutActicate (object sender, EventArgs e)
@@ -195,20 +171,12 @@ namespace Subfinder
 			dialog.Destroy ();
 		}
 
-		static void PreferencesActiveBtn (object sender, EventArgs e)
-		{
-			var builder = new Builder (null, "Subfinder.subfinder-properties.glade", null);
-			var preferences = new PreferencesDialog (builder, builder.GetObject ("preferencesDialog").Handle);
-			preferences.Run ();
-			preferences.Destroy ();
-		}
-			
 		void ShowInfo (string message)
 		{
 			appStatusbar.Push (0, message);
 		}
-			
-		void ViewPopupMenu ()
+
+		void ShowDownloadedPopupMenu ()
 		{
 			subtitlesMenu.Show ();
 			subtitlesMenu.Popup ();
@@ -218,8 +186,7 @@ namespace Subfinder
 		{
 			try {
 				var request = (HttpWebRequest)WebRequest.Create (url);
-				request.Method = "HEAD";
-				request.Timeout = Preferences.Instance.DownloadingTimeout;
+				request.Method = WebRequestMethods.Http.Head;
 				return ((HttpWebResponse)request.GetResponse ()).StatusCode == HttpStatusCode.OK;
 			} catch {
 				return false;
@@ -232,14 +199,87 @@ namespace Subfinder
 			return iter.Equals (TreeIter.Zero) ? null : downloadedSubtitlesView.Model.GetValue (iter, 2) as SubtitleFileInfo;
 		}
 
-		#region Buttons clicked event
-		void on_addVideo_clicked (object sender, EventArgs e)
+		bool LoadVideosToList ()
 		{
-			foreach (var f in LoadVideoFiles ()) {
+			var v = LoadVideoFiles ();
+			foreach (var f in v) {
 				if (videosStore.Cast<object[]> ().All (filename => filename [0] as string != f)) {
 					videosStore.AppendValues (f);
 				}
 			}
+			return v.Any ();
+		}
+
+		void DownloadSelectedSubtitles ()
+		{
+			downloader.Clear ();
+			oneClickVideoStore.Clear ();
+
+			subtitlesStore.Foreach ((model, path, iter) => {
+				if ((bool)model.GetValue (iter, 0)) {
+					var s = model.GetValue (iter, 5) as SubtitleFileInfo;
+					if (s != null)
+						downloader.Add (s);
+				}
+				return false;
+			});
+
+			if (downloader.Count == 0) {
+				Utils.ShowMessageDialog ("No subtitles found", MessageType.Info);
+				return;
+			}
+
+			ShowInfo ("Downloading subtitles...");
+			ActivateButtons (false);
+
+			downloader.Download ();
+		}
+
+		void ActivateButtons (bool lockBtn)
+		{
+			var buttons = new  []{ downloadSubtitles, oneClickDownloadButton, searchButton };
+			foreach (var btn in buttons) {
+				btn.Sensitive = lockBtn;
+			}
+		}
+
+		#region Downloader handlers
+
+		void on_DownloadStatusChanged (object sender, DownloadStatusChangedEventArgs e)
+		{
+			Application.Invoke ((s, evt) => {
+				downloadStatus.Text = downloader.Processed + "/" + downloader.Count;
+				downloadStatus.Fraction = downloader.Status;
+
+				lock (appenderLocker) {
+					TreeIter parent = FindParentIter (e.SubtitleFile);
+					if (parent.Equals (TreeIter.Zero)) {
+						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.mov.png")),
+							e.SubtitleFile.Video.FileName, e.SubtitleFile);
+					}
+					oneClickVideoStore.AppendValues (parent, 
+						Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", e.Error ? "bad" : "good")),
+						e.SubtitleFile.CurrentPath, e.SubtitleFile);
+				}
+			});
+		}
+
+		void on_downloadCompleted (object sender, EventArgs e)
+		{
+			Application.Invoke ((sndr, evnt) => {
+				ActivateButtons (true);
+				ShowInfo ("Download completed");
+				Utils.ShowMessageDialog (Catalog.GetString ("Download completed!"), MessageType.Info);
+			});
+		}
+
+		#endregion Downloader handlers
+
+		#region Buttons clicked event
+
+		void on_addVideo_clicked (object sender, EventArgs e)
+		{
+			LoadVideosToList ();
 		}
 
 		void on_removeVideo_clicked (object sender, EventArgs e)
@@ -256,80 +296,60 @@ namespace Subfinder
 
 		void on_downloadSelected_clicked (object sender, EventArgs e)
 		{
-			var subs = new List<SubtitleFileInfo> ();
-			subtitlesStore.Foreach ((model, path, iter) => {
-				if ((bool)model.GetValue (iter, 0)) {
-					var s = model.GetValue (iter, 5) as SubtitleFileInfo;
-					if (s != null)
-						subs.Add (s);
-				}
-				return false;
-			});
-
-			if (subs.Count == 0) {
-				Utils.ShowMessageDialog ("Select subtitles first", MessageType.Info);
-				return;
-			}
-
-			DownloadSubtitles (subs.ToArray ());
+			DownloadSelectedSubtitles ();
 		}
 
-		void on_oneClickDownload_click (object sender, EventArgs evt)
+		void on_oneClickDownload_clicked (object sender, EventArgs evt)
 		{
-			var subs = new List<SubtitleFileInfo> ();
-			var files = LoadVideoFiles ();
-			try {
-				foreach (var filename in files) {
-					ShowInfo ("Searching subtitles for file " + filename);
-					if (!File.Exists (filename))
-						throw new IOException (string.Format(Catalog.GetString ("File {0} doesn't exists."), filename));
+			subtitlesStore.Clear ();
+			videosStore.Clear ();
 
-					var langs = Preferences.Instance.GetSelectedLanguages ();
-					subs.Add (SubtitleFileInfo.MatchBest (
-						controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs), langs, controller.GetBackendNames ()));
-				}
-				DownloadSubtitles (subs.ToArray ());
-			} catch (IOException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Error: " + ex.Message, MessageType.Error));
-			} catch (WebException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Web exception: " + ex.Message, MessageType.Error));
-			} catch (ArgumentException) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Subtitles not found. ", MessageType.Error));
-			}
+			if (!LoadVideosToList ())
+				return;
+
+			ActivateButtons (false);
+
+			new System.Threading.Thread (() => {
+				FindSubtitles ();
+				Application.Invoke ((s, e) => DownloadSelectedSubtitles ());
+			}).Start ();
 		}
 
 		void on_searchSubtitles_clicked (object sender, EventArgs e)
 		{
+			subtitlesStore.Clear ();
+
 			if (videosStore.IterNChildren () == 0) {
 				ShowInfo ("Add files first");
 				return;
 			}
 
-			subtitlesStore.Clear ();
-
-			searchButton.Sensitive = false;
+			ActivateButtons (false);
 			treeParent.Remove (foundSubtitlesView);
 			treeParent.Add (waitWidget);
-			ShowInfo ("Searching subtitles.");
 			new System.Threading.Thread (FindSubtitles).Start ();
 		}
+
 		#endregion Buttons clicked event
 
 		#region downloadedSubtitles context menu
+
 		[GLib.ConnectBefore]
 		void on_downloadedSubtitles_popup (object sender, PopupMenuArgs e)
 		{
-			ViewPopupMenu ();	
+			ShowDownloadedPopupMenu ();	
 		}
 
 		void on_downloadedSubtitles_release (object sender, ButtonReleaseEventArgs e)
 		{
-			if (e.Event.Button != 3)
-				ViewPopupMenu ();
+			if (e.Event.Button == 3)
+				ShowDownloadedPopupMenu ();
 		}
+
 		#endregion downloadedSubtitles context menu
 
 		#region Menu activate methods
+
 		void on_quit_activate (object sender, EventArgs e)
 		{
 			Destroy ();
@@ -375,6 +395,15 @@ namespace Subfinder
 			var cp = downloadedSubtitlesView.GetClipboard (Gdk.Selection.Clipboard);
 			cp.Text = sub.CurrentPath;
 		}
+
+		static void on_preferences_activate (object sender, EventArgs e)
+		{
+			var builder = new Builder (null, "Subfinder.subfinder-properties.glade", null);
+			var preferences = new PreferencesDialog (builder, builder.GetObject ("preferencesDialog").Handle);
+			preferences.Run ();
+			preferences.Destroy ();
+		}
+
 		#endregion Menu activate methods
 	}
 }

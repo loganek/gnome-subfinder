@@ -52,7 +52,7 @@ namespace GnomeSubfinder.Core.Core
 			get { return processed; }
 		}
 
-		public int Total {
+		public int Count {
 			get { return subtitleFiles.Count; } 
 		}
 
@@ -88,7 +88,7 @@ namespace GnomeSubfinder.Core.Core
 			} finally {
 				OnDownloadStatusChanged (new DownloadStatusChangedEventArgs (file, err));
 				processed++;
-				if (Processed == Total)
+				if (Processed == Count)
 					OnDownloadCompleted (new EventArgs ());
 			}
 		}
@@ -96,6 +96,11 @@ namespace GnomeSubfinder.Core.Core
 		public void Add (SubtitleFileInfo s)
 		{
 			subtitleFiles.Add (s);
+		}
+
+		public void Clear ()
+		{
+			subtitleFiles.Clear ();
 		}
 
 		protected virtual void OnDownloadStatusChanged (DownloadStatusChangedEventArgs e)
