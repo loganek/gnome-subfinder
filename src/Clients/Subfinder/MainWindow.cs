@@ -247,7 +247,7 @@ namespace Subfinder
 						throw new IOException (Catalog.GetString ("File ") + filename + Catalog.GetString (" doesn't exists"));
 
 					var langs = Preferences.Instance.GetSelectedLanguages ();
-					var backends = langs; // todo!
+					var backends = controller.Backends.Select(b=>b.GetName()).ToArray();
 					subs.Add (SubtitleFileInfo.MatchBest (controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, langs), langs, backends));
 				}
 				DownloadSubtitles (subs.ToArray ());
@@ -255,8 +255,8 @@ namespace Subfinder
 				Application.Invoke ((e, s) => ShowMessage ("Error: " + ex.Message));
 			} catch (WebException ex) {
 				Application.Invoke ((e, s) => ShowMessage ("Web exception: " + ex.Message));
-			} catch (ArgumentException ex) {
-				Application.Invoke ((e, s) => ShowMessage ("Subtitles not found: " + ex.Message));
+			} catch (ArgumentException) {
+				Application.Invoke ((e, s) => ShowMessage ("Subtitles not found. "));
 			}
 		}
 
