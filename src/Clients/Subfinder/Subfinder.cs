@@ -27,7 +27,7 @@ namespace Subfinder
 			try {
 				optParser.Parse ();
 			} catch (ArgumentException ex) {
-				Console.WriteLine ("Cannot parse arguments: " + ex.Message);
+				Console.WriteLine (string.Format (Catalog.GetString ("Cannot parse arguments: {0}"), ex.Message));
 				return;
 			}
 				

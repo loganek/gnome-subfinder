@@ -31,7 +31,6 @@ namespace GnomeSubfinder.Core.DataStructures
 		public static SubtitleFileInfo MatchBest (SubtitleFileInfo[] enumerable, string[] langs, string[] backends)
 		{
 			if (enumerable.Length == 0)
-				throw new ArgumentException ("cannot get best match from empty array");
 
 			Array.Sort (enumerable,
 				(x, y) => {

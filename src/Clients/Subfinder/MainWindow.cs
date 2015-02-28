@@ -5,7 +5,7 @@ using System.Linq;
 using GnomeSubfinder.Core.Core;
 using GnomeSubfinder.Core.DataStructures;
 using Gtk;
-using Mono.Posix;
+using Mono.Unix;
 using System.Net;
 
 using UI = Gtk.Builder.ObjectAttribute;
@@ -122,20 +122,20 @@ namespace Subfinder
 				});
 				cnt = subs.Length;
 			} catch (IOException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Error: " + ex.Message, MessageType.Error));
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Error: {0}"), ex.Message), MessageType.Error));
 			} catch (WebException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Web exception: " + ex.Message, MessageType.Error));
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Web exception: {0}"), ex.Message), MessageType.Error));
 			} catch (ApplicationException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Application exception: " + ex.Message, MessageType.Error));
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Application exception: {0}"), ex.Message), MessageType.Error));
 			} catch (ArgumentException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog ("Argument exception: " + ex.Message, MessageType.Error));
+				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Argument exception: {0}"), ex.Message), MessageType.Error));
 			}
 			return cnt;
 		}
 
 		void FindSubtitles ()
 		{
-			Application.Invoke ((sndr, evnt) => ShowInfo ("Searching subtitles."));
+			Application.Invoke ((sndr, evnt) => ShowInfo (Catalog.GetString ("Searching subtitles.")));
 			int count = 0;
 			foreach (object[] videoFile in videosStore) {
 				count += FindSubtitlesForSingleVideo (videoFile [0] as string);
@@ -144,7 +144,7 @@ namespace Subfinder
 				treeParent.Remove (waitWidget);
 				treeParent.Add (foundSubtitlesView);
 				ActivateButtons (true);
-				ShowInfo (String.Format ("Search completed. Found: {0} file(s).", count));
+				ShowInfo (string.Format (Catalog.GetString ("Search completed. Found: {0} file(s)."), count));
 			});
 		}
 
@@ -225,11 +225,11 @@ namespace Subfinder
 			});
 
 			if (downloader.Count == 0) {
-				Utils.ShowMessageDialog ("No subtitles found", MessageType.Info);
+				Utils.ShowMessageDialog (Catalog.GetString ("No subtitles found"), MessageType.Info);
 				return;
 			}
 
-			ShowInfo ("Downloading subtitles...");
+			ShowInfo (Catalog.GetString ("Downloading subtitles..."));
 			ActivateButtons (false);
 
 			downloader.Download ();
@@ -254,7 +254,7 @@ namespace Subfinder
 				lock (appenderLocker) {
 					TreeIter parent = FindParentIter (e.SubtitleFile);
 					if (parent.Equals (TreeIter.Zero)) {
-						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.mov.png")),
+						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource ("Subfinder.mov.png"),
 							e.SubtitleFile.Video.FileName, e.SubtitleFile);
 					}
 					oneClickVideoStore.AppendValues (parent, 
@@ -268,7 +268,7 @@ namespace Subfinder
 		{
 			Application.Invoke ((sndr, evnt) => {
 				ActivateButtons (true);
-				ShowInfo ("Download completed");
+				ShowInfo (Catalog.GetString ("Download completed"));
 				Utils.ShowMessageDialog (Catalog.GetString ("Download completed!"), MessageType.Info);
 			});
 		}
@@ -320,7 +320,7 @@ namespace Subfinder
 			subtitlesStore.Clear ();
 
 			if (videosStore.IterNChildren () == 0) {
-				ShowInfo ("Add files first");
+				ShowInfo (Catalog.GetString ("Add files first"));
 				return;
 			}
 
@@ -363,7 +363,7 @@ namespace Subfinder
 			new System.Threading.Thread (() => {
 				string url = "http://www.imdb.com/title/tt" + sub.IdMovieImdb;
 				if (sub.IdMovieImdb == string.Empty || !PageExists (url)) {
-					Application.Invoke ((s, ev) => Utils.ShowMessageDialog ("Info not available", MessageType.Info));
+					Application.Invoke ((s, ev) => Utils.ShowMessageDialog (Catalog.GetString ("Info not available"), MessageType.Info));
 				} else {
 					System.Diagnostics.Process.Start (url);
 				}

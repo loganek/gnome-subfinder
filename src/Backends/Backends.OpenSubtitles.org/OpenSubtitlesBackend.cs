@@ -53,9 +53,7 @@ namespace GnomeSubfinder.Backends.OpenSubtitles
 		static void CheckStatus (string status)
 		{
 			int num = Convert.ToInt32 (status.Substring (0, 3));
-			if (num >= 200 && num < 300)
-				; // todo logger status ok
-			else {
+			if (num < 200 || num >= 300) {
 				throw new Exception (status);
 			}
 		}
