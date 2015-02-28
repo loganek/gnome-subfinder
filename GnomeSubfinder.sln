@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnomeSubfinder.DataStructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnomeSubfinder.CoreTest", "src\Core\GnomeSubfinder.CoreTest\GnomeSubfinder.CoreTest.csproj", "{E920EC1E-6ED8-411C-8EEF-296BEA58027F}"
 EndProject
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "Translator", "po\Translator.mdproj", "{AE4EA22D-42C8-45B5-9844-543E843195E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -49,6 +51,10 @@ Global
 		{A7A2A5D9-C3D5-4FE6-9609-0D7153820C01}.Debug|x86.Build.0 = Debug|x86
 		{A7A2A5D9-C3D5-4FE6-9609-0D7153820C01}.Release|x86.ActiveCfg = Release|x86
 		{A7A2A5D9-C3D5-4FE6-9609-0D7153820C01}.Release|x86.Build.0 = Release|x86
+		{AE4EA22D-42C8-45B5-9844-543E843195E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AE4EA22D-42C8-45B5-9844-543E843195E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{AE4EA22D-42C8-45B5-9844-543E843195E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{AE4EA22D-42C8-45B5-9844-543E843195E9}.Release|x86.Build.0 = Release|Any CPU
 		{C597283C-71A8-4ED6-86A4-043E174BB903}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{C597283C-71A8-4ED6-86A4-043E174BB903}.Debug|x86.Build.0 = Debug|Any CPU
 		{C597283C-71A8-4ED6-86A4-043E174BB903}.Release|x86.ActiveCfg = Release|Any CPU
@@ -70,8 +76,5 @@ Global
 		{5EE3CD46-EB60-4A4D-A534-90343FA36E10} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
 		{C597283C-71A8-4ED6-86A4-043E174BB903} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
 		{E920EC1E-6ED8-411C-8EEF-296BEA58027F} = {2513EE29-7FFD-45AD-AE77-B214B0265FC9}
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = src\Clients\Subfinder\Subfinder.csproj
 	EndGlobalSection
 EndGlobal
