@@ -15,8 +15,8 @@ namespace Subfinder
 				if (Directory.Exists (pathWithLocale))
 					return pathWithLocale;
 				var entry_directory = new DirectoryInfo (applicationPrefix);
-				if (entry_directory != null && entry_directory.Parent != null)
-					applicationPrefix = entry_directory.Parent.FullName;
+				if (entry_directory != null && entry_directory.Parent != null && entry_directory.Parent.Parent != null)
+					applicationPrefix = entry_directory.Parent.Parent.FullName;
 				return Path.Combine (applicationPrefix, "share", "locale");
 			}
 		}
@@ -35,9 +35,9 @@ namespace Subfinder
 				new SubfinderConsole.SubfinderConsole (optParser).Run ();
 				return;
 			}
-
+			Console.WriteLine (LocaleDir);
 			Application.Init ();
-			Catalog.Init ("Subfinder", LocaleDir);
+			Catalog.Init ("gnome-subfinder", LocaleDir);
 
 			var builder = new Builder (null, "Subfinder.subfinder.glade", null);
 			var win = new MainWindow (builder, builder.GetObject ("window").Handle);

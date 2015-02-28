@@ -269,7 +269,7 @@ namespace Subfinder
 			Application.Invoke ((sndr, evnt) => {
 				ActivateButtons (true);
 				ShowInfo (Catalog.GetString ("Download completed"));
-				Utils.ShowMessageDialog (Catalog.GetString ("Download completed!"), MessageType.Info);
+				Utils.ShowMessageDialog (Catalog.GetString ("Download completed"), MessageType.Info);
 			});
 		}
 

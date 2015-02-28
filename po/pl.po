@@ -1,0 +1,218 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-03-01 00:49:48+0100\n"
+"PO-Revision-Date: 2015-03-01 00:53:00+0100\n"
+"Last-Translator: Marcin Kolny <marcin.kolny@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: MonoDevelop Gettext addin\n"
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Application's Website"
+msgstr "Strona internetowa"
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Show movie info"
+msgstr "Pokaż informacje o filmie"
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Play video using this subtitles"
+msgstr "Odtwórz film z użyciem tych napisów"
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Copy subtitles path to clipboard"
+msgstr "Kopiuj ścieżkę z napisami do schowka"
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "_File"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Quit"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "_Edit"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Preferences"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "_Help"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Select file(s) and download!"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Download results:"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "One click mode"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Path"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Download?"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Rating"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Downloads count"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "Language"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Subtitles database"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Download selected subtitles"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "Advanced mode"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder.glade:0
+msgid "0/0"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "Temporary directory:"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "7zip path:"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "Downloading timeout: "
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "second(s)"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "Override existing subtitles:"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "Video player:"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid ""
+"Video player arguments ({0} - videofile, {1} - subtitle file)\n"
+"Example (for mplayer): {0} -sub {1} "
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "General"
+msgstr "Ogólne"
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "All Available Languages"
+msgstr "Wszystkie dostępne języki"
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "Flag"
+msgstr "Flaga"
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid ""
+"Known you languages\n"
+"Application search subtitles in this languages\n"
+"(Use arrows to set language's priority)"
+msgstr ""
+
+#: ../src/Clients/Subfinder/subfinder-properties.glade:0
+msgid "Languages"
+msgstr "Języki"
+
+#: ../src/Clients/Subfinder/Subfinder.cs:2
+msgid "Cannot parse arguments: {0}"
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:17
+msgid "Choose the file to open"
+msgstr "Wybierz pliki do otwarcia"
+
+#: ../src/Clients/Subfinder/MainWindow.cs:17
+msgid "Cancel"
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:17
+msgid "Open"
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:19
+msgid "File {0} doesn't exist."
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:20
+msgid "Error: {0}"
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:20
+msgid "Web exception: {0}"
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:20
+msgid "Application exception: {0}"
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:20
+msgid "Argument exception: {0}"
+msgstr ""
+
+#: ../src/Clients/Subfinder/MainWindow.cs:21
+msgid "Searching subtitles."
+msgstr "Wyszukiwanie napisów."
+
+#: ../src/Clients/Subfinder/MainWindow.cs:21
+msgid "Search completed. Found: {0} file(s)."
+msgstr "Wyszukiwanie zakończone. Znaleziono: {0} plików."
+
+#: ../src/Clients/Subfinder/MainWindow.cs:31
+msgid "No subtitles found"
+msgstr "Nie znaleziono napisów"
+
+#: ../src/Clients/Subfinder/MainWindow.cs:32
+msgid "Downloading subtitles..."
+msgstr "Pobieranie napisów..."
+
+#: ../src/Clients/Subfinder/MainWindow.cs:38
+msgid "Download completed"
+msgstr "Pobieranie ukończone"
+
+#: ../src/Clients/Subfinder/MainWindow.cs:50
+msgid "Add files first"
+msgstr "Najpierw dodaj pliki"
+
+#: ../src/Clients/Subfinder/MainWindow.cs:59
+msgid "Info not available"
+msgstr "Informacje nie są dostępne"
+
+#~ msgid "Download completed!"
+#~ msgstr "Pobieranie zakończone!"
+

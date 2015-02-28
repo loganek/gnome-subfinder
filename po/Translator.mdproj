@@ -5,8 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ItemType>TranslationProject</ItemType>
     <ProjectGuid>{AE4EA22D-42C8-45B5-9844-543E843195E9}</ProjectGuid>
-    <packageName>i8n1</packageName>
+    <packageName>gnome-subfinder</packageName>
     <outputType>RelativeToOutput</outputType>
     <relPath>locale</relPath>
+    <translations>
+      <translations>
+        <Translation isoCode="pl" />
+      </translations>
+    </translations>
   </PropertyGroup>
 </Project>
