@@ -52,6 +52,7 @@
   <ItemGroup>
     <EmbeddedResource Include="subfinder.glade" />
     <EmbeddedResource Include="subfinder-properties.glade" />
+    <EmbeddedResource Include="subfinder-errors.glade" />
     <EmbeddedResource Include="Resources\bad.png">
       <LogicalName>Subfinder.bad.png</LogicalName>
     </EmbeddedResource>
@@ -67,6 +68,7 @@
     <Compile Include="MainWindow.cs" />
     <Compile Include="PreferencesDialog.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="ErrorsDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\GnomeSubfinder.Core\GnomeSubfinder.Core.csproj">

@@ -65,7 +65,7 @@ namespace SubfinderConsole
 			downloader.Download ();
 
 			downloader.DownloadStatusChanged += (sender, e) => Console.WriteLine (" * [{0}] Download subtitles for {1} {2}!", 
-				e.Error ? "Error" : "OK", Path.GetFileName (e.SubtitleFile.Video.FileName), e.Error ? "failed" : "succeeded");
+				e.Error == null ? "OK" : "Error", Path.GetFileName (e.SubtitleFile.Video.FileName), e.Error == null ? "succeeded" : "failed");
 
 			downloader.DownloadCompleted += (sender, e) => {
 				lock (syncer) {

@@ -9,9 +9,9 @@ namespace GnomeSubfinder.Core.Core
 	{
 		public SubtitleFileInfo SubtitleFile { get; private set; }
 
-		public bool Error { get; private set; }
+		public Exception Error { get; private set; }
 
-		public DownloadStatusChangedEventArgs (SubtitleFileInfo subtitleFile, bool error)
+		public DownloadStatusChangedEventArgs (SubtitleFileInfo subtitleFile, Exception error = null)
 		{
 			SubtitleFile = subtitleFile;
 			Error = error;
@@ -79,12 +79,12 @@ namespace GnomeSubfinder.Core.Core
 		{
 			var cli = new TimeoutedWebClient (timeout);
 			byte[] data = null;
-			bool err = false;
+			Exception err = null;
 			try {
 				data = cli.DownloadData (file.DownloadFile);
 				new SubtitleSaver ().Save (file, data);
-			} catch (Exception) {
-				err = true;
+			} catch (Exception ex) {
+				err = ex;
 			} finally {
 				OnDownloadStatusChanged (new DownloadStatusChangedEventArgs (file, err));
 				processed++;

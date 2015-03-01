@@ -30,8 +30,6 @@ namespace GnomeSubfinder.Core.DataStructures
 
 		public static SubtitleFileInfo MatchBest (SubtitleFileInfo[] enumerable, string[] langs, string[] backends)
 		{
-			if (enumerable.Length == 0)
-
 			Array.Sort (enumerable,
 				(x, y) => {
 					int ix = Array.IndexOf (langs, x.Language), iy = Array.IndexOf (langs, y.Language);

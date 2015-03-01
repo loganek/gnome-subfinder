@@ -45,6 +45,8 @@ namespace Subfinder
 
 		SubtitleDownloader downloader = new SubtitleDownloader (Preferences.Instance.DownloadingTimeout);
 
+		Dictionary<string, string> errorMessages = new Dictionary<string, string> ();
+
 		public MainWindow (Builder builder, IntPtr handle) : base (handle)
 		{
 			builder.Autoconnect (this);
@@ -113,6 +115,9 @@ namespace Subfinder
 
 				var languages = Preferences.Instance.GetSelectedLanguages ();
 				var subs = controller.SearchSubtitles (new VideoFileInfo { FileName = filename }, languages);
+				if (subs.Length == 0) {
+					return cnt;
+				}
 				var bestSubs = SubtitleFileInfo.MatchBest (subs, languages, controller.GetBackendNames ());
 				Application.Invoke ((e, s) => {
 					TreeIter iter = subtitlesStore.AppendValues (null, null, null, null, System.IO.Path.GetFileName (filename), null);
@@ -121,19 +126,13 @@ namespace Subfinder
 					}
 				});
 				cnt = subs.Length;
-			} catch (IOException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Error: {0}"), ex.Message), MessageType.Error));
-			} catch (WebException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Web exception: {0}"), ex.Message), MessageType.Error));
-			} catch (ApplicationException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Application exception: {0}"), ex.Message), MessageType.Error));
-			} catch (ArgumentException ex) {
-				Application.Invoke ((e, s) => Utils.ShowMessageDialog (string.Format (Catalog.GetString ("Argument exception: {0}"), ex.Message), MessageType.Error));
+			} catch (Exception ex) {
+				errorMessages [filename] = string.Format (Catalog.GetString ("Error: {0}"), ex.Message);
 			}
 			return cnt;
 		}
 
-		void FindSubtitles ()
+		bool FindSubtitles ()
 		{
 			Application.Invoke ((sndr, evnt) => ShowInfo (Catalog.GetString ("Searching subtitles.")));
 			int count = 0;
@@ -144,8 +143,27 @@ namespace Subfinder
 				treeParent.Remove (waitWidget);
 				treeParent.Add (foundSubtitlesView);
 				ActivateButtons (true);
+				ShowFoundErrors ();
 				ShowInfo (string.Format (Catalog.GetString ("Search completed. Found: {0} file(s)."), count));
+				if (count == 0) {
+					Utils.ShowMessageDialog (Catalog.GetString ("No subtitles found"), MessageType.Info);
+				}
 			});
+			return count > 0;
+		}
+
+		void ShowFoundErrors ()
+		{
+			if (!errorMessages.Any ()) {
+				return;
+			}
+
+			var builder = new Builder (null, "Subfinder.subfinder-errors.glade", null);
+			var errors = new ErrorsDialog (errorMessages, builder, builder.GetObject ("errorsDialog").Handle);
+			errors.Run ();
+			errors.Destroy ();
+
+			errorMessages.Clear ();
 		}
 
 		TreeIter FindParentIter (SubtitleFileInfo subtitleFile)
@@ -258,8 +276,11 @@ namespace Subfinder
 							e.SubtitleFile.Video.FileName, e.SubtitleFile);
 					}
 					oneClickVideoStore.AppendValues (parent, 
-						Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", e.Error ? "bad" : "good")),
+						Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", e.Error == null ? "good" : "bad")),
 						e.SubtitleFile.CurrentPath, e.SubtitleFile);
+					if (e.Error != null) {
+						errorMessages [e.SubtitleFile.Video.FileName] = e.Error.Message;
+					}
 				}
 			});
 		}
@@ -310,8 +331,9 @@ namespace Subfinder
 			ActivateButtons (false);
 
 			new System.Threading.Thread (() => {
-				FindSubtitles ();
-				Application.Invoke ((s, e) => DownloadSelectedSubtitles ());
+				if (FindSubtitles ()) {
+					Application.Invoke ((s, e) => DownloadSelectedSubtitles ());
+				}
 			}).Start ();
 		}
 
@@ -327,7 +349,7 @@ namespace Subfinder
 			ActivateButtons (false);
 			treeParent.Remove (foundSubtitlesView);
 			treeParent.Add (waitWidget);
-			new System.Threading.Thread (FindSubtitles).Start ();
+			new System.Threading.Thread (() => FindSubtitles()).Start ();
 		}
 
 		#endregion Buttons clicked event
