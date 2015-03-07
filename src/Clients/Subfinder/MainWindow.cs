@@ -185,6 +185,7 @@ namespace Subfinder
 		{
 			var builder = new Builder (null, "Subfinder.subfinder.glade", null);
 			var dialog = new AboutDialog (builder.GetObject ("aboutDialog").Handle);
+			dialog.Logo = Gdk.Pixbuf.LoadFromResource ("Subfinder.logo.png");
 			dialog.Run ();
 			dialog.Destroy ();
 		}

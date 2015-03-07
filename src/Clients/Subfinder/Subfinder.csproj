@@ -62,6 +62,9 @@
     <EmbeddedResource Include="Resources\mov.png">
       <LogicalName>Subfinder.mov.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\logo.png">
+      <LogicalName>Subfinder.logo.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Subfinder.cs" />
