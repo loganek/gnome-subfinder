@@ -11,7 +11,7 @@ namespace GnomeSubfinder.Core.Core
 	{
 		[ConfigurationProperty ("languages", DefaultValue = "")]
 		public string Languages {
-			get { return GetConfigNode (this ["languages"].ToString (), string.Join (",", LanguageSet.Instance.Languages.Values), x => x != string.Empty); }
+			get { return GetConfigNode (this ["languages"].ToString (), GetDefaultLanguages (), x => x != string.Empty); }
 			set { this ["languages"] = value; }
 		}
 
@@ -88,6 +88,12 @@ namespace GnomeSubfinder.Core.Core
 					return paths [i];
 			}
 			return szPath;    
+		}
+
+		string GetDefaultLanguages ()
+		{
+			var threeLetterIso = System.Globalization.CultureInfo.CurrentCulture.ThreeLetterISOLanguageName;
+			return string.Join (",", LanguageSet.Instance.Languages.Values).Replace (threeLetterIso, threeLetterIso + "_");
 		}
 
 		static bool IsValidExecutable (string path)
