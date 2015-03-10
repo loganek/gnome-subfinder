@@ -292,6 +292,7 @@ namespace Subfinder
 				ActivateButtons (true);
 				ShowInfo (Catalog.GetString ("Download completed"));
 				Utils.ShowMessageDialog (Catalog.GetString ("Download completed"), MessageType.Info);
+				downloadedSubtitlesView.ExpandAll ();
 			});
 		}
 
