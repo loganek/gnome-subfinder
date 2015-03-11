@@ -35,7 +35,7 @@ namespace Subfinder
 				new SubfinderConsole.SubfinderConsole (optParser).Run ();
 				return;
 			}
-			Console.WriteLine (LocaleDir);
+
 			Application.Init ();
 			Catalog.Init ("gnome-subfinder", LocaleDir);
 
