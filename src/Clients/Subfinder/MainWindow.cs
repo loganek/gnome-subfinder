@@ -197,6 +197,9 @@ namespace Subfinder
 
 		void ShowDownloadedPopupMenu ()
 		{
+			if (GetSelectedSubtitles () == null)
+				return;
+
 			subtitlesMenu.Show ();
 			subtitlesMenu.Popup ();
 		}
@@ -274,7 +277,7 @@ namespace Subfinder
 					TreeIter parent = FindParentIter (e.SubtitleFile);
 					if (parent.Equals (TreeIter.Zero)) {
 						parent = oneClickVideoStore.AppendValues (Gdk.Pixbuf.LoadFromResource ("Subfinder.mov.png"),
-							e.SubtitleFile.Video.FileName, e.SubtitleFile);
+							e.SubtitleFile.Video.FileName, null);
 					}
 					oneClickVideoStore.AppendValues (parent, 
 						Gdk.Pixbuf.LoadFromResource (string.Format ("Subfinder.{0}.png", e.Error == null ? "good" : "bad")),
