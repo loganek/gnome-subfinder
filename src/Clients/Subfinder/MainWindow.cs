@@ -31,10 +31,15 @@ namespace Subfinder
 		[UI] readonly ScrolledWindow advancedModeContainer;
 		[UI] readonly Menu subtitlesMenu;
 		[UI] readonly Button oneClickDownloadButton;
+		[UI] readonly MenuItem showMovieInfoMenuItem2;
+		[UI] readonly MenuItem copySubtitlesMenuItem2;
+		[UI] readonly MenuItem playVideoMenuItem2;
 
 		#endregion UI controls
 
 		readonly Spinner waitWidget = new Spinner { Visible = true, Active = true };
+
+		readonly List<MenuItem> subtitleMenuItems;
 
 		readonly object appenderLocker = new object ();
 
@@ -66,6 +71,12 @@ namespace Subfinder
  
 			downloadedSubtitlesView.Model = oneClickVideoStore;
 			mainNotebook.CurrentPage = Preferences.Instance.ActiveTab < 2 ? Preferences.Instance.ActiveTab : 0;
+		
+			subtitleMenuItems = new List<MenuItem> {
+				showMovieInfoMenuItem2,
+				copySubtitlesMenuItem2,
+				playVideoMenuItem2
+			};
 		}
 
 		void ColumnClicked (object sender, EventArgs e)
@@ -431,6 +442,11 @@ namespace Subfinder
 			preferences.Destroy ();
 		}
 
+		void on_subtitleMenuItem_activate (object sender, EventArgs e)
+		{
+			bool enable = GetSelectedSubtitles () != null;
+			subtitleMenuItems.ForEach (item => item.Sensitive = enable);
+		}
 		#endregion Menu activate methods
 	}
 }
