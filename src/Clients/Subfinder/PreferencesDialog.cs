@@ -8,6 +8,7 @@ using GnomeSubfinder.Core.GUIHelper;
 using Gtk;
 
 using UI = Gtk.Builder.ObjectAttribute;
+using System.Text;
 
 namespace Subfinder
 {
@@ -21,13 +22,24 @@ namespace Subfinder
 		[UI] readonly CheckButton overrideSubtitlesCheckButton;
 		[UI] readonly Entry playerEntry;
 		[UI] readonly Entry playerArgsEntry;
+		[UI] readonly Switch changeEncodingSwitch;
+		[UI] readonly ComboBox inputEncodingComboBox;
+		[UI] readonly ComboBox outputEncodingComboBox;
 
+		readonly ListStore encodings;
 		readonly ListStore selectedLanguages;
 		readonly ListStore nonSelectedLanguages;
 
 		public PreferencesDialog (Builder builder, IntPtr handle) : base (handle)
 		{
 			builder.Autoconnect (this);
+
+			encodings = new ListStore (typeof(string));
+			foreach (var e in Encoding.GetEncodings ()) {
+				encodings.AppendValues (new []{ e.Name });
+			}
+			inputEncodingComboBox.Model = encodings;
+			outputEncodingComboBox.Model = encodings;
 
 			selectedLanguages = new ListStore (typeof(string), typeof(Pixbuf), typeof(string));
 			nonSelectedLanguages = new ListStore (typeof(string), typeof(Pixbuf), typeof(string));
@@ -63,6 +75,14 @@ namespace Subfinder
 			Preferences.Instance.OverrideSubtitles = overrideSubtitlesCheckButton.Active;
 			Preferences.Instance.Player = playerEntry.Text;
 			Preferences.Instance.PlayerArgs = playerArgsEntry.Text;
+			Preferences.Instance.Encode = changeEncodingSwitch.Active;
+
+			TreeIter iter;
+			inputEncodingComboBox.GetActiveIter(out iter);
+			Preferences.Instance.EncodeFrom = iter.Equals (TreeIter.Zero) ? null : Encoding.GetEncoding (encodings.GetValue (iter, 0).ToString ());
+			outputEncodingComboBox.GetActiveIter(out iter);
+			Preferences.Instance.EncodeTo = iter.Equals (TreeIter.Zero) ? null : Encoding.GetEncoding (encodings.GetValue (iter, 0).ToString ());
+
 			Preferences.Instance.Save ();
 		}
 
@@ -74,11 +94,32 @@ namespace Subfinder
 			overrideSubtitlesCheckButton.Active = Preferences.Instance.OverrideSubtitles;
 			playerEntry.Text = Preferences.Instance.Player;
 			playerArgsEntry.Text = Preferences.Instance.PlayerArgs;
+			changeEncodingSwitch.Active = Preferences.Instance.Encode;
 
 			nonSelectedLanguagesView.Model = nonSelectedLanguages;
 			selectedLanguagesView.Model = selectedLanguages;
 
+			SelecteEncoding (inputEncodingComboBox, Preferences.Instance.EncodeFrom);
+			SelecteEncoding (outputEncodingComboBox, Preferences.Instance.EncodeTo);
+
 			FillLangsTree ();
+		}
+
+		void SelecteEncoding (ComboBox cbx, Encoding value)
+		{
+			if (value == null)
+				return;
+
+			TreeIter iter;
+			encodings.GetIterFirst (out iter);
+			do {
+				var thisRow = new GLib.Value ();
+				encodings.GetValue (iter, 0, ref thisRow);
+				if ((thisRow.Val as string).Equals(value.WebName)) {
+					cbx.SetActiveIter (iter);
+					break;
+				}
+			} while (encodings.IterNext (ref iter));
 		}
 
 		void FillLangsTree ()

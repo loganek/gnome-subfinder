@@ -41,6 +41,7 @@
     <Compile Include="LanguageSet.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="SubtitleSaver.cs" />
+    <Compile Include="EncodeChanger.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

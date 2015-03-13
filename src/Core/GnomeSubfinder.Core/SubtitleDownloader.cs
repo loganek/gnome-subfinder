@@ -83,6 +83,16 @@ namespace GnomeSubfinder.Core.Core
 			try {
 				data = cli.DownloadData (file.DownloadFile);
 				new SubtitleSaver ().Save (file, data);
+
+				if (Preferences.Instance.Encode) {
+					var encoder = new EncodeChanger (file.CurrentPath);
+					if (Preferences.Instance.AutoDetect) {
+						encoder.AutoChangeEncoding (Preferences.Instance.EncodeTo);
+					} else {
+						encoder.ChangeEncoding (Preferences.Instance.EncodeFrom, Preferences.Instance.EncodeTo);
+					}
+				}
+
 			} catch (Exception ex) {
 				err = ex;
 			} finally {

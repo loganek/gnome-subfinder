@@ -9,6 +9,24 @@ namespace GnomeSubfinder.Core.Core
 {
 	public class PreferencesConfiguration : ConfigurationSection
 	{
+		[ConfigurationProperty ("encode", DefaultValue = false)]
+		public bool Encode {
+			get { return GetConfigNode ((bool) this ["encode"], false); }
+			set { this ["encode"] = value; }
+		}
+
+		[ConfigurationProperty ("encode-from", DefaultValue = null)]
+		public string EncodeFrom {
+			get { return GetConfigNode (this ["encode-from"] as string, null); }
+			set { this ["encode-from"] = value; }
+		}
+
+		[ConfigurationProperty ("encode-to", DefaultValue = null)]
+		public string EncodeTo {
+			get { return GetConfigNode (this ["encode-to"] as string, null); }
+			set { this ["encode-to"] = value; }
+		}
+
 		[ConfigurationProperty ("languages", DefaultValue = "")]
 		public string Languages {
 			get { return GetConfigNode (this ["languages"].ToString (), GetDefaultLanguages (), x => x != string.Empty); }
@@ -179,6 +197,26 @@ namespace GnomeSubfinder.Core.Core
 		public string PlayerArgs {
 			get { return configuration.PlayerArgs; }
 			set { configuration.PlayerArgs = value; }
+		}
+
+		public bool Encode {
+			get { return configuration.Encode; }
+			set { configuration.Encode = value; }
+		}
+
+		public System.Text.Encoding EncodeTo {
+			get { return configuration.EncodeTo == null ? null : System.Text.Encoding.GetEncoding (configuration.EncodeTo); }
+			set { configuration.EncodeTo = value.WebName; }
+		}
+
+		public bool AutoDetect {
+			get;
+			set;
+		}
+
+		public System.Text.Encoding EncodeFrom {
+			get { return configuration.EncodeTo == null ? null : System.Text.Encoding.GetEncoding (configuration.EncodeFrom); }
+			set { configuration.EncodeFrom = value.WebName; }
 		}
 
 		public string[] GetSelectedLanguages ()
