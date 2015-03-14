@@ -86,7 +86,7 @@ namespace GnomeSubfinder.Core.Core
 
 				if (Preferences.Instance.Encode) {
 					var encoder = new EncodeChanger (file.CurrentPath);
-					if (Preferences.Instance.AutoDetect) {
+					if (Preferences.Instance.AutoDetectEncoding) {
 						encoder.AutoChangeEncoding (Preferences.Instance.EncodeTo);
 					} else {
 						encoder.ChangeEncoding (Preferences.Instance.EncodeFrom, Preferences.Instance.EncodeTo);

@@ -25,6 +25,7 @@ namespace Subfinder
 		[UI] readonly Switch changeEncodingSwitch;
 		[UI] readonly ComboBox inputEncodingComboBox;
 		[UI] readonly ComboBox outputEncodingComboBox;
+		[UI] readonly Switch autoDetectEncodingSwitch;
 
 		readonly ListStore encodings;
 		readonly ListStore selectedLanguages;
@@ -76,6 +77,7 @@ namespace Subfinder
 			Preferences.Instance.Player = playerEntry.Text;
 			Preferences.Instance.PlayerArgs = playerArgsEntry.Text;
 			Preferences.Instance.Encode = changeEncodingSwitch.Active;
+			Preferences.Instance.AutoDetectEncoding = autoDetectEncodingSwitch.Active;
 
 			TreeIter iter;
 			inputEncodingComboBox.GetActiveIter(out iter);
@@ -95,6 +97,7 @@ namespace Subfinder
 			playerEntry.Text = Preferences.Instance.Player;
 			playerArgsEntry.Text = Preferences.Instance.PlayerArgs;
 			changeEncodingSwitch.Active = Preferences.Instance.Encode;
+			autoDetectEncodingSwitch.Active = Preferences.Instance.AutoDetectEncoding;
 
 			nonSelectedLanguagesView.Model = nonSelectedLanguages;
 			selectedLanguagesView.Model = selectedLanguages;
