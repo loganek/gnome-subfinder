@@ -209,7 +209,7 @@ namespace GnomeSubfinder.Core.Core
 			set { configuration.EncodeTo = value.WebName; }
 		}
 
-		public bool AutoDetect {
+		public bool AutoDetectEncoding {
 			get;
 			set;
 		}
