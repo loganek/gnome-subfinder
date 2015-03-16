@@ -24,6 +24,7 @@ AC_ARG_ENABLE(
 
 AM_CONDITIONAL(ENABLE_RELEASE, test "x$enable_release" = "xyes")
 ENABLE_RELEASE=$enable_release
+
 AC_SUBST(ENABLE_RELEASE)
 if test "x$enable_release" = "xyes"; then
 	MCS_FLAGS="-define:RELEASE"
