@@ -34,6 +34,7 @@ namespace Subfinder
 		public PreferencesDialog (Builder builder, IntPtr handle) : base (handle)
 		{
 			builder.Autoconnect (this);
+			changeEncodingSwitch.StateChanged += on_changeEnctoding_state_set;
 
 			encodings = new ListStore (typeof(string));
 			foreach (var e in Encoding.GetEncodings ()) {
@@ -191,6 +192,11 @@ namespace Subfinder
 		void DeselectLanguage (object sender, EventArgs e)
 		{
 			SwapLanguages (selectedLanguagesView, selectedLanguages, nonSelectedLanguages);
+		}
+
+		void on_changeEnctoding_state_set (object sender, StateChangedArgs e)
+		{
+			inputEncodingComboBox.Sensitive = outputEncodingComboBox.Sensitive = autoDetectEncodingSwitch.Sensitive = changeEncodingSwitch.Active;
 		}
 	}
 }
