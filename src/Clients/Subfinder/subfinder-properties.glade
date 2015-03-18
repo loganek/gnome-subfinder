@@ -619,33 +619,13 @@ Application search subtitles in this languages
                   <object class="GtkLabel" id="label3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_right">44</property>
                     <property name="label" translatable="yes">Change subtitles encoding</property>
+                    <property name="xalign">1</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
                     <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label14">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Input encoding</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label15">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Output encoding</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -659,15 +639,9 @@ Application search subtitles in this languages
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBox" id="inputEncodingComboBox">
+                  <object class="GtkSwitch" id="autoDetectEncodingSwitch">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkCellRendererText" id="cellrenderertext4"/>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
-                    </child>
+                    <property name="can_focus">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -687,49 +661,62 @@ Application search subtitles in this languages
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="inputEncodingComboBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext4"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
                     <property name="top_attach">2</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSwitch" id="autoDetectEncodingSwitch">
+                  <object class="GtkLabel" id="label15">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_right">25</property>
+                    <property name="label" translatable="yes">Output encoding</property>
+                    <property name="xalign">0.98999965190887451</property>
                   </object>
                   <packing>
-                    <property name="left_attach">2</property>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label16">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_right">25</property>
+                    <property name="label" translatable="yes">Autodetect encoding</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
                     <property name="top_attach">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkExpander" id="expander2">
+                  <object class="GtkLabel" id="label14">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child type="label_item">
-                      <placeholder/>
-                    </child>
+                    <property name="can_focus">False</property>
+                    <property name="margin_right">14</property>
+                    <property name="label" translatable="yes">Input encoding</property>
+                    <property name="xalign">1</property>
                   </object>
                   <packing>
-                    <property name="left_attach">2</property>
+                    <property name="left_attach">0</property>
                     <property name="top_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkExpander" id="expander1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child type="label_item">
-                      <placeholder/>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="top_attach">0</property>
                   </packing>
                 </child>
               </object>
