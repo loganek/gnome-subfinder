@@ -35,6 +35,7 @@ namespace Subfinder
 		{
 			builder.Autoconnect (this);
 			changeEncodingSwitch.StateChanged += on_changeEnctoding_state_set;
+			autoDetectEncodingSwitch.StateChanged += on_autoDetectEncoding_state_set;
 
 			encodings = new ListStore (typeof(string));
 			foreach (var e in Encoding.GetEncodings ()) {
@@ -81,10 +82,22 @@ namespace Subfinder
 			Preferences.Instance.AutoDetectEncoding = autoDetectEncodingSwitch.Active;
 
 			TreeIter iter;
-			inputEncodingComboBox.GetActiveIter(out iter);
-			Preferences.Instance.EncodeFrom = iter.Equals (TreeIter.Zero) ? null : Encoding.GetEncoding (encodings.GetValue (iter, 0).ToString ());
-			outputEncodingComboBox.GetActiveIter(out iter);
-			Preferences.Instance.EncodeTo = iter.Equals (TreeIter.Zero) ? null : Encoding.GetEncoding (encodings.GetValue (iter, 0).ToString ());
+			if (inputEncodingComboBox.Active >= 0) {
+				inputEncodingComboBox.GetActiveIter (out iter);
+				Preferences.Instance.EncodeFrom = Encoding.GetEncoding (encodings.GetValue (iter, 0).ToString ());
+			} else if (Preferences.Instance.Encode && !autoDetectEncodingSwitch.Active) {
+				Utils.ShowMessageDialog ("Input encoding is not selected. Select input encoding or use encoding autodetection." +
+					"\nChanging encoding will be disabled.", MessageType.Warning);
+				Preferences.Instance.Encode = false;
+			}
+			if (outputEncodingComboBox.Active >= 0) {
+				outputEncodingComboBox.GetActiveIter (out iter);
+				Preferences.Instance.EncodeTo = Encoding.GetEncoding (encodings.GetValue (iter, 0).ToString ());
+			} else if (Preferences.Instance.Encode) {
+				Utils.ShowMessageDialog ("Output encoding is not selected. Select output encoding." +
+					"\nChanging encoding will be disabled.", MessageType.Warning);
+				Preferences.Instance.Encode = false;
+			}
 
 			Preferences.Instance.Save ();
 		}
@@ -196,7 +209,13 @@ namespace Subfinder
 
 		void on_changeEnctoding_state_set (object sender, StateChangedArgs e)
 		{
-			inputEncodingComboBox.Sensitive = outputEncodingComboBox.Sensitive = autoDetectEncodingSwitch.Sensitive = changeEncodingSwitch.Active;
+			outputEncodingComboBox.Sensitive = autoDetectEncodingSwitch.Sensitive = changeEncodingSwitch.Active;
+			on_autoDetectEncoding_state_set (sender, e);
+		}
+
+		void on_autoDetectEncoding_state_set (object sender, StateChangedArgs e)
+		{
+			inputEncodingComboBox.Sensitive = !autoDetectEncodingSwitch.Active && changeEncodingSwitch.Active;
 		}
 	}
 }
