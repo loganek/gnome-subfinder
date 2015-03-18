@@ -215,7 +215,7 @@ namespace GnomeSubfinder.Core.Core
 		}
 
 		public System.Text.Encoding EncodeFrom {
-			get { return configuration.EncodeTo == null ? null : System.Text.Encoding.GetEncoding (configuration.EncodeFrom); }
+			get { return configuration.EncodeFrom == null ? null : System.Text.Encoding.GetEncoding (configuration.EncodeFrom); }
 			set { configuration.EncodeFrom = value.WebName; }
 		}
 
