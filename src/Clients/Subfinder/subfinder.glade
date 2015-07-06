@@ -8,8 +8,8 @@
     <property name="type_hint">menu</property>
     <property name="program_name">Subfinder</property>
     <property name="version">1.0</property>
-    <property name="website">https://wiki.gnome.org/Apps/Subfinder</property>
-    <property name="website_label" translatable="yes">Application's Website</property>
+    <property name="website">http://www.cookandcommit.eu</property>
+    <property name="website_label" translatable="yes">Author's website</property>
     <property name="authors">Marcin Kolny</property>
     <property name="documenters">Marcin Kolny</property>
     <property name="artists">Marcin Kolny</property>
